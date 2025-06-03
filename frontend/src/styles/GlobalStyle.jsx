@@ -2,9 +2,10 @@ import { createGlobalStyle } from "styled-components";
 import { Fonts, Variables } from "./index";
 
 const GlobalStyle = createGlobalStyle`
+${Fonts}
 
 * {
-    font-family: "Inter", sans-serif;
+    font-family: "Roboto";
     box-sizing: border-box;
     padding: 0;
     margin: 0;
@@ -18,10 +19,9 @@ html {
 body {
     overflow-x: hidden;
     position: relative;
-    /* background-color: var(--primary); */
+    background-color: var(--light);
 }
 
-${Fonts}
 
 ${Variables}
 

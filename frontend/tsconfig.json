@@ -1,10 +1,14 @@
 {
   "compilerOptions": {
+    // ... your other compiler options
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@/styles/*": ["src/styles/*"],
       "@components/*": ["src/components/*"],
+      "@contexts/*": ["src/contexts/*"],
+      "@services/*": ["src/services/*"],
+      "@routes/*": ["src/routes/*"],
+      "@pages/*": ["src/pages/*"],
       "@assets/*": ["src/assets/*"]
     },
   },
