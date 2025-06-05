@@ -28,14 +28,12 @@ const Banner = () => {
 
 export default Banner;
 
-
 const StyledBanner = styled.section`
   /* width: 100%; */
   margin: 3rem;
   margin-top: 8rem;
   height: 65rem;
   background-color: #7615f567;
-  backdrop-filter: blur(30px);
   border-radius: 10rem;
   overflow: hidden;
   display: grid;
