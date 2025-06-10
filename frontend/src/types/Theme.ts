@@ -19,6 +19,7 @@ export interface Theme {
   buttons: {
     primary: string;
     secondary: string;
+    danger: string
   };
   status: {
     success: string;

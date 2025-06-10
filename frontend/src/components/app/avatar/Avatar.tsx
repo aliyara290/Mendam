@@ -12,31 +12,55 @@ interface AvatarProps {
 }
 
 const Avatar: React.FC<AvatarProps> = ({
-  link,
   userName,
   image,
+  link = false,
   status = "offline",
   gender,
 }) => {
   return (
     <>
-      <StyledAvatar>
-        <StyledAvatarImage>
-          <img
-            src={image || (gender === "female" ? womanAvatar : manAvatar)}
-            alt={image ? userName : "avatar"}
-            loading="lazy"
-            width={40}
-            height={40}
-          />
-        </StyledAvatarImage>
-        <StyledUserStatus>
-          <StyledStatus status={status}>
-            {status === "idle" && <StyledInfoStatus></StyledInfoStatus>}
-            {status === "offline" && <StyledOfflineStatus></StyledOfflineStatus>}
-          </StyledStatus>
-        </StyledUserStatus>
-      </StyledAvatar>
+      {link ? (
+        <StyledAvatar>
+          <StyledAvatarImage>
+            <img
+              src={image || (gender === "female" ? womanAvatar : manAvatar)}
+              alt={image ? userName : "avatar"}
+              loading="lazy"
+              width={40}
+              height={40}
+            />
+          </StyledAvatarImage>
+          <StyledUserStatus>
+            <StyledStatus status={status}>
+              {status === "idle" && <StyledInfoStatus></StyledInfoStatus>}
+              {status === "offline" && (
+                <StyledOfflineStatus></StyledOfflineStatus>
+              )}
+            </StyledStatus>
+          </StyledUserStatus>
+        </StyledAvatar>
+      ) : (
+        <StyledAvatar>
+          <StyledAvatarImage>
+            <img
+              src={image || (gender === "female" ? womanAvatar : manAvatar)}
+              alt={image ? userName : "avatar"}
+              loading="lazy"
+              width={40}
+              height={40}
+            />
+          </StyledAvatarImage>
+          <StyledUserStatus>
+            <StyledStatus status={status}>
+              {status === "idle" && <StyledInfoStatus></StyledInfoStatus>}
+              {status === "offline" && (
+                <StyledOfflineStatus></StyledOfflineStatus>
+              )}
+            </StyledStatus>
+          </StyledUserStatus>
+        </StyledAvatar>
+      )}
     </>
   );
 };
@@ -44,8 +68,7 @@ const Avatar: React.FC<AvatarProps> = ({
 export default Avatar;
 
 const StyledAvatar = styled.div`
-  /* overflow: hidden; */
-  padding-left: 2rem;
+  overflow: hidden;
   position: relative;
   width: max-content;
 `;
@@ -70,7 +93,7 @@ const StyledUserStatus = styled.div`
   bottom: 0;
   width: 1.4rem;
   height: 1.4rem;
-  background-color: var(--light);
+  background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 100%;
 `;
 
@@ -81,7 +104,12 @@ const StyledStatus = styled.div<AvatarProps>`
   transform: translate(-45%, -46%);
   width: 0.8rem;
   height: 0.8rem;
-  background-color: ${({status}) => (status === "idle" ? "var(--info-500)" : status === "online" ? "var(--success-500)" : "var(--jet)")};
+  background-color: ${({ status }) =>
+    status === "idle"
+      ? "var(--info-500)"
+      : status === "online"
+      ? "var(--success-500)"
+      : "var(--primary)"};
   border-radius: 100%;
 `;
 const StyledInfoStatus = styled.div`
@@ -90,7 +118,7 @@ const StyledInfoStatus = styled.div`
   left: -5%;
   width: 0.6rem;
   height: 0.6rem;
-  background-color: var(--light);
+  background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 100%;
 `;
 const StyledOfflineStatus = styled.div`

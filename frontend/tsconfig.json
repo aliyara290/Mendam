@@ -5,12 +5,14 @@
     "paths": {
       "@/*": ["src/*"],
       "@components/*": ["src/components/*"],
+      "@app/*": ["src/components/app/*"],
       "@contexts/*": ["src/contexts/*"],
       "@services/*": ["src/services/*"],
       "@routes/*": ["src/routes/*"],
       "@pages/*": ["src/pages/*"],
-      "@assets/*": ["src/assets/*"]
-    },
+      "@assets/*": ["src/assets/*"],
+      "@styles/*": ["src/styles/*"]
+    }
   },
   "files": [],
   "references": [

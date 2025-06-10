@@ -2,13 +2,20 @@ import Header from "@components/home/Header";
 import Footer from "@components/home/Footer";
 import Hero from "@components/home/Hero";
 import Banner from "@components/home/Banner";
-import Avatar from "@/components/app/avatar/Avatar";
+import Button from "@/components/app/button/Button";
+// import Avatar from "@/components/app/avatar/Avatar";
 
 const HomePage = () => {
   return (
     <>
       <Header />
-      <Avatar />
+      {/* <Avatar /> */}
+      {/* <Button
+        target="blank"
+        link="https://www.youtube.com"
+        title="Delete Account"
+        variant="cancel"
+      /> */}
       <Hero />
       <Banner />
       <Footer />

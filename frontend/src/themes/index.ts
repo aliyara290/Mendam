@@ -1,4 +1,4 @@
-import { Theme } from "@/types/Theme";
+import { type Theme } from "@/types/Theme";
 
 export const DarkTheme: Theme = {
   mode: "dark",
@@ -19,6 +19,7 @@ export const DarkTheme: Theme = {
   buttons: {
     primary: "#7515f5",
     secondary: "#161619",
+    danger: "#E06363",
   },
   status: {
     success: "#43a25a",
@@ -50,6 +51,7 @@ export const LightTheme: Theme = {
   buttons: {
     primary: "#7515f5",
     secondary: "#161619",
+    danger: "#e06363",
   },
   status: {
     success: "#43a25a",
