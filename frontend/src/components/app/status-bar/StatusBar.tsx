@@ -11,7 +11,11 @@ const StatusBar: React.FC<StatusBarProps> = ({}) => {
       <StyledStatusBar>
         <StyledStatusBarContainer>
           <StyledUserAvatar>
-            <Avatar status="idle" />
+            <Avatar
+              image="https://res.cloudinary.com/decjm9mmr/image/upload/q_10/linkedin_qeixe5.jpg"
+              gender="male"
+              status="online"
+            />
           </StyledUserAvatar>
           <StyledSettingIcon>
             <Cog8ToothIcon />
@@ -27,7 +31,7 @@ export default StatusBar;
 const StyledStatusBar = styled.div`
   width: 100%;
   background-color: ${({ theme }) => theme.background.primary};
-  padding: 2rem;
+  padding: 1.5rem;
 `;
 
 const StyledStatusBarContainer = styled.div`
@@ -43,6 +47,12 @@ const StyledStatusBarContainer = styled.div`
 
 const StyledUserAvatar = styled.div`
   width: max-content;
+  padding-right: 2rem;
+  border-radius: 3rem;
+  cursor: pointer;
+  &:hover {
+    background-color: ${({ theme }) => theme.background.primary};
+  }
 `;
 
 const StyledSettingIcon = styled.div`
@@ -53,7 +63,7 @@ const StyledSettingIcon = styled.div`
   cursor: pointer;
   svg {
     width: 2.7rem;
-    transition: .6s ease;
+    transition: transform 0.6s ease;
   }
   &:hover svg {
     transform: rotate(90deg);

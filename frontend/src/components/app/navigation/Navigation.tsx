@@ -8,7 +8,7 @@ import {
   PlusCircleIcon,
   UserGroupIcon,
   UsersIcon,
-} from "@heroicons/react/24/outline";
+} from "@heroicons/react/24/solid";
 
 interface NavigationProps {}
 
@@ -18,7 +18,9 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
       <StyledNavigation>
         <StyledTopLinks>
           <StyledLogo>
-            <Logo />
+            <a href="/app">
+              <Logo />
+            </a>
           </StyledLogo>
           <StyledLine />
           <StyledPagesLinks>
@@ -32,15 +34,24 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
                 <UsersIcon />
               </StyledLinkIcon>
             </StyledLink>
+            <StyledLink>
+              <StyledLinkIcon>
+                <UserGroupIcon />
+              </StyledLinkIcon>
+            </StyledLink>
           </StyledPagesLinks>
           <StyledLine />
           <StyledGroupsContainer>
             <StyledGroupsList>
               <StyledGroup>
-                <StyledGroupImage src={WarddLogo} alt="wardd logo" />
+                <StyledGroupImage>
+                  <img src={WarddLogo} alt="wardd logo" />
+                </StyledGroupImage>
               </StyledGroup>
               <StyledGroup>
-                <StyledGroupImage src={DxcLogo} alt="dxc logo" />
+                <StyledGroupImage>
+                  <img src={DxcLogo} alt="dxc logo" />
+                </StyledGroupImage>
               </StyledGroup>
             </StyledGroupsList>
             <StyledAddBtn>
@@ -51,14 +62,10 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
           </StyledGroupsContainer>
         </StyledTopLinks>
 
-        <StyledBottomLinks>
+        {/* <StyledBottomLinks>
           <StyledLine />
-          <StyledLink>
-            <StyledLinkIcon>
-              <UserGroupIcon />
-            </StyledLinkIcon>
-          </StyledLink>
-        </StyledBottomLinks>
+          
+        </StyledBottomLinks> */}
       </StyledNavigation>
     </>
   );
@@ -73,11 +80,31 @@ const StyledNavigation = styled.aside`
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  padding: 2.5rem 2rem 0;
+  padding: 2.5rem 1.5rem 0;
   width: max-content;
+
+  ::-webkit-scrollbar {
+    width: 0;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: ${({ theme }) => theme.background.primary};
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: ${({ theme }) => theme.background.secondary};
+    border-radius: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${({ theme }) => theme.background.primary};
+  }
 `;
 const StyledTopLinks = styled.aside`
   height: 100%;
+  overflow: auto;
+  overflow-x: visible;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -114,12 +141,18 @@ const StyledLink = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
+  color: ${({ theme }) => theme.text.primary};
+
+  &:hover {
+    background-color: var(--purple);
+    color: var(--dark-purple);
+  }
 `;
 
-const StyledLinkIcon = styled.div`
+const StyledLinkIcon = styled.a`
   width: 2rem;
   height: 2rem;
-  color: ${({ theme }) => theme.text.primary};
 `;
 
 const StyledGroupsList = styled.div`
@@ -146,20 +179,46 @@ const StyledAddBtn = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  color: ${({ theme }) => theme.text.primary};
+  cursor: pointer;
+  &:hover {
+    background-color: var(--purple);
+    color: var(--dark-purple);
+  }
 `;
 const StyledGroup = styled.div`
   width: 4.3rem;
   height: 4.3rem;
-  border-radius: 0.8rem;
-  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  &:hover {
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -2rem;
+      width: 4px;
+      height: 100%;
+      background-color: ${({ theme }) => theme.text.secondary};
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+  }
 `;
-const StyledGroupImage = styled.img`
+const StyledGroupImage = styled.div`
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  overflow: hidden;
+  border-radius: 0.8rem;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 const StyledBottomLinks = styled.div`
-   display: flex;
+  display: flex;
   align-items: center;
   flex-direction: column;
   gap: 1.8rem;

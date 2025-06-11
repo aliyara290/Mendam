@@ -26,13 +26,13 @@ body {
 ${Variables}
 
 ::-moz-selection { 
-    color: var(--primary-50);
-    background: var(--primary-500);
+    color: var(--dark-purple);
+    background: var(--purple);
 }
 
 ::selection {
-    color: var(--primary-50);
-    background: var(--primary-500);
+    color: var(--dark-purple);
+    background: var(--purple);
 }
 
 ::-webkit-scrollbar {

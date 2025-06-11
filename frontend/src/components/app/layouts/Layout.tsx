@@ -1,7 +1,12 @@
-import React from "react";
+import React, { type ReactNode } from "react";
 import Navigation from "@app/navigation/Navigation";
 import styled from "styled-components";
 import StatusBar from "@app/status-bar/StatusBar";
+import { Outlet } from "react-router-dom";
+
+// interface LayoutProps {
+//   children: ReactNode;
+// }
 
 const Layout: React.FC = () => {
   return (
@@ -9,10 +14,13 @@ const Layout: React.FC = () => {
       <StyledNavPart>
         <StyledTopPart>
           <Navigation />
-          <StyledFr></StyledFr>
+          <StyledFr>
+            <Outlet />
+          </StyledFr>
         </StyledTopPart>
         <StatusBar />
       </StyledNavPart>
+      <StyledChatPart></StyledChatPart>
     </StyledLayout>
   );
 };
@@ -24,7 +32,7 @@ const StyledLayout = styled.div`
   display: flex;
 `;
 const StyledNavPart = styled.div`
-  width: 50rem;
+  min-width: 50rem;
   height: 100lvh;
   position: sticky;
   left: 0;
@@ -34,7 +42,8 @@ const StyledNavPart = styled.div`
   background-color: ${({ theme }) => theme.background.primary};
 `;
 const StyledTopPart = styled.div`
-  height: 100%;
+  min-height: calc(100% - 100px);
+  max-height: calc(100% - 100px);
   display: flex;
 `;
 const StyledFr = styled.div`
@@ -44,9 +53,10 @@ const StyledFr = styled.div`
   border-left: 2px solid ${({ theme }) => theme.border.primary};
   border-bottom: 2px solid ${({ theme }) => theme.border.primary};
   border-bottom-left-radius: 8px;
+  padding: 2rem 1.5rem 0;
 `;
 const StyledChatPart = styled.div`
   width: 100%;
   height: 100lvh;
-  background-color: ${({ theme }) => theme.background.primary};
+  background-color: ${({ theme }) => theme.background.secondary};
 `;
