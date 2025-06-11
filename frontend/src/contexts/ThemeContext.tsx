@@ -6,7 +6,11 @@ import React, {
   type ReactNode,
 } from "react";
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
-import { type ThemeMode, type Theme, type ThemeContextType } from "@/types/Theme";
+import {
+  type ThemeMode,
+  type Theme,
+  type ThemeContextType,
+} from "@/types/Theme";
 import { DarkTheme, LightTheme } from "@/themes";
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
@@ -23,7 +27,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     if (savedTheme && (savedTheme === "dark" || savedTheme === "light")) {
       return savedTheme;
     }
-    
+
     return window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";
@@ -33,11 +37,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem("theme", themeMode);
-    
   }, [themeMode]);
 
   const toggleTheme = () => {
-    setThemeMode(prev => prev === "light" ? "dark" : "light");
+    setThemeMode((prev) => (prev === "light" ? "dark" : "light"));
   };
 
   const themeContextValue: ThemeContextType = {
@@ -48,9 +51,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
 
   return (
     <ThemeContext.Provider value={themeContextValue}>
-      <StyledThemeProvider theme={theme}>
-        {children}
-      </StyledThemeProvider>
+      <StyledThemeProvider theme={theme}>{children}</StyledThemeProvider>
     </ThemeContext.Provider>
   );
 };

@@ -12,9 +12,10 @@ const StatusBar: React.FC<StatusBarProps> = ({}) => {
         <StyledStatusBarContainer>
           <StyledUserAvatar>
             <Avatar
-              image="https://res.cloudinary.com/decjm9mmr/image/upload/q_10/linkedin_qeixe5.jpg"
+              // image="https://res.cloudinary.com/decjm9mmr/image/upload/q_10/linkedin_qeixe5.jpg"
               gender="male"
               status="online"
+              showStatus
             />
           </StyledUserAvatar>
           <StyledSettingIcon>

@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import manAvatar from "@assets/images/avatars/man-avatar.png";
 import womanAvatar from "@assets/images/avatars/woman-avatar.png";
+import { UserIcon } from "@heroicons/react/24/solid";
 
 interface AvatarProps {
   link?: string;
@@ -9,27 +10,33 @@ interface AvatarProps {
   userName?: string;
   status?: string;
   gender?: string;
+  showStatus?: boolean;
 }
 
 const Avatar: React.FC<AvatarProps> = ({
-  userName,
+  userName = "Ali Yara",
   image,
   link = false,
   status = "offline",
   gender,
+  showStatus = false,
 }) => {
   return (
     <>
       {link ? (
         <StyledAvatar>
           <StyledAvatarImage>
-            <img
-              src={image || (gender === "female" ? womanAvatar : manAvatar)}
-              alt={image ? userName : "avatar"}
-              loading="lazy"
-              width={40}
-              height={40}
-            />
+            {image ? (
+              <img
+                src={image}
+                alt={image ? userName : "avatar"}
+                loading="lazy"
+                width={40}
+                height={40}
+              />
+            ) : (
+              <UserIcon />
+            )}
           </StyledAvatarImage>
           <StyledUserStatus>
             <StyledStatus status={status}>
@@ -44,13 +51,17 @@ const Avatar: React.FC<AvatarProps> = ({
         <StyledUserAvatar>
           <StyledAvatar>
             <StyledAvatarImage>
+              {image ? (
               <img
-                src={image || (gender === "female" ? womanAvatar : manAvatar)}
+                src={image}
                 alt={image ? userName : "avatar"}
                 loading="lazy"
                 width={40}
                 height={40}
               />
+            ) : (
+              <UserIcon />
+            )}
             </StyledAvatarImage>
             <StyledUserStatus>
               <StyledStatus status={status}>
@@ -62,8 +73,8 @@ const Avatar: React.FC<AvatarProps> = ({
             </StyledUserStatus>
           </StyledAvatar>
           <StyledUserName>
-            <h5>Ali Yara</h5>
-            <span>{status}</span>
+            <h5>{userName}</h5>
+            {showStatus && <span>{status}</span>}
           </StyledUserName>
         </StyledUserAvatar>
       )}
@@ -74,9 +85,11 @@ const Avatar: React.FC<AvatarProps> = ({
 export default Avatar;
 
 const StyledUserAvatar = styled.div`
+position: relative;
   display: flex;
   align-items: center;
   gap: 1rem;
+  z-index: 1;
 `;
 const StyledAvatar = styled.div`
   /* overflow: hidden; */
@@ -89,7 +102,15 @@ const StyledAvatarImage = styled.div`
   border-radius: 100%;
   width: 4rem;
   height: 4rem;
-  background-color: ${({ theme }) => theme.background.primary};
+  background-color: ${({ theme }) => theme.background.thirdly};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  svg {
+    width: 2rem;
+    color: ${({ theme }) => theme.text.placeholder};
+  }
   img {
     width: 100%;
     height: 100%;
@@ -144,12 +165,13 @@ const StyledOfflineStatus = styled.div`
 `;
 
 const StyledUserName = styled.div`
-display: flex;
-flex-direction: column;
-gap: 2px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
   h5 {
     font-size: var(--text-md);
     color: ${({ theme }) => theme.text.primary};
+    font-weight: 500;
   }
   span {
     font-size: var(--text-sm);

@@ -6,7 +6,7 @@ const Variables = css`
 
     --light: #fbfbfb;
     --pup-white: #e3d5f6;
-    --purple: #6b8ffd;
+    --purple: #7515f5;
     --dark-purple: #1b223e;
     --primary: #121214;
     --secondary: #1a1a1e;

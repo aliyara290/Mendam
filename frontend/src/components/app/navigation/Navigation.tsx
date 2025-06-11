@@ -146,7 +146,7 @@ const StyledLink = styled.div`
 
   &:hover {
     background-color: var(--purple);
-    color: var(--dark-purple);
+    color: var(--light);
   }
 `;
 
@@ -183,7 +183,7 @@ const StyledAddBtn = styled.div`
   cursor: pointer;
   &:hover {
     background-color: var(--purple);
-    color: var(--dark-purple);
+    color: var(--light);
   }
 `;
 const StyledGroup = styled.div`
@@ -196,7 +196,7 @@ const StyledGroup = styled.div`
       content: "";
       position: absolute;
       top: 0;
-      left: -2rem;
+      left: -1rem;
       width: 4px;
       height: 100%;
       background-color: ${({ theme }) => theme.text.secondary};

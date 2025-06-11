@@ -11,6 +11,7 @@ export const DarkTheme: Theme = {
   text: {
     primary: "#efeff0",
     secondary: "#d4d4d9",
+    placeholder: "#6b6b6b",
   },
   border: {
     primary: "#1a1a1e",
@@ -43,6 +44,7 @@ export const LightTheme: Theme = {
   text: {
     primary: "#36373c",
     secondary: "#94959c",
+    placeholder: "#a3a4a9",
   },
   border: {
     primary: "#d3d4d7",

@@ -12,6 +12,14 @@ ${Fonts}
     -webkit-tap-highlight-color: transparent;
 }
 
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style-type: none;
+}
+
 html {
     font-size: 10px;
 }
@@ -36,16 +44,16 @@ ${Variables}
 }
 
 ::-webkit-scrollbar {
-    width: 5px; 
+    width: 3px; 
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: ${({ theme }) => theme.background.primary};
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: ${({ theme }) => theme.background.thirdly};
     border-radius: 10px;
 }
 
