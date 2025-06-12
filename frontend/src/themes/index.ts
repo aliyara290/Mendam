@@ -38,7 +38,7 @@ export const LightTheme: Theme = {
   background: {
     primary: "#f3f3f4",
     secondary: "#fbfbfb",
-    thirdly: "#ffffff",
+    thirdly: "#dddddd",
     message: "#4e3e63",
   },
   text: {
