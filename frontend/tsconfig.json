@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    // ... your other compiler options
     "baseUrl": ".",
+    "types": ["node"],
     "paths": {
       "@/*": ["src/*"],
       "@components/*": ["src/components/*"],

@@ -9,10 +9,15 @@ import {
   UserGroupIcon,
   UsersIcon,
 } from "@heroicons/react/24/solid";
+import { Link, useLocation } from "react-router-dom";
 
 interface NavigationProps {}
+interface StyledNavigationProps {
+  selected?: boolean;
+}
 
 const Navigation: React.FC<NavigationProps> = ({}) => {
+  const location = useLocation();
   return (
     <>
       <StyledNavigation>
@@ -24,35 +29,53 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
           </StyledLogo>
           <StyledLine />
           <StyledPagesLinks>
-            <StyledLink>
-              <StyledLinkIcon>
-                <ChatBubbleOvalLeftEllipsisIcon />
-              </StyledLinkIcon>
-            </StyledLink>
-            <StyledLink>
-              <StyledLinkIcon>
-                <UsersIcon />
-              </StyledLinkIcon>
-            </StyledLink>
-            <StyledLink>
-              <StyledLinkIcon>
-                <UserGroupIcon />
-              </StyledLinkIcon>
-            </StyledLink>
+            <Link to={"/app/@me"}>
+              <StyledLink selected={location.pathname === "/app/@me"}>
+                <StyledLinkIcon>
+                  <ChatBubbleOvalLeftEllipsisIcon />
+                </StyledLinkIcon>
+              </StyledLink>
+            </Link>
+            <Link to={"/app/friends"}>
+              <StyledLink selected={location.pathname === "/app/friends"}>
+                <StyledLinkIcon>
+                  <UsersIcon />
+                </StyledLinkIcon>
+              </StyledLink>
+            </Link>
+            <Link to={"/app/groups"}>
+              <StyledLink selected={location.pathname === "/app/groups"}>
+                <StyledLinkIcon>
+                  <UserGroupIcon />
+                </StyledLinkIcon>
+              </StyledLink>
+            </Link>
           </StyledPagesLinks>
           <StyledLine />
           <StyledGroupsContainer>
             <StyledGroupsList>
-              <StyledGroup>
-                <StyledGroupImage>
-                  <img src={WarddLogo} alt="wardd logo" />
-                </StyledGroupImage>
-              </StyledGroup>
-              <StyledGroup>
-                <StyledGroupImage>
-                  <img src={DxcLogo} alt="dxc logo" />
-                </StyledGroupImage>
-              </StyledGroup>
+              <Link to={"/app/@me"}>
+                <StyledGroup>
+                  <StyledGroupImage>
+                    <img src={WarddLogo} alt="wardd logo" />
+                  </StyledGroupImage>
+                </StyledGroup>
+              </Link>
+             
+              <Link to={"/app/@me"}>
+                <StyledGroup>
+                  <StyledGroupImage>
+                    <img src={WarddLogo} alt="wardd logo" />
+                  </StyledGroupImage>
+                </StyledGroup>
+              </Link>
+              <Link to={"/app/@me"}>
+                <StyledGroup>
+                  <StyledGroupImage>
+                    <img src={DxcLogo} alt="dxc logo" />
+                  </StyledGroupImage>
+                </StyledGroup>
+              </Link>
             </StyledGroupsList>
             <StyledAddBtn>
               <StyledLinkIcon>
@@ -82,9 +105,10 @@ const StyledNavigation = styled.aside`
   flex-direction: column;
   padding: 2.5rem 1.5rem 0;
   width: max-content;
-
+  /* overflow-y: auto;
+  overflow-x: hidden; */
   ::-webkit-scrollbar {
-    width: 0;
+    width: 0px;
   }
 
   ::-webkit-scrollbar-track {
@@ -103,8 +127,7 @@ const StyledNavigation = styled.aside`
 `;
 const StyledTopLinks = styled.aside`
   height: 100%;
-  overflow: auto;
-  overflow-x: visible;
+
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -133,7 +156,7 @@ const StyledPagesLinks = styled.div`
   gap: 1.8rem;
 `;
 
-const StyledLink = styled.div`
+const StyledLink = styled.div<StyledNavigationProps>`
   width: 4.3rem;
   height: 4.3rem;
   border-radius: 0.8rem;
@@ -143,7 +166,24 @@ const StyledLink = styled.div`
   justify-content: center;
   cursor: pointer;
   color: ${({ theme }) => theme.text.primary};
-
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: -1.5rem;
+    width: 0.4rem;
+    height: ${({ selected }) => (selected ? "100%" : "0.6rem")};
+    background-color: ${({ theme }) => theme.background.thirdly};
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  &:hover::after {
+    height: 100%;
+    background-color: ${({ theme }) => theme.text.secondary};
+  }
   &:hover {
     background-color: var(--purple);
     color: var(--light);
@@ -191,18 +231,22 @@ const StyledGroup = styled.div`
   height: 4.3rem;
   cursor: pointer;
   position: relative;
-  &:hover {
-    &::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: -1rem;
-      width: 4px;
-      height: 100%;
-      background-color: ${({ theme }) => theme.text.secondary};
-      border-top-right-radius: 8px;
-      border-bottom-right-radius: 8px;
-    }
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: -1.5rem;
+    width: 4px;
+    height: 0.6rem;
+    background-color: ${({ theme }) => theme.background.thirdly};
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+    transition: all 0.3s ease;
+  }
+  &:hover::after {
+    height: 100%;
+    background-color: ${({ theme }) => theme.text.secondary};
   }
 `;
 const StyledGroupImage = styled.div`

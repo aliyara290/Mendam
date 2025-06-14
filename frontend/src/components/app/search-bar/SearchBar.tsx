@@ -5,10 +5,14 @@ import styled from "styled-components";
 interface SearchBarProps {
   value?: string;
   placeholder?: string;
-  onInputChange?: () => void
+  onInputChange?: () => void;
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({value, placeholder = "Search for", onInputChange}) => {
+const SearchBar: React.FC<SearchBarProps> = ({
+  value,
+  placeholder = "Search for",
+  onInputChange,
+}) => {
   return (
     <>
       <StyledSearchBar>
@@ -16,6 +20,8 @@ const SearchBar: React.FC<SearchBarProps> = ({value, placeholder = "Search for",
           <input type="text" placeholder={placeholder} />
         </StyledSearchInput>
         <StyledSearchIcon>
+          <span>ctlr</span>
+          <span>k</span>
           <MagnifyingGlassIcon />
         </StyledSearchIcon>
       </StyledSearchBar>
@@ -48,14 +54,27 @@ const StyledSearchInput = styled.div`
     border: none;
     color: ${({ theme }) => theme.text.primary};
     &::placeholder {
-      color: ${({ theme }) => theme.text.placeholder};  
+      color: ${({ theme }) => theme.text.placeholder};
     }
   }
 `;
 const StyledSearchIcon = styled.div`
- color: ${({ theme }) => theme.text.placeholder}; 
+  color: ${({ theme }) => theme.text.placeholder};
   padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  span {
+    &:first-child {
+      margin-right: 0.3rem;
+    }
+    line-height: 1;
+    font-size: var(--text-sm);
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    border: 1px solid ${({ theme }) => theme.text.placeholder};
+  }
   svg {
     width: 2.1rem;
+    margin-left: 1rem;
   }
 `;

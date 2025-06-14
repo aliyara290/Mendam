@@ -44,7 +44,7 @@ ${Variables}
 }
 
 ::-webkit-scrollbar {
-    width: 3px; 
+    width: 0; 
 }
 
 ::-webkit-scrollbar-track {

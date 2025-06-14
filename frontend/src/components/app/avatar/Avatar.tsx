@@ -1,16 +1,18 @@
 import React from "react";
 import styled from "styled-components";
-import manAvatar from "@assets/images/avatars/man-avatar.png";
-import womanAvatar from "@assets/images/avatars/woman-avatar.png";
 import { UserIcon } from "@heroicons/react/24/solid";
 
+type UserStatus = "online" | "offline" | "idle";
+
 interface AvatarProps {
-  link?: string;
+  link?: boolean;
   image?: string;
   userName?: string;
-  status?: string;
-  gender?: string;
+  status?: UserStatus;
   showStatus?: boolean;
+  showStatusCircle?: boolean;
+  showUserName?: boolean;
+  size?: number;
 }
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -18,99 +20,96 @@ const Avatar: React.FC<AvatarProps> = ({
   image,
   link = false,
   status = "offline",
-  gender,
   showStatus = false,
+  showStatusCircle = false,
+  showUserName = false,
+  size = 40,
 }) => {
-  return (
-    <>
-      {link ? (
-        <StyledAvatar>
-          <StyledAvatarImage>
-            {image ? (
-              <img
-                src={image}
-                alt={image ? userName : "avatar"}
-                loading="lazy"
-                width={40}
-                height={40}
-              />
-            ) : (
-              <UserIcon />
-            )}
-          </StyledAvatarImage>
-          <StyledUserStatus>
-            <StyledStatus status={status}>
-              {status === "idle" && <StyledInfoStatus></StyledInfoStatus>}
-              {status === "offline" && (
-                <StyledOfflineStatus></StyledOfflineStatus>
-              )}
-            </StyledStatus>
-          </StyledUserStatus>
-        </StyledAvatar>
-      ) : (
-        <StyledUserAvatar>
-          <StyledAvatar>
-            <StyledAvatarImage>
-              {image ? (
-              <img
-                src={image}
-                alt={image ? userName : "avatar"}
-                loading="lazy"
-                width={40}
-                height={40}
-              />
-            ) : (
-              <UserIcon />
-            )}
-            </StyledAvatarImage>
-            <StyledUserStatus>
-              <StyledStatus status={status}>
-                {status === "idle" && <StyledInfoStatus></StyledInfoStatus>}
-                {status === "offline" && (
-                  <StyledOfflineStatus></StyledOfflineStatus>
-                )}
-              </StyledStatus>
-            </StyledUserStatus>
-          </StyledAvatar>
+  const avatarContent = (
+    <StyledAvatar>
+      <StyledAvatarImage size={size}>
+        {image ? (
+          <img
+            src={image}
+            alt={`${userName} avatar`}
+            loading="lazy"
+            width={size}
+            height={size}
+          />
+        ) : (
+          <UserIcon />
+        )}
+      </StyledAvatarImage>
+      {showStatusCircle && (
+        <StyledUserStatus>
+          <StyledStatus status={status}>
+            {status === "idle" && <StyledIdleIndicator />}
+            {status === "offline" && <StyledOfflineIndicator />}
+          </StyledStatus>
+        </StyledUserStatus>
+      )}
+    </StyledAvatar>
+  );
+
+  if (link) {
+    return (
+      <StyledUserAvatar>
+        <a href="#">{avatarContent}</a>
+        {showUserName && (
           <StyledUserName>
             <h5>{userName}</h5>
             {showStatus && <span>{status}</span>}
           </StyledUserName>
-        </StyledUserAvatar>
-      )}
-    </>
+        )}
+      </StyledUserAvatar>
+    );
+  }
+
+  return (
+    <StyledUserAvatar>
+      {avatarContent}
+    {showUserName && (
+          <StyledUserName>
+            <h5>{userName}</h5>
+            {showStatus && <span>{status}</span>}
+          </StyledUserName>
+        )}
+    </StyledUserAvatar>
   );
 };
 
 export default Avatar;
 
+// Styled Components
 const StyledUserAvatar = styled.div`
-position: relative;
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1rem;
   z-index: 1;
 `;
+
 const StyledAvatar = styled.div`
-  /* overflow: hidden; */
   position: relative;
   width: max-content;
 `;
 
-const StyledAvatarImage = styled.div`
+const StyledAvatarImage = styled.div<{ size: number }>`
   overflow: hidden;
-  border-radius: 100%;
-  width: 4rem;
-  height: 4rem;
+  border-radius: 50%;
+  width: ${({ size }) => size}px;
+  height: ${({ size }) => size}px;
   background-color: ${({ theme }) => theme.background.thirdly};
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-sm);
+
   svg {
-    width: 2rem;
+    width: ${({ size }) => size * 0.5}px;
     color: ${({ theme }) => theme.text.placeholder};
   }
+
   img {
     width: 100%;
     height: 100%;
@@ -126,34 +125,40 @@ const StyledUserStatus = styled.div`
   width: 1.6rem;
   height: 1.6rem;
   background-color: ${({ theme }) => theme.background.secondary};
-  border-radius: 100%;
+  border-radius: 50%;
 `;
 
-const StyledStatus = styled.div<AvatarProps>`
+const getStatusColor = (status: UserStatus): string => {
+  const statusColors = {
+    idle: "var(--info-500)",
+    online: "var(--success-500)",
+    offline: "var(--primary)",
+  };
+  return statusColors[status];
+};
+
+const StyledStatus = styled.div<{ status: UserStatus }>`
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-45%, -46%);
   width: 1rem;
   height: 1rem;
-  background-color: ${({ status }) =>
-    status === "idle"
-      ? "var(--info-500)"
-      : status === "online"
-      ? "var(--success-500)"
-      : "var(--primary)"};
-  border-radius: 100%;
+  background-color: ${({ status }) => getStatusColor(status)};
+  border-radius: 50%;
 `;
-const StyledInfoStatus = styled.div`
+
+const StyledIdleIndicator = styled.div`
   position: absolute;
   top: -5%;
   left: -3%;
   width: 0.8rem;
   height: 0.8rem;
   background-color: ${({ theme }) => theme.background.secondary};
-  border-radius: 100%;
+  border-radius: 50%;
 `;
-const StyledOfflineStatus = styled.div`
+
+const StyledOfflineIndicator = styled.div`
   position: absolute;
   left: 50%;
   top: 50%;
@@ -161,18 +166,21 @@ const StyledOfflineStatus = styled.div`
   width: 0.5rem;
   height: 0.5rem;
   background-color: var(--gray);
-  border-radius: 100%;
+  border-radius: 50%;
 `;
 
 const StyledUserName = styled.div`
   display: flex;
   flex-direction: column;
   gap: 2px;
+
   h5 {
     font-size: var(--text-md);
     color: ${({ theme }) => theme.text.primary};
     font-weight: 500;
+    margin: 0;
   }
+
   span {
     font-size: var(--text-sm);
     color: ${({ theme }) => theme.text.secondary};

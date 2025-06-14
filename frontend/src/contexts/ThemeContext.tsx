@@ -33,7 +33,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
       : "light";
   });
 
-  const theme = themeMode === "dark" ? LightTheme : DarkTheme;
+  const theme = themeMode === "light" ? LightTheme : DarkTheme;
 
   useEffect(() => {
     localStorage.setItem("theme", themeMode);

@@ -13,9 +13,10 @@ const StatusBar: React.FC<StatusBarProps> = ({}) => {
           <StyledUserAvatar>
             <Avatar
               // image="https://res.cloudinary.com/decjm9mmr/image/upload/q_10/linkedin_qeixe5.jpg"
-              gender="male"
               status="online"
               showStatus
+              showStatusCircle
+              showUserName
             />
           </StyledUserAvatar>
           <StyledSettingIcon>
