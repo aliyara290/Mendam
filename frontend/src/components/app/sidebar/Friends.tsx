@@ -1,22 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import SearchBar from "@app/search-bar/SearchBar";
 import Heading from "@app/heading/Heading";
 import Avatar from "@app/avatar/Avatar";
-import SquareBtn from "../ui/button/SquareBtn";
+import SquareBtn from "@app/ui/button/SquareBtn";
 import {
   ChatBubbleOvalLeftEllipsisIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
+import ModalComponent from "@app/modal/Modal";
 
 interface FriendsProps {}
 
 const Friends: React.FC<FriendsProps> = ({}) => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const handleCloseModale = () => {
+    setIsModalOpen(false);
+  };
   return (
     <StyledFrineds>
       <StyledTopHeader>
         <Heading title="Friends" heading="h3" />
-        <SearchBar placeholder="Search for people" />
+        <StyledSBarRow>
+          <SearchBar placeholder="Search for people" />
+          <SquareBtn onClick={() => setIsModalOpen(true)} />
+        </StyledSBarRow>
       </StyledTopHeader>
       <StyledChatsList>
         {[...Array(12)].map((_, index) => (
@@ -41,7 +50,11 @@ const Friends: React.FC<FriendsProps> = ({}) => {
           </StyledChatItem>
         ))}
       </StyledChatsList>
-      <SquareBtn />
+      <ModalComponent 
+        title="Add new friend"
+        onClose={handleCloseModale}
+        isOpen={isModalOpen}
+      />
     </StyledFrineds>
   );
 };
@@ -70,6 +83,11 @@ const StyledTopHeader = styled.div`
   z-index: 20;
 `;
 
+const StyledSBarRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+`;
 const StyledChatsList = styled.div`
   padding: 0 0.5rem;
   display: flex;

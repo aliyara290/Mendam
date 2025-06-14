@@ -65,7 +65,7 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
               <Link to={"/app/@me"}>
                 <StyledGroup>
                   <StyledGroupImage>
-                    <img src={WarddLogo} alt="wardd logo" />
+                    <img src="https://docs.imperium.plus/files/media-GRGQG-GFRFXRXG-PQQLL-WGRWM-GFRFGQQPLL-LLPXR-GFRFGQPXQWWM-X-QMGGQFRMWG" alt="wardd logo" />
                   </StyledGroupImage>
                 </StyledGroup>
               </Link>

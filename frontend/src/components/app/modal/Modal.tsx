@@ -3,13 +3,18 @@ import React, { useEffect, useCallback, type ReactNode } from "react";
 import styled from "styled-components";
 
 interface ModalProps {
-  children: ReactNode;
-  title: string;
-  isOpen: boolean;
+  children?: ReactNode;
+  title?: string;
+  isOpen?: boolean;
   onClose: () => void;
 }
 
-const ModalComponent: React.FC<ModalProps> = ({ children, title, isOpen, onClose }) => {
+const ModalComponent: React.FC<ModalProps> = ({
+  children,
+  title,
+  isOpen,
+  onClose,
+}) => {
   useEffect(() => {
     if (!isOpen) return;
 
@@ -27,11 +32,14 @@ const ModalComponent: React.FC<ModalProps> = ({ children, title, isOpen, onClose
   }, [isOpen, onClose]);
 
   // Handle backdrop click
-  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  }, [onClose]);
+  const handleBackdropClick = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
   if (!isOpen) return null;
 
@@ -44,9 +52,7 @@ const ModalComponent: React.FC<ModalProps> = ({ children, title, isOpen, onClose
             <XMarkIcon className="size-6" />
           </CloseButton>
         </ModalHeader>
-        <ModalBody>
-          {children}
-        </ModalBody>
+        <ModalBody>{children}</ModalBody>
       </ModalContent>
     </ModalBackdrop>
   );
@@ -57,7 +63,7 @@ export default ModalComponent;
 const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
-  background-color: rgba(2, 12, 31, 0.65);
+  background-color: #1a1a1e75;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -68,10 +74,9 @@ const ModalBackdrop = styled.div`
 const ModalContent = styled.div`
   position: relative;
   width: 100%;
-  max-width: min(130rem, 90vw);
-  min-width: min(60rem, 90vw);
+  max-width: 60rem;
   max-height: 90vh;
-  background-color: var(--dash-secondary);
+  background-color: ${({ theme }) => theme.background.thirdly};
   border-radius: 1rem;
   border: 1px solid var(--b-c);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -86,13 +91,13 @@ const ModalHeader = styled.div`
   align-items: center;
   padding: 2rem;
   border-bottom: 1px solid var(--b-c);
-  background-color: var(--dash-secondary);
+  background-color: ${({ theme }) => theme.background.thirdly};
   flex-shrink: 0;
 `;
 
 const ModalTitle = styled.h2`
   font-size: var(--text-xl);
-  color: var(--neutral-300);
+  color: ${({ theme }) => theme.text.secondary};
   font-weight: 500;
   margin: 0;
 `;
@@ -106,9 +111,9 @@ const ModalBody = styled.div`
 const CloseButton = styled.button`
   width: 3.5rem;
   height: 3.5rem;
-  border-radius: 0.5rem;
-  border: 1px solid #4a5565;
-  background: transparent;
+  border-radius: 3rem;
+  background: ${({ theme }) => theme.background.secondary};
+  border: none;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -116,6 +121,8 @@ const CloseButton = styled.button`
   color: #6b7280;
   transition: all 0.2s ease;
   flex-shrink: 0;
+
+  outline: none;
 
   &:hover {
     background-color: rgba(74, 85, 101, 0.1);

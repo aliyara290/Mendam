@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { UserIcon } from "@heroicons/react/24/solid";
+import { UserIcon, UserGroupIcon } from "@heroicons/react/24/solid";
 
 type UserStatus = "online" | "offline" | "idle";
 
@@ -13,6 +13,7 @@ interface AvatarProps {
   showStatusCircle?: boolean;
   showUserName?: boolean;
   size?: number;
+  isGroup?: boolean;
 }
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -24,6 +25,7 @@ const Avatar: React.FC<AvatarProps> = ({
   showStatusCircle = false,
   showUserName = false,
   size = 40,
+  isGroup = false,
 }) => {
   const avatarContent = (
     <StyledAvatar>
@@ -36,6 +38,8 @@ const Avatar: React.FC<AvatarProps> = ({
             width={size}
             height={size}
           />
+        ) : isGroup ? (
+          <UserGroupIcon />
         ) : (
           <UserIcon />
         )}
@@ -68,12 +72,12 @@ const Avatar: React.FC<AvatarProps> = ({
   return (
     <StyledUserAvatar>
       {avatarContent}
-    {showUserName && (
-          <StyledUserName>
-            <h5>{userName}</h5>
-            {showStatus && <span>{status}</span>}
-          </StyledUserName>
-        )}
+      {showUserName && (
+        <StyledUserName>
+          <h5>{userName}</h5>
+          {showStatus && <span>{status}</span>}
+        </StyledUserName>
+      )}
     </StyledUserAvatar>
   );
 };

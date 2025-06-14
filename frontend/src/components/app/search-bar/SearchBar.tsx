@@ -20,7 +20,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
           <input type="text" placeholder={placeholder} />
         </StyledSearchInput>
         <StyledSearchIcon>
-          <span>ctlr</span>
+          <span>ctrl</span>
           <span>k</span>
           <MagnifyingGlassIcon />
         </StyledSearchIcon>
