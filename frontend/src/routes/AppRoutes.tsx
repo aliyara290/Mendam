@@ -5,6 +5,7 @@ import Layout from "@components/app/layouts/Layout";
 import DirectMessages from "@components/app/sidebar/DirectMessages";
 import Friends from "@/components/app/sidebar/Friends";
 import Groups from "@/components/app/sidebar/Groups";
+import Channel from "@/components/app/sidebar/Channel";
 
 const AppRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const AppRoutes = () => {
             <Route path="@me" element={<DirectMessages />} />
             <Route path="friends" element={<Friends />} />
             <Route path="groups" element={<Groups />} />
+            <Route path="channel/:id" element={<Channel />} />
           </Route>
         </Routes>
       </BrowserRouter>

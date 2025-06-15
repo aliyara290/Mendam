@@ -54,7 +54,7 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
           <StyledLine />
           <StyledGroupsContainer>
             <StyledGroupsList>
-              <Link to={"/app/@me"}>
+              <Link to={"/app/channel/345678"}>
                 <StyledGroup>
                   <StyledGroupImage>
                     <img src={WarddLogo} alt="wardd logo" />
@@ -62,14 +62,14 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
                 </StyledGroup>
               </Link>
              
-              <Link to={"/app/@me"}>
+              <Link to={"/app/channel/345678"}>
                 <StyledGroup>
                   <StyledGroupImage>
                     <img src="https://docs.imperium.plus/files/media-GRGQG-GFRFXRXG-PQQLL-WGRWM-GFRFGQQPLL-LLPXR-GFRFGQPXQWWM-X-QMGGQFRMWG" alt="wardd logo" />
                   </StyledGroupImage>
                 </StyledGroup>
               </Link>
-              <Link to={"/app/@me"}>
+              <Link to={"/app/channel/345678"}>
                 <StyledGroup>
                   <StyledGroupImage>
                     <img src={DxcLogo} alt="dxc logo" />

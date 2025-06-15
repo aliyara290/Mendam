@@ -11,6 +11,7 @@ export interface Theme {
   text: {
     primary: string;
     secondary: string;
+    thirdly: string;
     placeholder: string;
   };
   border: {

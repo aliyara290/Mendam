@@ -63,7 +63,7 @@ export default ModalComponent;
 const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
-  background-color: #1a1a1e75;
+  background-color: #1a1a1ea2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,7 +111,7 @@ const ModalBody = styled.div`
 const CloseButton = styled.button`
   width: 3.5rem;
   height: 3.5rem;
-  border-radius: 3rem;
+  border-radius: 8px;
   background: ${({ theme }) => theme.background.secondary};
   border: none;
   display: flex;

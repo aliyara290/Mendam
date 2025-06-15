@@ -50,6 +50,7 @@ const StyledLayout = styled.div`
 
 const StyledNavPart = styled.div`
   min-width: 50rem;
+  max-width: 50rem;
   height: 100lvh;
   position: sticky;
   left: 0;

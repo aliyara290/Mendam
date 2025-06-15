@@ -45,8 +45,8 @@ const StyledSearchBar = styled.div`
 const StyledSearchInput = styled.div`
   width: 100%;
   height: 100%;
-  padding: 0 1.5rem;
   input {
+    padding: 0 0 0 1.5rem ;
     width: 100%;
     height: 100%;
     background: transparent;
@@ -75,6 +75,6 @@ const StyledSearchIcon = styled.div`
   }
   svg {
     width: 2.1rem;
-    margin-left: 1rem;
+    margin-left: 1.5rem;
   }
 `;
