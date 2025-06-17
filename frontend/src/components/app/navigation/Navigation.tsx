@@ -23,7 +23,7 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
       <StyledNavigation>
         <StyledTopLinks>
           <StyledLogo>
-            <a href="/app">
+            <a href="/app/@me">
               <Logo />
             </a>
           </StyledLogo>
@@ -143,7 +143,7 @@ const StyledLogo = styled.div`
 
 const StyledLine = styled.div`
   width: 100%;
-  height: 2px;
+  height: 1.5px;
   background-color: ${({ theme }) => theme.border.primary};
 `;
 

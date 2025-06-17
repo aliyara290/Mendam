@@ -16,7 +16,7 @@ export const DarkTheme: Theme = {
   },
   border: {
     primary: "#1a1a1e",
-    secondary: "#414141",
+    secondary: "#2f3035",
   },
   buttons: {
     primary: "#7515f5",
@@ -33,37 +33,36 @@ export const DarkTheme: Theme = {
     secondary: "#00000032",
   },
 };
-
 export const LightTheme: Theme = {
   mode: "light",
   background: {
-    primary: "#ffffff",
-    secondary: "#f8f9fa",
-    thirdly: "#f1f3f4",
-    message: "#e8f0fe",
+    primary: "#ffffff",       // main background
+    secondary: "#f7f7f8",     // sidebar / cards
+    thirdly: "#ececf1",       // sub-panels / dividers
+    message: "#e3e8ff",       // incoming message background
   },
   text: {
-    primary: "#1f2937",
-    secondary: "#374151",
-    thirdly: "#6b7280",
-    placeholder: "#9ca3af",
+    primary: "#1c1c1e",       // main text
+    secondary: "#3c3c43",     // less emphasized text
+    thirdly: "#5e5e65",       // captions / metadata
+    placeholder: "#a1a1aa",   // input placeholders
   },
   border: {
-    primary: "#e5e7eb",
-    secondary: "#d1d5db",
+    primary: "#dcdce0",       // input / card borders
+    secondary: "#e5e5ea",     // subtle separators
   },
   buttons: {
-    primary: "#7515f5",
-    secondary: "#f3f4f6",
-    danger: "#dc2626",
+    primary: "#7515f5",       // consistent with dark theme
+    secondary: "#f1f1f5",     // soft neutral
+    danger: "#e63c3c",        // strong red
   },
   status: {
-    success: "#16a34a",
-    info: "#eab308",
-    danger: "#dc2626",
+    success: "#30b170",       // green success
+    info: "#f6c343",          // yellow info
+    danger: "#e63c3c",        // error red
   },
   shadow: {
-    primary: "#0000000a",
-    secondary: "#0000001a",
+    primary: "#0000000d",     // light shadow (6%)
+    secondary: "#0000001a",   // slightly deeper (10%)
   },
 };

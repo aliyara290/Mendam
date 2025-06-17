@@ -91,6 +91,7 @@ const StyledUserAvatar = styled.div`
   align-items: center;
   gap: 1rem;
   z-index: 1;
+  user-select: none;
 `;
 
 const StyledAvatar = styled.div`
@@ -176,17 +177,20 @@ const StyledOfflineIndicator = styled.div`
 const StyledUserName = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 
   h5 {
     font-size: var(--text-md);
     color: ${({ theme }) => theme.text.primary};
     font-weight: 500;
     margin: 0;
+    line-height: 1;
   }
 
   span {
     font-size: var(--text-sm);
     color: ${({ theme }) => theme.text.secondary};
+    line-height: 1;
+
   }
 `;

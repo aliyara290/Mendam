@@ -3,6 +3,7 @@ import Navigation from "@app/navigation/Navigation";
 import styled from "styled-components";
 import StatusBar from "@app/status-bar/StatusBar";
 import { Outlet } from "react-router-dom";
+import ChatArea from "@app/chat-area";
 
 // interface LayoutProps {
 //   children: ReactNode;
@@ -21,7 +22,8 @@ const Layout: React.FC = () => {
         <StatusBar />
       </StyledNavPart>
       <StyledChatPart>
-        <svg
+        <ChatArea />
+        {/* <svg
           id="Layer_1"
           data-name="Layer 1"
           xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +37,7 @@ const Layout: React.FC = () => {
           />
         </svg>
 
-        <span>Select a chat to view it!</span>
+        <span>Select a chat to view it!</span> */}
       </StyledChatPart>
     </StyledLayout>
   );
@@ -49,8 +51,8 @@ const StyledLayout = styled.div`
 `;
 
 const StyledNavPart = styled.div`
-  min-width: 50rem;
-  max-width: 50rem;
+  min-width: 47rem;
+  max-width: 47rem;
   height: 100lvh;
   position: sticky;
   left: 0;
@@ -70,8 +72,8 @@ const StyledFr = styled.div`
   width: 100%;
   height: 100%;
   background-color: ${({ theme }) => theme.background.primary};
-  border-left: 2px solid ${({ theme }) => theme.border.primary};
-  border-bottom: 2px solid ${({ theme }) => theme.border.primary};
+  border-left: 1.4px solid ${({ theme }) => theme.border.primary};
+  border-bottom: 1.4px solid ${({ theme }) => theme.border.primary};
   border-bottom-left-radius: 8px;
 `;
 
@@ -79,7 +81,8 @@ const StyledChatPart = styled.div`
   width: 100%;
   height: 100lvh;
   background-color: ${({ theme }) => theme.background.secondary};
-  display: flex;
+  border-left: 1px solid ${({ theme }) => theme.border.primary};
+  /* display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
@@ -90,5 +93,5 @@ const StyledChatPart = styled.div`
   span {
     color: ${({ theme }) => theme.text.placeholder};
     font-size: var(--text-md);
-  }
+  } */
 `;
