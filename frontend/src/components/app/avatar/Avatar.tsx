@@ -108,7 +108,7 @@ const StyledAvatarImage = styled.div<{ size: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: var(--shadow-sm);
+  /* box-shadow: var(--shadow-sm); */
 
   svg {
     width: ${({ size }) => size * 0.5}px;

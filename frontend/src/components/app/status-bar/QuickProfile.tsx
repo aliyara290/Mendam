@@ -99,6 +99,8 @@ const StyledQuickProfile = styled.div<StyledQuickProfileProps>`
   background-color: ${({ theme }) => theme.background.thirdly};
   z-index: 456566;
   overflow: hidden;
+    border: 1px solid ${({ theme }) => theme.border.primary};
+
   transition: ${({ shouldAnimate }) =>
     shouldAnimate ? "top 0.3s ease" : "none"};
 `;

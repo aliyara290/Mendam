@@ -24,7 +24,7 @@ const Variables = css`
     --danger-500: #e06363;
 
     /* Shadows */
-    --shadow-nm: 0 0 12px 3px #00000016;
+    --shadow-sm: 0 0 12px 3px #00000016;
     --shadow-md: 0 0 12px 3px #00000024;
     --shadow-lg: 0 0 12px 3px #00000032;
 

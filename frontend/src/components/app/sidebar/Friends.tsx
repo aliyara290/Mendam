@@ -30,7 +30,7 @@ const Friends: React.FC<FriendsProps> = ({}) => {
       <StyledChatsList>
         {[...Array(12)].map((_, index) => (
           <StyledChatItem key={index}>
-            <StyledChatItemContainer href="/app/@me/34567U8I">
+            <StyledChatItemContainer>
               <Avatar
                 image="https://res.cloudinary.com/decjm9mmr/image/upload/q_10/linkedin_qeixe5.jpg"
                 status="offline"
@@ -97,7 +97,7 @@ const StyledChatsList = styled.div`
 const StyledChatItem = styled.div`
   width: 100%;
 `;
-const StyledChatItemContainer = styled.a`
+const StyledChatItemContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: center;

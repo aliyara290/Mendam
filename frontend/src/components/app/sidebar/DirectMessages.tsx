@@ -3,7 +3,13 @@ import styled from "styled-components";
 import SearchBar from "@app/search-bar/SearchBar";
 import Heading from "@app/heading/Heading";
 import Avatar from "@app/avatar/Avatar";
-import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
+import {
+  EllipsisHorizontalIcon,
+  StarIcon,
+  TrashIcon,
+} from "@heroicons/react/24/outline";
+import Menu, { type MenuItemProps } from "@app/menu/Menu";
+import { XMarkIcon } from "@heroicons/react/24/solid";
 
 interface DirectMessagesProps {}
 
@@ -19,6 +25,40 @@ interface ChatData {
 
 const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
   const [hoveredChatId, setHoveredChatId] = useState<string | null>(null);
+  const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
+
+  const handleToggleMenu = (chatId: string) => {
+    setOpenMenuChatId(openMenuChatId === chatId ? null : chatId);
+  };
+
+  const handleCloseMenu = () => {
+    setOpenMenuChatId(null);
+  };
+
+  const menuItems: MenuItemProps[] = [
+    {
+      label: "Add to favorite",
+      icon: <StarIcon />,
+      onClick: () => {
+        handleCloseMenu();
+      },
+    },
+    {
+      label: "Clear messages",
+      icon: <XMarkIcon />,
+      onClick: () => {
+        handleCloseMenu();
+      },
+    },
+    {
+      label: "Delete",
+      icon: <TrashIcon />,
+      onClick: () => {
+        handleCloseMenu();
+        alert("Block functionality");
+      },
+    },
+  ];
 
   const [chats] = useState<ChatData[]>([
     {
@@ -73,8 +113,7 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
       avatar:
         "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face",
       status: "online",
-      lastMessage:
-        "I'll review ggggggg gggggg  gggg the document and get back to you",
+      lastMessage: "I'll review the document and get back to you",
       lastMessageTime: "2d",
     },
     {
@@ -124,6 +163,10 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
     setHoveredChatId(null);
   };
 
+  const handleChatClick = (e: React.MouseEvent, chatId: string) => {
+    console.log(`Navigate to chat ${chatId}`);
+  };
+
   return (
     <>
       <StyledDirectMess>
@@ -133,12 +176,12 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
         </StyledTopHeader>
         <StyledChatsList>
           {chats.map((chat) => (
-            <StyledChatItem
-              key={chat.id}
-              onMouseEnter={() => handleShowOptions(chat.id)}
-              onMouseLeave={handleHideOptions}
-            >
-              <StyledChatItemContainer href={`/app/@me/${chat.id}`}>
+            <StyledChatItem key={chat.id}>
+              <StyledChatItemContainer
+                onClick={(e) => handleChatClick(e, chat.id)}
+                onMouseEnter={() => handleShowOptions(chat.id)}
+                onMouseLeave={handleHideOptions}
+              >
                 <StyledChatInfo>
                   <Avatar
                     image={chat.avatar}
@@ -156,8 +199,8 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
                       )}
                     </StyledUserName>
                     <StyledLastMessage>
-                      {chat.lastMessage.substring(0, 40)}{" "}
-                      {chat.lastMessage.length > 40 ? "..." : null}
+                      {chat.lastMessage.substring(0, 40)}
+                      {chat.lastMessage.length > 40 ? "..." : ""}
                     </StyledLastMessage>
                   </StyledMessageInfo>
                 </StyledChatInfo>
@@ -168,11 +211,24 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
                   </StyledLastMessageTime>
                 )}
                 {hoveredChatId === chat.id && (
-                  <StyledDotsOptions>
+                  <StyledDotsOptions
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleToggleMenu(chat.id);
+                    }}
+                  >
                     <EllipsisHorizontalIcon />
                   </StyledDotsOptions>
                 )}
               </StyledChatItemContainer>
+              <div onClick={(e) => e.stopPropagation()}>
+                <Menu
+                  onClose={() => setOpenMenuChatId(null)}
+                  isOpen={openMenuChatId === chat.id}
+                  right="0"
+                  items={menuItems}
+                />
+              </div>
             </StyledChatItem>
           ))}
         </StyledChatsList>
@@ -211,9 +267,10 @@ const StyledChatsList = styled.div`
 
 const StyledChatItem = styled.div`
   width: 100%;
+  position: relative;
 `;
 
-const StyledChatItemContainer = styled.a`
+const StyledChatItemContainer = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
@@ -259,9 +316,9 @@ const StyledLastMessage = styled.div`
   width: 90%;
   font-size: var(--text-sm);
   color: ${({ theme }) => theme.text.secondary};
-  /* white-space: nowrap; */
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const StyledUnreadBadge = styled.span`

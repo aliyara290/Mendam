@@ -107,7 +107,7 @@ const StyledPortfolioContent = styled.div`
   max-width: 70rem;
   background-color: ${({ theme }) => theme.background.thirdly};
   border-radius: 0.8rem;
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-lg);
   overflow: hidden;
   position: relative;
 `;

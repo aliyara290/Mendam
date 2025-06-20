@@ -37,7 +37,9 @@ const StyledSearchBar = styled.div`
   overflow: hidden;
   border-radius: 0.8rem;
   background-color: ${({ theme }) => theme.background.secondary};
-  box-shadow: var(--shadow-sm);
+  /* box-shadow: var(--shadow-sm); */
+  border: 1px solid ${({ theme }) => theme.border.primary};
+
   display: flex;
   align-items: center;
 `;
