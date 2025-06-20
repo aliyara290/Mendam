@@ -1,8 +1,14 @@
-import AppRoutes from "@routes/AppRoutes";
+import AppRoutes from "@/routes/AppRoutes";
+import GlobalStyle from "@styles/GlobalStyle";
+import { ThemeProvider } from "@contexts/ThemeContext";
+
 function App() {
   return (
     <>
-     <AppRoutes />
+      <ThemeProvider>
+        <GlobalStyle />
+        <AppRoutes />
+      </ThemeProvider>
     </>
   );
 }

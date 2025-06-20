@@ -12,6 +12,14 @@ ${Fonts}
     -webkit-tap-highlight-color: transparent;
 }
 
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style-type: none;
+}
+
 html {
     font-size: 10px;
 }
@@ -26,26 +34,26 @@ body {
 ${Variables}
 
 ::-moz-selection { 
-    color: var(--primary-50);
-    background: var(--primary-500);
+    color: var(--dark-purple);
+    background: var(--purple);
 }
 
 ::selection {
-    color: var(--primary-50);
-    background: var(--primary-500);
+    color: var(--dark-purple);
+    background: var(--purple);
 }
 
 ::-webkit-scrollbar {
-    width: 5px; 
+    width: 0; 
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: ${({ theme }) => theme.background.primary};
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #888;
+    background: ${({ theme }) => theme.background.thirdly};
     border-radius: 10px;
 }
 

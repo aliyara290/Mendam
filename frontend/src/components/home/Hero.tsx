@@ -6,7 +6,7 @@ const StyledHero = styled.section`
   margin: 3rem;
   margin-top: 2rem;;
   height: 57rem;
-  background-color: var(--purple);
+  background-color: #563298;
   border-radius: 10rem;
   background-image: url(${heroImage});
   background-position: 50% 10%;
