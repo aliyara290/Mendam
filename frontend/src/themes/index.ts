@@ -36,33 +36,33 @@ export const DarkTheme: Theme = {
 export const LightTheme: Theme = {
   mode: "light",
   background: {
-    primary: "#ffffff",       // main background
-    secondary: "#f7f7f8",     // sidebar / cards
-    thirdly: "#ececf1",       // sub-panels / dividers
-    message: "#e3e8ff",       // incoming message background
+    primary: "#f7f7f8",
+    secondary: "#ffffff",
+    thirdly: "#ececf1",
+    message: "#e3e8ff",
   },
   text: {
-    primary: "#1c1c1e",       // main text
-    secondary: "#3c3c43",     // less emphasized text
-    thirdly: "#5e5e65",       // captions / metadata
-    placeholder: "#a1a1aa",   // input placeholders
+    primary: "#1c1c1e",
+    secondary: "#3c3c43",
+    thirdly: "#5e5e65",
+    placeholder: "#a1a1aa",
   },
   border: {
-    primary: "#dcdce0",       // input / card borders
-    secondary: "#e5e5ea",     // subtle separators
+    primary: "#dcdce0",
+    secondary: "#e5e5ea",
   },
   buttons: {
-    primary: "#7515f5",       // consistent with dark theme
-    secondary: "#f1f1f5",     // soft neutral
-    danger: "#e63c3c",        // strong red
+    primary: "#7515f5",
+    secondary: "#f1f1f5",
+    danger: "#e63c3c",
   },
   status: {
-    success: "#30b170",       // green success
-    info: "#f6c343",          // yellow info
-    danger: "#e63c3c",        // error red
+    success: "#30b170",
+    info: "#f6c343",
+    danger: "#e63c3c",
   },
   shadow: {
-    primary: "#0000000d",     // light shadow (6%)
-    secondary: "#0000001a",   // slightly deeper (10%)
+    primary: "#0000000d",
+    secondary: "#0000001a",
   },
 };

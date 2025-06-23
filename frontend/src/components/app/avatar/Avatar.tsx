@@ -90,7 +90,7 @@ const StyledUserAvatar = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
-  z-index: 1;
+  /* z-index: 1; */
   user-select: none;
 `;
 

@@ -48,7 +48,7 @@ const StyledSearchInput = styled.div`
   width: 100%;
   height: 100%;
   input {
-    padding: 0 0 0 1.5rem ;
+    padding: 0 0 0 1.5rem;
     width: 100%;
     height: 100%;
     background: transparent;

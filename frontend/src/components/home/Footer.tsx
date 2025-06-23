@@ -11,7 +11,7 @@ import LogoLight from "@components/logo/LogoLight";
 
 const StyledFooter = styled.section`
   margin-top: 8rem;
-  background-color: var(--purple);
+  background-color: var(--blue);
   border-top-right-radius: 10rem;
   border-top-left-radius: 10rem;
   overflow: hidden;

@@ -97,7 +97,7 @@ const StyledPortfolio = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1a1a1e31;
+  background-color: #00000039;
   z-index: 234567890876543;
 `;
 
@@ -105,11 +105,12 @@ const StyledPortfolioContent = styled.div`
   width: 100%;
   height: 50rem;
   max-width: 70rem;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 0.8rem;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   position: relative;
+  border: 1px solid ${({ theme }) => theme.border.primary};
 `;
 const StyledCloseModal = styled.div`
   position: absolute;
@@ -122,7 +123,7 @@ const StyledCloseModal = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #ffffff39;
-  color: ${({ theme }) => theme.text.thirdly};
+  color: var(--light);
   cursor: pointer;
   &:hover {
     background-color: #ffffff58;
@@ -131,13 +132,15 @@ const StyledCloseModal = styled.div`
     width: 2.2rem;
   }
 `;
+
 const StyledPortfolioCover = styled.div`
   width: 100%;
   height: 13rem;
-  background: linear-gradient(35deg, var(--purple), #3c0287);
+  background: linear-gradient(35deg, var(--blue), #3c0287);
   position: relative;
   margin-bottom: 16rem;
 `;
+
 const StyledAvatar = styled.div`
   position: absolute;
   bottom: -14rem;
@@ -148,11 +151,12 @@ const StyledAvatar = styled.div`
   align-items: center;
   gap: 1rem;
 `;
+
 const StyledAvatarPic = styled.div`
   width: 15rem;
   height: 15rem;
   border-radius: 100%;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
   padding: 1rem;
   position: relative;
 `;
@@ -160,7 +164,7 @@ const StyledBar = styled.div`
   width: 135%;
   height: 7rem;
   border-radius: 3rem;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
   position: absolute;
   top: 50%;
   left: 50%;
@@ -207,7 +211,7 @@ const StyledUserInfo = styled.div`
 `;
 const StyledNavigation = styled.div`
   /* width: 100%; */
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
   border-bottom: 1px solid ${({ theme }) => theme.border.secondary};
   margin: 0 2rem;
   position: sticky;

@@ -8,7 +8,7 @@ import {
   ChatBubbleOvalLeftEllipsisIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
-import ModalComponent from "@app/modal/Modal";
+import AddFriendModal from "./modals/AddFriendModal";
 
 interface FriendsProps {}
 
@@ -50,7 +50,7 @@ const Friends: React.FC<FriendsProps> = ({}) => {
           </StyledChatItem>
         ))}
       </StyledChatsList>
-      <ModalComponent 
+      <AddFriendModal
         title="Add new friend"
         onClose={handleCloseModale}
         isOpen={isModalOpen}

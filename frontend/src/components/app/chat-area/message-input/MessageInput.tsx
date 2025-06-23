@@ -1,61 +1,101 @@
-import { FaceSmileIcon, PaperClipIcon } from "@heroicons/react/24/solid";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { PaperClipIcon } from "@heroicons/react/24/solid";
+import { DocumentIcon, FaceSmileIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
-import { DocumentIcon, PhotoIcon } from "@heroicons/react/24/outline";
+import { useTheme } from "@/contexts/ThemeContext";
 
-interface MessageInputProps {}
+const MessageInput: React.FC = () => {
+  const [message, setMessage] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const {themeMode} = useTheme();
 
-const MessageInput: React.FC<MessageInputProps> = ({}) => {
-  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const emojiRef = useRef<HTMLDivElement>(null);
 
-  const handleOpenMenu = () => {
-    setIsMenuOpen(true);
+  const handleEmojiClick = (emojiData: EmojiClickData) => {
+    setMessage((prev) => prev + emojiData.emoji);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        emojiRef.current &&
+        !emojiRef.current.contains(event.target as Node)
+      ) {
+        setShowEmojiPicker(false);
+      }
+    };
+
+    if (showEmojiPicker) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showEmojiPicker]);
 
   const menuItems: MenuItemProps[] = [
     {
       label: "Photos & Videos",
       icon: <PhotoIcon />,
-      onClick: () => {
-        handleOpenMenu();
-      },
+      onClick: () => setIsMenuOpen(false),
     },
     {
       label: "Document",
       icon: <DocumentIcon />,
-      onClick: () => alert("Reply"),
+      onClick: () => setIsMenuOpen(false),
     },
   ];
+
   return (
-    <>
-      <StyledMessageProps>
-        <StyledLeftSide>
-          <StyledIconItem>
-            <FaceSmileIcon />
-          </StyledIconItem>
-        </StyledLeftSide>
-        <StyledMessageInput>
-          <input type="text" placeholder="Type a message" />
-        </StyledMessageInput>
-        <StyledRightSide>
-          <Menu
-            onClose={() => setIsMenuOpen(false)}
-            isOpen={isMenuOpen}
-            right="1"
-            top="-160"
-            items={menuItems}
+    <StyledMessageProps>
+      <StyledLeftSide>
+        <StyledIconItem onClick={() => setShowEmojiPicker((prev) => !prev)}>
+          <FaceSmileIcon />
+        </StyledIconItem>
+      </StyledLeftSide>
+
+      {showEmojiPicker && (
+        <StyledEmojiPicker ref={emojiRef}>
+          <EmojiPicker
+            autoFocusSearch={false}
+            theme={themeMode}
+            lazyLoadEmojis
+            onEmojiClick={handleEmojiClick}
           />
-          <StyledIconItem onClick={handleOpenMenu}>
-            <PaperClipIcon />
-          </StyledIconItem>
-        </StyledRightSide>
-      </StyledMessageProps>
-    </>
+        </StyledEmojiPicker>
+      )}
+
+      <StyledMessageInput>
+        <input
+          type="text"
+          placeholder="Type a message"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+      </StyledMessageInput>
+
+      <StyledRightSide>
+        <Menu
+          onClose={() => setIsMenuOpen(false)}
+          isOpen={isMenuOpen}
+          right="1"
+          top="-160"
+          items={menuItems}
+        />
+        <StyledIconItem onClick={() => setIsMenuOpen(true)}>
+          <PaperClipIcon />
+        </StyledIconItem>
+      </StyledRightSide>
+    </StyledMessageProps>
   );
 };
 
 export default MessageInput;
+
 
 const StyledMessageProps = styled.div`
   width: 100%;
@@ -67,6 +107,7 @@ const StyledMessageProps = styled.div`
   position: relative;
   user-select: none;
 `;
+
 const StyledMessageInput = styled.div`
   width: 100%;
   height: 100%;
@@ -99,6 +140,17 @@ const StyledIconItem = styled.div`
 const StyledLeftSide = styled.div`
   width: max-content;
 `;
+
 const StyledRightSide = styled.div`
   width: max-content;
+`;
+
+const StyledEmojiPicker = styled.div`
+  position: absolute;
+  bottom: 7rem;
+  left: 1rem;
+  z-index: 100;
+  box-shadow: var(--shadow-sm);
+  border-radius: 0.8rem;
+  overflow: hidden;
 `;

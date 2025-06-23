@@ -21,7 +21,8 @@ const Button: React.FC<ButtonProps> = ({
   link,
   target = "self",
 }) => {
-  const buttonContent = disabled ? <Loader /> : title;
+  // const buttonContent = disabled ? <Loader /> : title;
+  const buttonContent = title;
 
   const buttonElement = (
     <StyledButton
@@ -46,17 +47,17 @@ const Button: React.FC<ButtonProps> = ({
 export default Button;
 
 const BUTTON_COLORS = {
-  primary: { default: "#7515f5", hover: "#601fb5" },
-  danger: { default: "#E06363", hover: "#c74c4c" },
-  cancel: { default: "#2d2d31", hover: "#3c3c41" },
+  primary: { default: "var(--blue)", hover: "var(--dark-blue)" },
+  danger: { default: "#e83333", hover: "#c22626" },
+  cancel: { default: "#1e1e20", hover: "#3c3c41" },
 } as const;
 
 const StyledButton = styled.button<Pick<ButtonProps, "variant" | "disabled">>`
-  min-height: 4.5rem;
-  max-height: 4.5rem;
+  min-height: 4rem;
+  max-height: 4rem;
   border-radius: 0.8rem;
   border: none;
-  padding: 0 2.5rem;
+  padding: 0 2rem;
   font-size: 1.5rem;
   font-weight: 500;
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
@@ -67,10 +68,15 @@ const StyledButton = styled.button<Pick<ButtonProps, "variant" | "disabled">>`
   justify-content: center;
   background-color: ${({ variant = "primary" }) =>
     BUTTON_COLORS[variant].default};
-  color: #efeff0;
+  color: var(--light);
+  border: 1px solid
+    ${({ variant }) =>
+    variant === "cancel"
+      ? ({ theme }) => theme.border.secondary
+      : "transparent"};
 
   &:hover:not(:disabled) {
     background-color: ${({ variant = "primary" }) =>
-      BUTTON_COLORS[variant].hover};
+    BUTTON_COLORS[variant].hover};
   }
 `;

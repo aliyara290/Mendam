@@ -322,7 +322,7 @@ const StyledLastMessage = styled.div`
 `;
 
 const StyledUnreadBadge = styled.span`
-  background-color: var(--purple);
+  background-color: var(--blue);
   color: var(--light);
   font-size: var(--text-xs);
   font-weight: 500;

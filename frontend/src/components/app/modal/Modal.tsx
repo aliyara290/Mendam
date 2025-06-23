@@ -31,7 +31,6 @@ const ModalComponent: React.FC<ModalProps> = ({
     };
   }, [isOpen, onClose]);
 
-  // Handle backdrop click
   const handleBackdropClick = useCallback(
     (e: React.MouseEvent) => {
       if (e.target === e.currentTarget) {
@@ -63,11 +62,11 @@ export default ModalComponent;
 const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
-  background-color: #1a1a1ea2;
+  background-color: #00000039;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 10034567890987650;
   padding: 1rem;
 `;
 
@@ -75,14 +74,14 @@ const ModalContent = styled.div`
   position: relative;
   width: 100%;
   max-width: 60rem;
-  max-height: 90vh;
+  max-height: 70vh;
   background-color: ${({ theme }) => theme.background.thirdly};
   border-radius: 1rem;
-  border: 1px solid var(--b-c);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border: 1px solid ${({ theme }) => theme.border.primary};
 `;
 
 const ModalHeader = styled.div`
@@ -93,6 +92,7 @@ const ModalHeader = styled.div`
   border-bottom: 1px solid var(--b-c);
   background-color: ${({ theme }) => theme.background.thirdly};
   flex-shrink: 0;
+  /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); */
 `;
 
 const ModalTitle = styled.h2`
@@ -106,6 +106,7 @@ const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
+  padding-top: 0;
 `;
 
 const CloseButton = styled.button`
@@ -125,7 +126,7 @@ const CloseButton = styled.button`
   outline: none;
 
   &:hover {
-    background-color: rgba(74, 85, 101, 0.1);
+    background: ${({ theme }) => theme.background.primary};
     color: #9ca3af;
   }
 

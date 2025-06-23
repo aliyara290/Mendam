@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Avatar from "@app/avatar/Avatar";
 import { Cog8ToothIcon } from "@heroicons/react/24/outline";
 import QuickProfile from "./QuickProfile";
+import { Link } from "react-router-dom";
 
 interface StatusBarProps {}
 
@@ -37,7 +38,9 @@ const StatusBar: React.FC<StatusBarProps> = ({}) => {
               />
             </StyledUserAvatar>
             <StyledSettingIcon>
-              <Cog8ToothIcon />
+              <Link to={"/app/settings/profile"}>
+                <Cog8ToothIcon />
+              </Link>
             </StyledSettingIcon>
           </StyledStatusBarContainer>
         </StyledStatusBarContent>
@@ -92,16 +95,18 @@ const StyledUserAvatar = styled.div`
 `;
 
 const StyledSettingIcon = styled.div`
-  color: ${({ theme }) => theme.text.primary};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  svg {
-    width: 2.7rem;
-    transition: transform 0.6s ease;
-  }
-  &:hover svg {
-    transform: rotate(90deg);
+  a {
+    color: ${({ theme }) => theme.text.primary};
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    svg {
+      width: 2.7rem;
+      transition: transform 0.6s ease;
+    }
+    &:hover svg {
+      transform: rotate(90deg);
+    }
   }
 `;

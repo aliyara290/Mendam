@@ -7,7 +7,7 @@ import {
   ChatBubbleOvalLeftEllipsisIcon,
   PlusCircleIcon,
   UserGroupIcon,
-  UsersIcon,
+  UserPlusIcon,
 } from "@heroicons/react/24/solid";
 import { Link, useLocation } from "react-router-dom";
 
@@ -39,7 +39,7 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
             <Link to={"/app/friends"}>
               <StyledLink selected={location.pathname === "/app/friends"}>
                 <StyledLinkIcon>
-                  <UsersIcon />
+                  <UserPlusIcon />
                 </StyledLinkIcon>
               </StyledLink>
             </Link>
@@ -61,11 +61,14 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
                   </StyledGroupImage>
                 </StyledGroup>
               </Link>
-             
+
               <Link to={"/app/channel/345678"}>
                 <StyledGroup>
                   <StyledGroupImage>
-                    <img src="https://docs.imperium.plus/files/media-GRGQG-GFRFXRXG-PQQLL-WGRWM-GFRFGQQPLL-LLPXR-GFRFGQPXQWWM-X-QMGGQFRMWG" alt="wardd logo" />
+                    <img
+                      src="https://docs.imperium.plus/files/media-GRGQG-GFRFXRXG-PQQLL-WGRWM-GFRFGQQPLL-LLPXR-GFRFGQPXQWWM-X-QMGGQFRMWG"
+                      alt="wardd logo"
+                    />
                   </StyledGroupImage>
                 </StyledGroup>
               </Link>
@@ -175,7 +178,7 @@ const StyledLink = styled.div<StyledNavigationProps>`
     left: -1.5rem;
     width: 0.4rem;
     height: ${({ selected }) => (selected ? "100%" : "0.6rem")};
-    background-color: ${({ theme }) => theme.background.thirdly};
+    background-color: ${({ selected }) => (selected ? ({ theme }) => theme.text.secondary : ({ theme }) => theme.background.thirdly)};
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     transition: all 0.3s ease;
@@ -185,8 +188,8 @@ const StyledLink = styled.div<StyledNavigationProps>`
     background-color: ${({ theme }) => theme.text.secondary};
   }
   &:hover {
-    background-color: var(--purple);
-    color: var(--light);
+    /* background-color: var(--blue); */
+    /* color: var(--light); */
   }
 `;
 
@@ -222,7 +225,7 @@ const StyledAddBtn = styled.div`
   color: ${({ theme }) => theme.text.primary};
   cursor: pointer;
   &:hover {
-    background-color: var(--purple);
+    background-color: var(--blue);
     color: var(--light);
   }
 `;

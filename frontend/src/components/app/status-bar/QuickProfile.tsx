@@ -108,7 +108,7 @@ const StyledQuickProfile = styled.div<StyledQuickProfileProps>`
 const StyledPortfolioCover = styled.div`
   width: 100%;
   height: 8rem;
-  background: linear-gradient(35deg, var(--purple), #3c0287);
+  background: linear-gradient(35deg, var(--blue), #3c0287);
   position: relative;
   margin-bottom: 11rem;
 `;

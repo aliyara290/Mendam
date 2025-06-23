@@ -31,13 +31,16 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({}) => {
       icon: <UserIcon />,
       onClick: () => {
         setOpenPortfolio(true);
-        handleOpenMenu();
+        setIsMenuOpen(false);
       },
     },
     {
       label: "Block",
       icon: <NoSymbolIcon />,
-      onClick: () => alert("Reply"),
+      onClick: () => {
+        alert("Reply");
+        setIsMenuOpen(false);
+      },
     },
   ];
 

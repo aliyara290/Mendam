@@ -21,7 +21,7 @@ export interface Theme {
   buttons: {
     primary: string;
     secondary: string;
-    danger: string
+    danger: string;
   };
   status: {
     success: string;
@@ -37,5 +37,5 @@ export interface Theme {
 export interface ThemeContextType {
   theme: Theme;
   themeMode: ThemeMode;
-  toggleTheme: () => void;
+  switchTheme: (updatedTheme: ThemeMode) => void;
 }

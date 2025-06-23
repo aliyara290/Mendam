@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledLogoBg = styled.rect`
-  fill: #7515f5;
+  fill: #2492c2;
 `;
 
 const StyledLogo = styled.path`

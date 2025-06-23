@@ -12,7 +12,7 @@ const Logo = ({ width = 45, height = 45 }) => {
         <defs>
           <style>
             {`
-            .logo-dark { fill: var(--purple) }
+            .logo-dark { fill: var(--blue) }
           `}
           </style>
         </defs>

@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   type ReactNode,
+  useCallback,
 } from "react";
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import {
@@ -39,14 +40,14 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     localStorage.setItem("theme", themeMode);
   }, [themeMode]);
 
-  const toggleTheme = () => {
-    setThemeMode((prev) => (prev === "light" ? "dark" : "light"));
-  };
+  const switchTheme = (updatedTheme: ThemeMode) => {
+    setThemeMode(updatedTheme);
+  }
 
   const themeContextValue: ThemeContextType = {
     theme,
     themeMode,
-    toggleTheme,
+    switchTheme,
   };
 
   return (

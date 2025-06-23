@@ -80,7 +80,7 @@ export default Menu;
 // Styled components
 const StyledMenu = styled.div<StyledMenuProps>`
   min-width: 20rem;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 8px;
   padding: 0.5rem;
   overflow: hidden;
@@ -90,7 +90,7 @@ const StyledMenu = styled.div<StyledMenuProps>`
   right: ${({ right }) => (right ? `${right}%` : "unset")};
   bottom: ${({ bottom }) => (bottom ? `${bottom}%` : "unset")};
   z-index: 233546578;
-  border: 1px solid ${({ theme }) => theme.border.primary};
+  border: 1px solid ${({ theme }) => theme.border.secondary};
 `;
 
 const StyledMenuContainer = styled.div`
@@ -113,7 +113,7 @@ const StyledItem = styled.div`
   cursor: pointer;
   border-radius: 0.6rem;
   &:hover {
-    background-color: ${({ theme }) => theme.background.secondary};
+    background-color: ${({ theme }) => theme.background.thirdly};
   }
 `;
 
