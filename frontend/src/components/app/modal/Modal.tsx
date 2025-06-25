@@ -108,10 +108,11 @@ const ModalTitle = styled.h2`
 const ModalBody = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 2rem;
-  padding-top: 0;
+  margin: 2rem;
+  margin-top: 0;
   @media (max-width: 700px) {
-    padding: 1.5rem;
+    margin: 1.5rem;
+    margin-top: 0;
   }
 `;
 

@@ -6,7 +6,7 @@ interface SquareBtnProps {
   onClick?: () => void
 }
 
-const SquareBtn: React.FC<SquareBtnProps> = ({onClick}) => {
+const SquareBtn: React.FC<SquareBtnProps> = ({ onClick }) => {
   return (
     <>
       <StyledSquareBtn onClick={onClick}>
@@ -19,9 +19,6 @@ const SquareBtn: React.FC<SquareBtnProps> = ({onClick}) => {
 export default SquareBtn;
 
 const StyledSquareBtn = styled.div`
-  /* position: fixed ;
-  bottom: 2rem;
-  right: 2rem; */
   width: 4.5rem;
   height: 4.5rem;
   border-radius: 0.8rem;
@@ -43,5 +40,4 @@ const StyledSquareBtn = styled.div`
     width: 2.5rem;
     transition: all 0.2s ease-in-out;
   }
-  z-index: 345;
 `;

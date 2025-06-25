@@ -115,7 +115,6 @@ export default SettingNavigation;
 const StyledNavigation = styled.div`
   width: 100%;
   height: 100%;
-  max-width: 40rem;
   background-color: ${({ theme }) => theme.background.primary};
   border-left: 1px solid ${({ theme }) => theme.border.primary};
   @media (max-width: 700px) {

@@ -49,6 +49,7 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({
                       status="offline"
                       userName="Ali Yara"
                       showUserName
+                      size={35}
                     />
                     <StyledOptions>
                       <StyledOptionsItem>
@@ -112,7 +113,7 @@ const StyledSearchInput = styled.div`
   }
 `;
 const StyledSearchIcon = styled.div`
-  color: ${({ theme }) => theme.text.primary};
+  color: var(--light);
   /* padding: 1.5rem; */
   width: 7rem;
   height: 100%;

@@ -283,7 +283,7 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({ }) => {
                 <Menu
                   onClose={() => setOpenMenuChatId(null)}
                   isOpen={openMenuChatId === chat.id}
-                  right="0"
+                  right="1"
                   items={menuItems}
                 />
               </div>

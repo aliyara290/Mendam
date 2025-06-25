@@ -29,8 +29,9 @@ width: 100%;
 display: grid;
 grid-template-columns: repeat(8, 1fr);
   padding: 3rem;
+  padding-bottom: 2rem;
    @media (max-width: 700px) {
-    padding: 2rem 2rem 2rem 1rem;
+    padding: 2rem 2rem 1rem 1rem;
   }
 /* padding-bottom: 5rem; */
 
@@ -43,6 +44,7 @@ grid-column: span 1 / span 1;
 display: flex;
 align-items: center;
 justify-content: center;
+cursor: pointer;
 &:active {
     background-color: ${({ theme }) => theme.background.thirdly};
 }
@@ -50,6 +52,9 @@ svg {
     width: 2.5rem;
     color: ${({ theme }) => theme.text.secondary};
 }
+@media (min-width: 700px) {
+    display: none;
+  }
 `
 const StyledHeadingTitle = styled.div`
 width: 100%;
@@ -57,6 +62,9 @@ grid-column: span 6 / span 6;
 display: flex;
 align-items: center;
 justify-content: center;
+@media (min-width: 700px) {
+    justify-content: start;
+  }
   h3 {
     font-weight: 500;
     font-size: var(--text-xxl);
