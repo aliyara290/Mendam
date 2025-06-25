@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { UserIcon, UserGroupIcon } from "@heroicons/react/24/solid";
+import { Link } from "react-router-dom";
 
 type UserStatus = "online" | "offline" | "idle";
 
@@ -58,7 +59,7 @@ const Avatar: React.FC<AvatarProps> = ({
   if (link) {
     return (
       <StyledUserAvatar>
-        <a href="#">{avatarContent}</a>
+        <Link to="#">{avatarContent}</Link>
         {showUserName && (
           <StyledUserName>
             <h5>{userName}</h5>
@@ -170,7 +171,7 @@ const StyledOfflineIndicator = styled.div`
   transform: translate(-50%, -50%);
   width: 0.5rem;
   height: 0.5rem;
-  background-color: var(--gray);
+  background-color: ${({ theme }) => theme.text.thirdly};
   border-radius: 50%;
 `;
 

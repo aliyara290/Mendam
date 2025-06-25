@@ -1,4 +1,14 @@
-export type ThemeMode = "dark" | "light";
+export type ThemeMode =
+  | "dark"
+  | "light"
+  | "clean-light"
+  | "minimal-white"
+  | "modern-sky"
+  | "soft-blush"
+  | "clean-dark"
+  | "modern-charcoal"
+  | "neo-dark"
+  | "glass-night";
 
 export interface Theme {
   mode: ThemeMode;

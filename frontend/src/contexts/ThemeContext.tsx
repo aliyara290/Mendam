@@ -4,7 +4,6 @@ import React, {
   useState,
   useEffect,
   type ReactNode,
-  useCallback,
 } from "react";
 import { ThemeProvider as StyledThemeProvider } from "styled-components";
 import {
@@ -12,7 +11,34 @@ import {
   type Theme,
   type ThemeContextType,
 } from "@/types/Theme";
-import { DarkTheme, LightTheme } from "@/themes";
+import {
+  DarkTheme,
+  LightTheme,
+  CleanLightTheme,
+  MinimalWhiteTheme,
+  ModernSkyTheme,
+  SoftBlushTheme,
+  CleanDarkTheme,
+  ModernCharcoalTheme,
+  NeoDarkTheme,
+  GlassNightTheme,
+} from "@/themes";
+
+const themes: Record<ThemeMode, Theme> = {
+  "dark": DarkTheme,
+  "light": LightTheme,
+  "clean-light": CleanLightTheme,
+  "minimal-white": MinimalWhiteTheme,
+  "modern-sky": ModernSkyTheme,
+  "soft-blush": SoftBlushTheme,
+  "clean-dark": CleanDarkTheme,
+  "modern-charcoal": ModernCharcoalTheme,
+  "neo-dark": NeoDarkTheme,
+  "glass-night": GlassNightTheme,
+};
+
+
+const validThemeModes = Object.keys(themes) as ThemeMode[];
 
 export const ThemeContext = createContext<ThemeContextType | undefined>(
   undefined
@@ -25,24 +51,28 @@ interface ThemeProviderProps {
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [themeMode, setThemeMode] = useState<ThemeMode>(() => {
     const savedTheme = localStorage.getItem("theme") as ThemeMode;
-    if (savedTheme && (savedTheme === "dark" || savedTheme === "light")) {
+    if (savedTheme && validThemeModes.includes(savedTheme)) {
       return savedTheme;
     }
 
     return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+      ? "glass-night"
+      : "minimal-white";
   });
 
-  const theme = themeMode === "light" ? LightTheme : DarkTheme;
+  const theme = themes[themeMode] || DarkTheme;
 
   useEffect(() => {
     localStorage.setItem("theme", themeMode);
   }, [themeMode]);
 
   const switchTheme = (updatedTheme: ThemeMode) => {
-    setThemeMode(updatedTheme);
-  }
+    if (validThemeModes.includes(updatedTheme)) {
+      setThemeMode(updatedTheme);
+    } else {
+      console.warn(`Invalid theme: ${updatedTheme}`);
+    }
+  };
 
   const themeContextValue: ThemeContextType = {
     theme,

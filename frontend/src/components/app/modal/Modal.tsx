@@ -67,7 +67,7 @@ const ModalBackdrop = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 10034567890987650;
-  padding: 1rem;
+  padding: 1.5rem;
 `;
 
 const ModalContent = styled.div`
@@ -92,6 +92,9 @@ const ModalHeader = styled.div`
   border-bottom: 1px solid var(--b-c);
   background-color: ${({ theme }) => theme.background.thirdly};
   flex-shrink: 0;
+  @media (max-width: 700px) {
+    padding: 1.5rem;
+  }
   /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); */
 `;
 
@@ -107,6 +110,9 @@ const ModalBody = styled.div`
   overflow-y: auto;
   padding: 2rem;
   padding-top: 0;
+  @media (max-width: 700px) {
+    padding: 1.5rem;
+  }
 `;
 
 const CloseButton = styled.button`

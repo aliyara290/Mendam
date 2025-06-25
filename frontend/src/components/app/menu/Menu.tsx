@@ -4,6 +4,7 @@ import styled from "styled-components";
 export interface MenuItemProps {
   label: string;
   icon?: React.ReactNode;
+  danger?: boolean;
   onClick: () => void;
 }
 
@@ -47,10 +48,6 @@ const Menu: React.FC<MenuProps> = ({
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) {
-    return null;
-  }
-
   return (
     <StyledMenu
       ref={menuRef}
@@ -58,13 +55,14 @@ const Menu: React.FC<MenuProps> = ({
       left={left}
       right={right}
       top={top}
+      isOpen={isOpen} // Pass isOpen to StyledMenu for visibility control
     >
       <StyledMenuContainer>
-        <StyledItemsList>
+        <StyledItemsList isOpen={isOpen}>
           {items.map((item, index) => (
-            <StyledItem key={index} onClick={item.onClick}>
-              {item.icon && <StyledIcon>{item.icon}</StyledIcon>}
-              <StyledLabel>
+            <StyledItem isDanger={item.danger} key={index} onClick={item.onClick}>
+              {item.icon && <StyledIcon isDanger={item.danger}>{item.icon}</StyledIcon>}
+              <StyledLabel isDanger={item.danger}>
                 <span>{item.label}</span>
               </StyledLabel>
             </StyledItem>
@@ -77,12 +75,21 @@ const Menu: React.FC<MenuProps> = ({
 
 export default Menu;
 
+interface StyledItemsListProps {
+  isOpen?: boolean;
+}
+
+interface StyledIconProps {
+  isDanger?: boolean;
+}
+
+interface StyledMenuPropsWithOpen extends StyledMenuProps {
+  isOpen?: boolean;
+}
+
 // Styled components
-const StyledMenu = styled.div<StyledMenuProps>`
+const StyledMenu = styled.div<StyledMenuPropsWithOpen>`
   min-width: 20rem;
-  background-color: ${({ theme }) => theme.background.secondary};
-  border-radius: 8px;
-  padding: 0.5rem;
   overflow: hidden;
   position: absolute;
   top: ${({ top }) => (top ? `${top}%` : "unset")};
@@ -90,7 +97,11 @@ const StyledMenu = styled.div<StyledMenuProps>`
   right: ${({ right }) => (right ? `${right}%` : "unset")};
   bottom: ${({ bottom }) => (bottom ? `${bottom}%` : "unset")};
   z-index: 233546578;
-  border: 1px solid ${({ theme }) => theme.border.secondary};
+  
+  /* Control visibility and pointer events */
+  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+  pointer-events: ${({ isOpen }) => (isOpen ? "auto" : "none")};
+  transition: opacity 0.2s ease;
 `;
 
 const StyledMenuContainer = styled.div`
@@ -98,13 +109,18 @@ const StyledMenuContainer = styled.div`
   height: max-content;
 `;
 
-const StyledItemsList = styled.div`
+const StyledItemsList = styled.div<StyledItemsListProps>`
+  transform: ${({ isOpen }) => (isOpen ? "translateY(0)" : "translateY(-100%)")};
+  background-color: ${({ theme }) => theme.background.thirdly};
+  border-radius: 8px;
+  padding: 0.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
+  transition: transform 0.2s ease;
 `;
 
-const StyledItem = styled.div`
+const StyledItem = styled.div<StyledIconProps>`
   width: 100%;
   display: flex;
   align-items: center;
@@ -112,23 +128,26 @@ const StyledItem = styled.div`
   padding: 1rem 3rem 1rem 0.6rem;
   cursor: pointer;
   border-radius: 0.6rem;
+  transition: all 0.2s ease;
+  
   &:hover {
-    background-color: ${({ theme }) => theme.background.thirdly};
+    background-color: ${({ isDanger }) => (isDanger ? "#ff99a333" : ({ theme }) => theme.background.secondary)};
   }
 `;
 
-const StyledIcon = styled.div`
-  color: ${({ theme }) => theme.text.thirdly};
+const StyledIcon = styled.div<StyledIconProps>`
+  color: ${({ isDanger }) => (isDanger ? "#ff99a4" : ({ theme }) => theme.text.primary)};
   display: flex;
   align-items: center;
+  
   svg {
     width: 1.6rem;
   }
 `;
 
-const StyledLabel = styled.div`
+const StyledLabel = styled.div<StyledIconProps>`
   span {
     font-size: var(--text-md);
-    color: ${({ theme }) => theme.text.thirdly};
+    color: ${({ isDanger }) => (isDanger ? "#ff99a4" : ({ theme }) => theme.text.primary)};
   }
 `;

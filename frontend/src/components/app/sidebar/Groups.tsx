@@ -35,6 +35,7 @@ const Groups: React.FC<FriendsProps> = ({}) => {
                 userName="DXC Tecknology"
                 showUserName
                 isGroup
+                size={35}
               />
               <StyledOptions>
                 <StyledOptionsItem>
@@ -76,17 +77,32 @@ const StyledTopHeader = styled.div`
   flex-direction: column;
   gap: 2rem;
   z-index: 20;
+    @media (max-width: 1000px) {
+    padding: 1.5rem 1rem;
+  }
+  @media (max-width: 700px) {
+    padding: 2rem 1.5rem;
+  }
 `;
 
 const StyledSBarRow = styled.div`
   display: flex;
   align-items: center;
   gap: 1.5rem;
+   @media (max-width: 1000px) {
+   gap: 1rem;
+  }
+   @media (max-width: 700px) {
+   gap: 1.5rem;
+  }
 `;
 const StyledChatsList = styled.div`
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
+  @media (max-width: 1000px) {
+   padding: 0;
+  }
 `;
 
 const StyledChatItem = styled.div`
@@ -101,6 +117,13 @@ const StyledChatItemContainer = styled.a`
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.1s ease-in-out;
+  @media (max-width: 1000px) {
+    padding: 1rem;
+    border-radius: 0;
+  }
+@media (max-width: 700px) {
+    padding: 1rem 1.5rem;
+  }
   &:hover {
     background-color: ${({ theme }) => theme.background.secondary};
   }

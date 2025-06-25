@@ -6,7 +6,7 @@ import SettingLayout from "@app/settings/layout/Layout";
 import DirectMessages from "@app/sidebar/DirectMessages";
 import Friends from "@app/sidebar/Friends";
 import Groups from "@app/sidebar/Groups";
-import Channel from "@app/sidebar/Channel";
+import Channel from "@/components/app/sidebar/Workspace";
 import MyAccount from "@app/settings/pages/MyAccount";
 import Profile from "@/components/app/settings/pages/Profile";
 import Appearance from "@/components/app/settings/pages/Appearance";

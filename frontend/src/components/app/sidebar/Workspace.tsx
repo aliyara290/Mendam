@@ -145,8 +145,10 @@ const StyledTopHeader = styled.div`
 `;
 
 const StyledTeamsContent = styled.div`
-  width: 100%;
-  padding: 0 1.5rem 1.5rem;
+  /* width: 100%; */
+  border-top: 0.5px solid ${({ theme }) => theme.border.primary};
+  margin: 0 1.5rem 1.5rem 1.5rem;
+  padding-top: 1.5rem;
 `;
 
 const StyledTeamsList = styled.ul`

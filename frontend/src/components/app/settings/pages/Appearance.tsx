@@ -2,56 +2,75 @@ import React from "react";
 import styled from "styled-components";
 import { CheckIcon } from "@heroicons/react/16/solid";
 import { useTheme } from "@/contexts/ThemeContext";
+import {
+  DarkTheme,
+  LightTheme,
+  CleanLightTheme,
+  MinimalWhiteTheme,
+  ModernSkyTheme,
+  SoftBlushTheme,
+  CleanDarkTheme,
+  ModernCharcoalTheme,
+  NeoDarkTheme,
+  GlassNightTheme,
+} from "@/themes";
+import Heading from "../heading/Heading";
+import { useSettings } from "@/contexts/openSettingContext";
 
-const Appearance: React.FC = ({ }) => {
-  const { theme, themeMode, switchTheme } = useTheme();
+const themeOptions = {
+  "minimal-white": MinimalWhiteTheme,
+  "glass-night": GlassNightTheme,
+  "light": LightTheme,
+  "clean-light": CleanLightTheme,
+  "modern-sky": ModernSkyTheme,
+  "soft-blush": SoftBlushTheme,
+  "dark": DarkTheme,
+  "clean-dark": CleanDarkTheme,
+  "modern-charcoal": ModernCharcoalTheme,
+  "neo-dark": NeoDarkTheme,
+};
+
+const Appearance: React.FC = () => {
+  const { themeMode, switchTheme } = useTheme();
+  const { setOpenSettings } = useSettings();
+
   return (
-    <>
-      <StyledAppearance>
-        <StyledHeading>
-          <h3>Appearance </h3>
-        </StyledHeading>
-        <StyledAppearanceContent>
-          <StyledOptionItem>
-            <StyledItemHeading>
-              <h5>Theme</h5>
-              <p>Adjust the color of the interface for better visibility.</p>
-            </StyledItemHeading>
-            <StyledItemContent>
-              <StyledThemesList>
-                <StyledThemeItem
-                  onClick={() => switchTheme("light")}
-                  selected={themeMode === "light"}
-                  mode={"var(--light)"}
-                >
-                  {themeMode === "light" && (
+    <StyledAppearance>
+      <Heading onClick={() => setOpenSettings(false)} title="Appearance" />
+      <StyledAppearanceContent>
+        <StyledOptionItem>
+          <StyledItemHeading>
+            <h5>Theme</h5>
+            <p>Adjust the color of the interface for better visibility.</p>
+          </StyledItemHeading>
 
-                    <StyledSelected>
-                      <CheckIcon />
-                    </StyledSelected>
-                  )}
-                </StyledThemeItem>
+          <StyledItemContent>
+            <StyledThemesList>
+              {Object.entries(themeOptions).map(([key, value]) => (
                 <StyledThemeItem
-                  onClick={() => switchTheme("dark")}
-                  selected={themeMode === "dark"}
-                  mode={"var(--primary)"}
+                  key={key}
+                  onClick={() => switchTheme(key as keyof typeof themeOptions)}
+                  selected={themeMode === key}
+                  mode={value.background.primary}
+                  title={key}
                 >
-                  {themeMode === "dark" && (
+                  {themeMode === key && (
                     <StyledSelected>
                       <CheckIcon />
                     </StyledSelected>
                   )}
                 </StyledThemeItem>
-              </StyledThemesList>
-            </StyledItemContent>
-          </StyledOptionItem>
-        </StyledAppearanceContent>
-      </StyledAppearance>
-    </>
+              ))}
+            </StyledThemesList>
+          </StyledItemContent>
+        </StyledOptionItem>
+      </StyledAppearanceContent>
+    </StyledAppearance>
   );
 };
 
 export default Appearance;
+
 
 const StyledAppearance = styled.div`
   width: 100%;
@@ -73,6 +92,10 @@ const StyledAppearanceContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3rem;
+  padding: 3rem;
+   @media (max-width: 700px) {
+    padding: 2rem;
+  }
 `;
 
 const StyledItemHeading = styled.div`
@@ -102,15 +125,24 @@ const StyledOptionItem = styled.div`
 `;
 
 const StyledItemContent = styled.div`
-  width: 100%;
+  width: 40rem;
   display: flex;
   gap: 1.5rem;
+  @media (max-width: 700px) {
+    width: 100%;
+  }
 `;
 const StyledThemesList = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 1.5rem;
   padding-top: 1rem;
+  @media (max-width: 700px) {
+      justify-content: center;
+  gap: 1rem;
+
+    }
 `;
 
 interface StyledThemeItemProps {
@@ -123,8 +155,8 @@ const StyledThemeItem = styled.div<StyledThemeItemProps>`
   height: 4.5rem;
   border-radius: 100%;
   background-color: ${({ mode }) => mode};
-  border: 3px solid
-    ${({ selected }) => (selected ? "var(--blue)" : "transparent")};
+  border: ${({ selected }) => (selected ? "3px" : "1px")} solid
+    ${({ selected }) => (selected ? "var(--blue)" : ({ theme }) => theme.border.primary)};
   position: relative;
   cursor: pointer;
   &:hover {

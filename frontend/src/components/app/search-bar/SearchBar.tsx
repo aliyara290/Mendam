@@ -74,6 +74,9 @@ const StyledSearchIcon = styled.div`
     padding: 0.2rem 0.5rem;
     border-radius: 3px;
     border: 1px solid ${({ theme }) => theme.text.placeholder};
+    @media (max-width: 1000px) {
+    display: none;
+  }
   }
   svg {
     width: 2.1rem;

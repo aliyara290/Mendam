@@ -1,14 +1,17 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "../../ui/button/Button";
+import { useSettings } from "@/contexts/openSettingContext";
+import Heading from "../heading/Heading";
 
-const MyAccount: React.FC = ({}) => {
+
+const MyAccount: React.FC = ({ }) => {
+  const { setOpenSettings } = useSettings();
+
   return (
     <>
       <StyledMyAccount>
-        <StyledHeading>
-          <h3>My Account</h3>
-        </StyledHeading>
+        <Heading onClick={() => setOpenSettings(false)} title="Account" />
         <StyledMyAccountContent>
           <StyledOptionItem>
             <StyledItemHeading>
@@ -59,6 +62,11 @@ const StyledMyAccountContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 3rem;
+  gap: 3rem;
+  padding: 3rem;
+   @media (max-width: 700px) {
+    padding: 2rem;
+  }
 `;
 
 const StyledItemHeading = styled.div`

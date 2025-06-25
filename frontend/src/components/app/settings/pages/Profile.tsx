@@ -2,14 +2,18 @@ import React from "react";
 import styled from "styled-components";
 import Button from "../../ui/button/Button";
 import { CameraIcon } from "@heroicons/react/24/outline";
+import { useSettings } from "@/contexts/openSettingContext";
+import Heading from "../heading/Heading";
 
-const Profile: React.FC = ({}) => {
+
+const Profile: React.FC = ({ }) => {
+  const { setOpenSettings } = useSettings();
+
   return (
     <>
       <StyledProfile>
-        <StyledHeading>
-          <h3>Profile</h3>
-        </StyledHeading>
+        <Heading onClick={() => setOpenSettings(false)} title="Profile" />
+
         <StyledProfileContent>
           <StyledLeftPart>
             <StyledUpdateAvatar>
@@ -105,6 +109,14 @@ const StyledProfileContent = styled.div`
   grid-template-columns: repeat(2, 1fr);
   flex-direction: column;
   gap: 3rem;
+  gap: 3rem;
+  padding: 3rem;
+   @media (max-width: 1000px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+   @media (max-width: 700px) {
+    padding: 2rem;
+  }
 `;
 
 const StyledUpdateAvatar = styled.div`
@@ -192,18 +204,20 @@ const StyledTextarea = styled.textarea`
 const StyledRightPart = styled.div`
   width: 100%;
   height: max-content;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.primary};
   border: 1px solid ${({ theme }) => theme.border.primary};
   border-radius: 0.8rem;
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.border.secondary};
-
+@media (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const StyledPortfolioCover = styled.div`
   width: 100%;
   height: 10rem;
-  background: linear-gradient(35deg, var(--blue), #3c0287);
+  background: var(--blue);
   position: relative;
   margin-bottom: 14rem;
 `;
@@ -223,7 +237,7 @@ const StyledAvatarPic = styled.div`
   width: 11rem;
   height: 11rem;
   border-radius: 100%;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.primary};
   padding: 1rem;
   position: relative;
 `;
@@ -231,7 +245,7 @@ const StyledBar = styled.div`
   width: 135%;
   height: 4rem;
   border-radius: 3rem;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.primary};
   position: absolute;
   top: 50%;
   left: 50%;

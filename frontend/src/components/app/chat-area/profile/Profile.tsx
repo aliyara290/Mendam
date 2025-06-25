@@ -93,7 +93,7 @@ const StyledPortfolio = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100lvh;
+  height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -136,7 +136,7 @@ const StyledCloseModal = styled.div`
 const StyledPortfolioCover = styled.div`
   width: 100%;
   height: 13rem;
-  background: linear-gradient(35deg, var(--blue), #3c0287);
+  background: var(--blue);
   position: relative;
   margin-bottom: 16rem;
 `;

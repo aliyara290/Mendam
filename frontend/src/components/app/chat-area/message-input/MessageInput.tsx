@@ -10,7 +10,7 @@ const MessageInput: React.FC = () => {
   const [message, setMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const {themeMode} = useTheme();
+  const { themeMode } = useTheme();
 
   const emojiRef = useRef<HTMLDivElement>(null);
 
@@ -50,6 +50,8 @@ const MessageInput: React.FC = () => {
     },
   ];
 
+  const checkTheme = themeMode === "light" || themeMode === "clean-light" || themeMode === "minimal-white" || themeMode === "modern-sky" || themeMode === "soft-blush" ? "light" : "dark";
+
   return (
     <StyledMessageProps>
       <StyledLeftSide>
@@ -58,16 +60,16 @@ const MessageInput: React.FC = () => {
         </StyledIconItem>
       </StyledLeftSide>
 
-      {showEmojiPicker && (
-        <StyledEmojiPicker ref={emojiRef}>
+      <StyledEmojiPicker ref={emojiRef} isOpen={showEmojiPicker}>
+        <StyledEmojiPickerContent isOpen={showEmojiPicker}>
           <EmojiPicker
             autoFocusSearch={false}
-            theme={themeMode}
+            theme={checkTheme}
             lazyLoadEmojis
             onEmojiClick={handleEmojiClick}
           />
-        </StyledEmojiPicker>
-      )}
+        </StyledEmojiPickerContent>
+      </StyledEmojiPicker>
 
       <StyledMessageInput>
         <input
@@ -96,6 +98,9 @@ const MessageInput: React.FC = () => {
 
 export default MessageInput;
 
+interface StyledItemsListProps {
+  isOpen?: boolean;
+}
 
 const StyledMessageProps = styled.div`
   width: 100%;
@@ -106,6 +111,9 @@ const StyledMessageProps = styled.div`
   background-color: ${({ theme }) => theme.background.thirdly};
   position: relative;
   user-select: none;
+  @media (max-width: 1000px) {
+    height: 5.5rem;
+  }
 `;
 
 const StyledMessageInput = styled.div`
@@ -114,7 +122,7 @@ const StyledMessageInput = styled.div`
   input {
     width: 100%;
     height: 100%;
-    padding: 0 2rem 0 0;
+    padding: 0;
     font-size: var(--text-md);
     background-color: transparent;
     border: none;
@@ -135,6 +143,10 @@ const StyledIconItem = styled.div`
   svg {
     width: 2.3rem;
   }
+
+  @media (max-width: 1000px) {
+    padding: 0 1.5rem;
+  }
 `;
 
 const StyledLeftSide = styled.div`
@@ -145,7 +157,7 @@ const StyledRightSide = styled.div`
   width: max-content;
 `;
 
-const StyledEmojiPicker = styled.div`
+const StyledEmojiPicker = styled.div<StyledItemsListProps>`
   position: absolute;
   bottom: 7rem;
   left: 1rem;
@@ -153,4 +165,14 @@ const StyledEmojiPicker = styled.div`
   box-shadow: var(--shadow-sm);
   border-radius: 0.8rem;
   overflow: hidden;
+  
+  /* Control visibility and interaction */
+  opacity: ${({ isOpen }) => (isOpen ? 1 : 0)};
+  pointer-events: ${({ isOpen }) => (isOpen ? "auto" : "none")};
+  transform: ${({ isOpen }) => (isOpen ? "translateY(0)" : "translateY(10px)")};
+  transition: opacity 0.3s ease, transform 0.3s ease;
+`;
+
+const StyledEmojiPickerContent = styled.div<StyledItemsListProps>`
+  width: 100%;
 `;
