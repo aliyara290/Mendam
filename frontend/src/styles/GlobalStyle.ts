@@ -34,13 +34,14 @@ body {
 ${Variables}
 
 ::-moz-selection { 
-    color: var(--dark-purple);
-    background: var(--purple);
+    color: var(--light);
+    background: var(--blue);
 }
 
 ::selection {
-    color: var(--dark-purple);
-    background: var(--purple);
+    color: var(--light);
+    background: var(--blue);
+
 }
 
 ::-webkit-scrollbar {

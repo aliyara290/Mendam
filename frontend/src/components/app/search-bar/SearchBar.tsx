@@ -48,7 +48,7 @@ const StyledSearchInput = styled.div`
   width: 100%;
   height: 100%;
   input {
-    padding: 0 0 0 1.5rem ;
+    padding: 0 0 0 1.5rem;
     width: 100%;
     height: 100%;
     background: transparent;
@@ -74,6 +74,9 @@ const StyledSearchIcon = styled.div`
     padding: 0.2rem 0.5rem;
     border-radius: 3px;
     border: 1px solid ${({ theme }) => theme.text.placeholder};
+    @media (max-width: 1000px) {
+    display: none;
+  }
   }
   svg {
     width: 2.1rem;

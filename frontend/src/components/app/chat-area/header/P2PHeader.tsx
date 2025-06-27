@@ -5,15 +5,17 @@ import {
   Bars3BottomRightIcon,
   NoSymbolIcon,
   PhoneIcon,
+  TrashIcon,
   UserIcon,
   VideoCameraIcon,
+  XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Profile from "@app/chat-area/profile/Profile";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 
-interface P2PHeaderProps {}
+interface P2PHeaderProps { }
 
-const P2PHeader: React.FC<P2PHeaderProps> = ({}) => {
+const P2PHeader: React.FC<P2PHeaderProps> = ({ }) => {
   const [openPortfolio, setOpenPortfolio] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
@@ -31,13 +33,31 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({}) => {
       icon: <UserIcon />,
       onClick: () => {
         setOpenPortfolio(true);
-        handleOpenMenu();
+        setIsMenuOpen(false);
       },
     },
     {
       label: "Block",
       icon: <NoSymbolIcon />,
-      onClick: () => alert("Reply"),
+      onClick: () => {
+        alert("Reply");
+        setIsMenuOpen(false);
+      },
+    },
+    {
+      label: "Clear messages",
+      icon: <XMarkIcon />,
+      onClick: () => {
+        setIsMenuOpen(false);
+      },
+    },
+    {
+      label: "Delete",
+      icon: <TrashIcon />,
+      danger: true,
+      onClick: () => {
+        setIsMenuOpen(false);
+      },
     },
   ];
 
@@ -55,7 +75,7 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({}) => {
           />
         </StyledLeftPart>
         <StyledRightPart>
-          <StyledCall>
+          {/* <StyledCall>
             <StyledIcon>
               <VideoCameraIcon />
             </StyledIcon>
@@ -63,7 +83,7 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({}) => {
             <StyledIcon>
               <PhoneIcon />
             </StyledIcon>
-          </StyledCall>
+          </StyledCall> */}
           <StyledHamburgerIcon onClick={handleOpenMenu}>
             <Bars3BottomRightIcon />
           </StyledHamburgerIcon>
@@ -92,6 +112,9 @@ const StyledP2PHeader = styled.header`
   align-items: center;
   justify-content: space-between;
   position: relative;
+  @media (max-width: 1000px) {
+    padding: 0.5rem 1rem;
+  }
 `;
 
 const StyledLeftPart = styled.div`
@@ -114,7 +137,7 @@ const StyledRightPart = styled.div`
 const StyledCall = styled.div`
   width: max-content;
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.background.primary};
+  background-color: ${({ theme }) => theme.background.thirdly};
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -123,7 +146,7 @@ const StyledCall = styled.div`
 const StyledLine = styled.div`
   width: 1px;
   height: 2rem;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
 `;
 
 const StyledIcon = styled.div`
@@ -134,10 +157,10 @@ const StyledIcon = styled.div`
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  color: ${({ theme }) => theme.text.placeholder};
+  color: ${({ theme }) => theme.text.thirdly};
   &:hover {
     color: ${({ theme }) => theme.text.primary};
-    background-color: ${({ theme }) => theme.background.thirdly};
+    background-color: ${({ theme }) => theme.background.primary};
   }
   svg {
     width: 2.2rem;

@@ -1,4 +1,14 @@
-export type ThemeMode = "dark" | "light";
+export type ThemeMode =
+  | "dark"
+  | "light"
+  | "clean-light"
+  | "minimal-white"
+  | "modern-sky"
+  | "soft-blush"
+  | "clean-dark"
+  | "modern-charcoal"
+  | "neo-dark"
+  | "glass-night";
 
 export interface Theme {
   mode: ThemeMode;
@@ -21,7 +31,7 @@ export interface Theme {
   buttons: {
     primary: string;
     secondary: string;
-    danger: string
+    danger: string;
   };
   status: {
     success: string;
@@ -37,5 +47,5 @@ export interface Theme {
 export interface ThemeContextType {
   theme: Theme;
   themeMode: ThemeMode;
-  toggleTheme: () => void;
+  switchTheme: (updatedTheme: ThemeMode) => void;
 }

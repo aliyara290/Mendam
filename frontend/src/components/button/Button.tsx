@@ -69,12 +69,12 @@ const StyledButton = styled.button<StyledButtonProps>`
   padding: 1.4rem 4rem;
   border-radius: 30px;
   background-color: ${({ bg, outline }) =>
-    bg ? `var(--${bg})` : outline ? "transparent" : "var(--purple)"};
+    bg ? `var(--${bg})` : outline ? "transparent" : "var(--blue)"};
   font-size: ${({ fz }) => (fz ? `var(--text-${fz})` : "var(--text-lg)")};
   border: 2px solid
-    ${({ outline }) => (outline ? `var(--purple)` : "transparent")};
+    ${({ outline }) => (outline ? `var(--blue)` : "transparent")};
   color: ${({ color, outline }) =>
-    color ? `var(--${color})` : outline ? "var(--purple)" : "var(--light)"};
+    color ? `var(--${color})` : outline ? "var(--blue)" : "var(--light)"};
   display: flex;
   align-items: center;
   gap: 4px;
@@ -84,16 +84,16 @@ const StyledButton = styled.button<StyledButtonProps>`
       hoverBg
         ? `var(--${hoverBg})`
         : outline
-        ? "var(--purple)"
+        ? "var(--blue)"
         : "var(--light)"};
     color: ${({ hoverColor, outline }) =>
       hoverColor
         ? `var(--${hoverColor})`
         : outline
         ? "var(--light)"
-        : "var(--purple)"};
+        : "var(--blue)"};
     border: 2px solid
-      ${({ outline }) => (outline ? `var(--purple)` : "var(--purple)")};
+      ${({ outline }) => (outline ? `var(--blue)` : "var(--blue)")};
   }
   text-decoration: none;
   font-weight: 600;

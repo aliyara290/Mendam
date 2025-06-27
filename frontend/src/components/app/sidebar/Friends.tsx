@@ -8,11 +8,11 @@ import {
   ChatBubbleOvalLeftEllipsisIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
-import ModalComponent from "@app/modal/Modal";
+import AddFriendModal from "./modals/AddFriendModal";
 
-interface FriendsProps {}
+interface FriendsProps { }
 
-const Friends: React.FC<FriendsProps> = ({}) => {
+const Friends: React.FC<FriendsProps> = ({ }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const handleCloseModale = () => {
@@ -37,6 +37,7 @@ const Friends: React.FC<FriendsProps> = ({}) => {
                 userName="Ali Yara"
                 showStatusCircle
                 showUserName
+                size={35}
               />
               <StyledOptions>
                 <StyledOptionsItem>
@@ -50,7 +51,7 @@ const Friends: React.FC<FriendsProps> = ({}) => {
           </StyledChatItem>
         ))}
       </StyledChatsList>
-      <ModalComponent 
+      <AddFriendModal
         title="Add new friend"
         onClose={handleCloseModale}
         isOpen={isModalOpen}
@@ -81,17 +82,32 @@ const StyledTopHeader = styled.div`
   flex-direction: column;
   gap: 2rem;
   z-index: 20;
+  @media (max-width: 1000px) {
+    padding: 1.5rem 1rem;
+  }
+  @media (max-width: 700px) {
+    padding: 2rem 1.5rem;
+  }
 `;
 
 const StyledSBarRow = styled.div`
   display: flex;
   align-items: center;
   gap: 1.5rem;
+   @media (max-width: 1000px) {
+   gap: 1rem;
+  }
+   @media (max-width: 700px) {
+   gap: 1.5rem;
+  }
 `;
 const StyledChatsList = styled.div`
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
+  @media (max-width: 1000px) {
+   padding: 0;
+  }
 `;
 
 const StyledChatItem = styled.div`
@@ -106,8 +122,20 @@ const StyledChatItemContainer = styled.div`
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.1s ease-in-out;
-  &:hover {
-    background-color: ${({ theme }) => theme.background.secondary};
+  @media (max-width: 1000px) {
+    padding: 1rem;
+    border-radius: 0;
+  }
+  @media (max-width: 700px) {
+    padding: 1rem 1.5rem;
+    &:active {
+        background-color: ${({ theme }) => theme.background.thirdly}; 
+    }
+  }
+  @media (min-width: 700px) {
+    &:hover {
+      background-color: ${({ theme }) => theme.background.secondary};
+    }
   }
 `;
 const StyledOptions = styled.div`

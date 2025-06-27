@@ -92,11 +92,11 @@ interface StyledQuickProfileProps {
 const StyledQuickProfile = styled.div<StyledQuickProfileProps>`
   position: absolute;
   left: 1.5rem;
-  top: ${({ isOpen }) => (isOpen ? "-30.5rem" : "30.5rem")};
+  top: ${({ isOpen }) => (isOpen ? "-31rem" : "31rem")};
   width: 25rem;
   /* height: 30rem; */
   border-radius: 8px;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
   z-index: 456566;
   overflow: hidden;
     border: 1px solid ${({ theme }) => theme.border.primary};
@@ -108,7 +108,7 @@ const StyledQuickProfile = styled.div<StyledQuickProfileProps>`
 const StyledPortfolioCover = styled.div`
   width: 100%;
   height: 8rem;
-  background: linear-gradient(35deg, var(--purple), #3c0287);
+  background: var(--blue);
   position: relative;
   margin-bottom: 11rem;
 `;
@@ -126,7 +126,7 @@ const StyledAvatarPic = styled.div`
   width: 9rem;
   height: 9rem;
   border-radius: 100%;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
   padding: 0.8rem;
   position: relative;
 `;
@@ -172,7 +172,7 @@ const StyledOptionsContainer = styled.div`
   width: 100%;
   padding: 0.7rem;
   border-radius: 0.6rem;
-  background-color: ${({ theme }) => theme.background.secondary};
+  background-color: ${({ theme }) => theme.background.thirdly};
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
@@ -186,7 +186,7 @@ const StyledOptionItem = styled.div`
   align-items: center;
   gap: 0.4rem;
   &:hover {
-    background-color: ${({ theme }) => theme.background.thirdly};
+    background-color: ${({ theme }) => theme.background.secondary};
   }
 `;
 const StyledOptionName = styled.div`

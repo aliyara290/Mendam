@@ -11,7 +11,7 @@ import {
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { XMarkIcon } from "@heroicons/react/24/solid";
 
-interface DirectMessagesProps {}
+interface DirectMessagesProps { }
 
 interface ChatData {
   id: string;
@@ -23,7 +23,7 @@ interface ChatData {
   unreadCount?: number;
 }
 
-const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
+const DirectMessages: React.FC<DirectMessagesProps> = ({ }) => {
   const [hoveredChatId, setHoveredChatId] = useState<string | null>(null);
   const [openMenuChatId, setOpenMenuChatId] = useState<string | null>(null);
 
@@ -53,6 +53,7 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
     {
       label: "Delete",
       icon: <TrashIcon />,
+      danger: true,
       onClick: () => {
         handleCloseMenu();
         alert("Block functionality");
@@ -153,6 +154,62 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
       lastMessage: "Sure thing, I'll send it over",
       lastMessageTime: "2w",
     },
+    {
+      id: "11",
+      userName: "James Wilson",
+      avatar:
+        "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=150&h=150&fit=crop&crop=face",
+      status: "offline",
+      lastMessage: "Let's catch up soon!",
+      lastMessageTime: "1w",
+    },
+    {
+      id: "12",
+      userName: "Sophie Anderson",
+      avatar:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
+      status: "online",
+      lastMessage: "The project looks amazing so far",
+      lastMessageTime: "1w",
+      unreadCount: 3,
+    },
+    {
+      id: "13",
+      userName: "Ryan Davis",
+      avatar:
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face",
+      status: "offline",
+      lastMessage: "Sure thing, I'll send it over",
+      lastMessageTime: "2w",
+    },
+    {
+      id: "14",
+      userName: "James Wilson",
+      avatar:
+        "https://images.unsplash.com/photo-1556157382-97eda2d62296?w=150&h=150&fit=crop&crop=face",
+      status: "offline",
+      lastMessage: "Let's catch up soon!",
+      lastMessageTime: "1w",
+    },
+    {
+      id: "15",
+      userName: "Sophie Anderson",
+      avatar:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&h=150&fit=crop&crop=face",
+      status: "online",
+      lastMessage: "The project looks amazing so far",
+      lastMessageTime: "1w",
+      unreadCount: 3,
+    },
+    {
+      id: "16",
+      userName: "Ryan Davis",
+      avatar:
+        "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face",
+      status: "offline",
+      lastMessage: "Sure thing, I'll send it over",
+      lastMessageTime: "2w",
+    },
   ]);
 
   const handleShowOptions = (chatId: string) => {
@@ -171,7 +228,7 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
     <>
       <StyledDirectMess>
         <StyledTopHeader>
-          <Heading title="Chat" heading="h3" />
+          <Heading title="Direct Messages" heading="h3" />
           <SearchBar placeholder="Search or start a new conversation" />
         </StyledTopHeader>
         <StyledChatsList>
@@ -188,6 +245,7 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
                     status={chat.status}
                     userName={chat.userName}
                     showStatusCircle
+                    size={35}
                   />
                   <StyledMessageInfo>
                     <StyledUserName hasUnread={!!chat.unreadCount}>
@@ -198,10 +256,10 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
                         </StyledUnreadBadge>
                       )}
                     </StyledUserName>
-                    <StyledLastMessage>
+                    {/* <StyledLastMessage>
                       {chat.lastMessage.substring(0, 40)}
                       {chat.lastMessage.length > 40 ? "..." : ""}
-                    </StyledLastMessage>
+                    </StyledLastMessage> */}
                   </StyledMessageInfo>
                 </StyledChatInfo>
 
@@ -225,7 +283,7 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
                 <Menu
                   onClose={() => setOpenMenuChatId(null)}
                   isOpen={openMenuChatId === chat.id}
-                  right="0"
+                  right="1"
                   items={menuItems}
                 />
               </div>
@@ -257,12 +315,21 @@ const StyledTopHeader = styled.div`
   flex-direction: column;
   gap: 2rem;
   z-index: 20;
+  @media (max-width: 1000px) {
+    padding: 1.5rem 1rem;
+  }
+  @media (max-width: 700px) {
+    padding: 2rem 1.5rem;
+  }
 `;
 
 const StyledChatsList = styled.div`
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
+  @media (max-width: 1000px) {
+   padding: 0;
+  }
 `;
 
 const StyledChatItem = styled.div`
@@ -281,10 +348,22 @@ const StyledChatItemContainer = styled.div`
   transition: background-color 0.2s ease-in;
   text-decoration: none;
   color: inherit;
-
-  &:hover {
-    background-color: ${({ theme }) => theme.background.secondary};
+  @media (max-width: 1000px) {
+    padding: 1rem;
+    border-radius: 0;
   }
+  @media (max-width: 700px) {
+    padding: 1rem 1.5rem;
+    &:active {
+        background-color: ${({ theme }) => theme.background.thirdly}; 
+    }
+  }
+  @media (min-width: 700px) {
+    &:hover {
+      background-color: ${({ theme }) => theme.background.secondary};
+    }
+  }
+
 `;
 
 const StyledChatInfo = styled.div`
@@ -292,7 +371,7 @@ const StyledChatInfo = styled.div`
   align-items: center;
   gap: 1rem;
   flex: 1;
-  min-width: 0; // Allows text truncation
+  min-width: 0;
 `;
 
 const StyledMessageInfo = styled.div`
@@ -300,16 +379,19 @@ const StyledMessageInfo = styled.div`
   flex-direction: column;
   gap: 0.5rem;
   flex: 1;
-  min-width: 0; // Allows text truncation
+  min-width: 0;
 `;
 
 const StyledUserName = styled.div<{ hasUnread?: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: ${({ hasUnread }) => (hasUnread ? "600" : "500")};
+  font-weight: ${({ hasUnread }) => (hasUnread ? "500" : "400")};
   font-size: var(--text-base);
-  color: ${({ theme }) => theme.text.primary};
+  color: ${({ hasUnread }) => (hasUnread ? ({ theme }) => theme.text.primary : ({ theme }) => theme.text.thirdly)};
+   @media (max-width: 1000px) {
+    font-size: var(--text-sm);
+  }
 `;
 
 const StyledLastMessage = styled.div`
@@ -322,7 +404,7 @@ const StyledLastMessage = styled.div`
 `;
 
 const StyledUnreadBadge = styled.span`
-  background-color: var(--purple);
+  background-color: var(--blue);
   color: var(--light);
   font-size: var(--text-xs);
   font-weight: 500;

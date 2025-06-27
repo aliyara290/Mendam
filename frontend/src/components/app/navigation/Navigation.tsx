@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import Logo from "@app/logo/Logo";
 import WarddLogo from "@assets/images/wardd-logo.jpg";
@@ -7,25 +7,31 @@ import {
   ChatBubbleOvalLeftEllipsisIcon,
   PlusCircleIcon,
   UserGroupIcon,
-  UsersIcon,
+  UserPlusIcon,
 } from "@heroicons/react/24/solid";
 import { Link, useLocation } from "react-router-dom";
+import CreateWorkspace from "./modal/createWorkspace";
 
-interface NavigationProps {}
+interface NavigationProps { }
 interface StyledNavigationProps {
   selected?: boolean;
 }
 
-const Navigation: React.FC<NavigationProps> = ({}) => {
+const Navigation: React.FC<NavigationProps> = ({ }) => {
   const location = useLocation();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const handleCloseModale = () => {
+    setIsModalOpen(false);
+  };
   return (
     <>
       <StyledNavigation>
         <StyledTopLinks>
           <StyledLogo>
-            <a href="/app/@me">
+            <Link to="/app/@me">
               <Logo />
-            </a>
+            </Link>
           </StyledLogo>
           <StyledLine />
           <StyledPagesLinks>
@@ -39,7 +45,7 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
             <Link to={"/app/friends"}>
               <StyledLink selected={location.pathname === "/app/friends"}>
                 <StyledLinkIcon>
-                  <UsersIcon />
+                  <UserPlusIcon />
                 </StyledLinkIcon>
               </StyledLink>
             </Link>
@@ -61,11 +67,14 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
                   </StyledGroupImage>
                 </StyledGroup>
               </Link>
-             
+
               <Link to={"/app/channel/345678"}>
                 <StyledGroup>
                   <StyledGroupImage>
-                    <img src="https://docs.imperium.plus/files/media-GRGQG-GFRFXRXG-PQQLL-WGRWM-GFRFGQQPLL-LLPXR-GFRFGQPXQWWM-X-QMGGQFRMWG" alt="wardd logo" />
+                    <img
+                      src="https://docs.imperium.plus/files/media-GRGQG-GFRFXRXG-PQQLL-WGRWM-GFRFGQQPLL-LLPXR-GFRFGQPXQWWM-X-QMGGQFRMWG"
+                      alt="wardd logo"
+                    />
                   </StyledGroupImage>
                 </StyledGroup>
               </Link>
@@ -77,7 +86,7 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
                 </StyledGroup>
               </Link>
             </StyledGroupsList>
-            <StyledAddBtn>
+            <StyledAddBtn onClick={() => setIsModalOpen(true)}>
               <StyledLinkIcon>
                 <PlusCircleIcon />
               </StyledLinkIcon>
@@ -89,6 +98,11 @@ const Navigation: React.FC<NavigationProps> = ({}) => {
           <StyledLine />
           
         </StyledBottomLinks> */}
+        <CreateWorkspace
+          title="Create new workspace"
+          onClose={handleCloseModale}
+          isOpen={isModalOpen}
+        />
       </StyledNavigation>
     </>
   );
@@ -107,6 +121,12 @@ const StyledNavigation = styled.aside`
   width: max-content;
   /* overflow-y: auto;
   overflow-x: hidden; */
+  @media (max-width: 1000px) {
+    padding: 1.5rem 1rem 0;
+  }
+  @media (max-width: 700px) {
+    padding: 2rem 1.5rem;
+  }
   ::-webkit-scrollbar {
     width: 0px;
   }
@@ -132,6 +152,9 @@ const StyledTopLinks = styled.aside`
   align-items: center;
   flex-direction: column;
   gap: 1.8rem;
+  @media (max-width: 1000px) {
+    gap: 1.5rem;
+  }
 `;
 
 const StyledLogo = styled.div`
@@ -145,6 +168,9 @@ const StyledLine = styled.div`
   width: 100%;
   height: 1.5px;
   background-color: ${({ theme }) => theme.border.primary};
+  @media (max-width: 1000px) {
+    height: 0.5px;
+  }
 `;
 
 const StyledPagesLinks = styled.div`
@@ -175,18 +201,24 @@ const StyledLink = styled.div<StyledNavigationProps>`
     left: -1.5rem;
     width: 0.4rem;
     height: ${({ selected }) => (selected ? "100%" : "0.6rem")};
-    background-color: ${({ theme }) => theme.background.thirdly};
+    background-color: ${({ selected }) => (selected ? ({ theme }) => theme.text.secondary : ({ theme }) => theme.background.thirdly)};
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     transition: all 0.3s ease;
+      @media (max-width: 1000px) {
+    left: -1.1rem;
+  }
+      @media (max-width: 700px) {
+    left: -1.5rem;
+  }
   }
   &:hover::after {
     height: 100%;
     background-color: ${({ theme }) => theme.text.secondary};
   }
   &:hover {
-    background-color: var(--purple);
-    color: var(--light);
+    /* background-color: var(--blue); */
+    /* color: var(--light); */
   }
 `;
 
@@ -222,7 +254,7 @@ const StyledAddBtn = styled.div`
   color: ${({ theme }) => theme.text.primary};
   cursor: pointer;
   &:hover {
-    background-color: var(--purple);
+    background-color: var(--blue);
     color: var(--light);
   }
 `;
@@ -243,6 +275,12 @@ const StyledGroup = styled.div`
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
     transition: all 0.3s ease;
+     @media (max-width: 1000px) {
+    left: -1.1rem;
+  }
+      @media (max-width: 700px) {
+    left: -1.5rem;
+  }
   }
   &:hover::after {
     height: 100%;
