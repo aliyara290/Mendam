@@ -1,18 +1,15 @@
-import { ChevronRightIcon, PencilSquareIcon } from "@heroicons/react/16/solid";
-import { PencilIcon } from "@heroicons/react/24/solid";
+import { ChevronRightIcon } from "@heroicons/react/16/solid";
 import React from "react";
 import styled from "styled-components";
 
 interface QuickProfileProps {
   isOpen: boolean;
   shouldAnimate: boolean;
-  onClose: () => void;
 }
 
 const QuickProfile: React.FC<QuickProfileProps> = ({
   isOpen,
   shouldAnimate,
-  onClose,
 }) => {
   // if (!isOpen) {
   //   return null;

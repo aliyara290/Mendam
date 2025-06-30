@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import Loader from "@app/ui/Loader";
 
 interface ButtonProps {
   variant?: "primary" | "danger" | "cancel";
