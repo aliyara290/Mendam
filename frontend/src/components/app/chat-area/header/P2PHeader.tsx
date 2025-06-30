@@ -4,10 +4,8 @@ import Avatar from "../../avatar/Avatar";
 import {
   Bars3BottomRightIcon,
   NoSymbolIcon,
-  PhoneIcon,
   TrashIcon,
   UserIcon,
-  VideoCameraIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import Profile from "@app/chat-area/profile/Profile";
