@@ -7,11 +7,16 @@ import Heading from "../heading/Heading";
 
 const MyAccount: React.FC = ({ }) => {
   const { setOpenSettings } = useSettings();
+  const handleCloseContent = () => {
+    if (setOpenSettings) {
+      setOpenSettings(false);
+    }
+  };
 
   return (
     <>
       <StyledMyAccount>
-        <Heading onClick={() => setOpenSettings(false)} title="Account" />
+        <Heading onClick={handleCloseContent} title="Account" />
         <StyledMyAccountContent>
           <StyledOptionItem>
             <StyledItemHeading>
@@ -46,16 +51,16 @@ const StyledMyAccount = styled.div`
   width: 100%;
 `;
 
-const StyledHeading = styled.div`
-  width: 100%;
-  padding-bottom: 3rem;
-  h3 {
-    font-weight: 500;
-    font-size: var(--text-xxl);
-    line-height: 1;
-    color: ${({ theme }) => theme.text.primary};
-  }
-`;
+// const StyledHeading = styled.div`
+//   width: 100%;
+//   padding-bottom: 3rem;
+//   h3 {
+//     font-weight: 500;
+//     font-size: var(--text-xxl);
+//     line-height: 1;
+//     color: ${({ theme }) => theme.text.primary};
+//   }
+// `;
 
 const StyledMyAccountContent = styled.div`
   width: 100%;

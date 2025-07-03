@@ -1,10 +1,6 @@
 import { useSettings } from "@/contexts/openSettingContext";
 import {
-  ArrowLeftStartOnRectangleIcon,
-  ArrowRightStartOnRectangleIcon,
-  BellIcon,
   Cog6ToothIcon,
-  LanguageIcon,
   SunIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
@@ -18,7 +14,11 @@ interface SettingNavigationProps {
 const SettingNavigation: React.FC<SettingNavigationProps> = () => {
   const location = useLocation();
   const { setOpenSettings } = useSettings();
-  const handleOpenContent = () => setOpenSettings(true);
+  const handleOpenContent = () => {
+    if (setOpenSettings) {
+      setOpenSettings(true);
+    }
+  };
 
   return (
     <>
@@ -30,7 +30,7 @@ const SettingNavigation: React.FC<SettingNavigationProps> = () => {
             </StyledNavigationHeader>
             <StyledTopPart>
               <StyledNavigationLinkItem
-              onClick={handleOpenContent}
+                onClick={handleOpenContent}
                 isActive={location.pathname === "/app/settings/profile"}
               >
                 <Link to={"profile"}>
@@ -217,24 +217,24 @@ const StyledNavigationLinkItem = styled.div<StyledNavigationLinkItemProps>`
   }
 `;
 
-const StyledLogout = styled.div`
-  padding: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.7rem;
-  cursor: pointer;
-  border-radius: 0.8rem;
-  &:hover {
-    background-color: ${({ theme }) => theme.background.secondary};
-  }
-  ${StyledNavLinkLabel} {
-    span {
-      color: #e04b44;
-    }
-  }
-  ${StyledNavLinkIcon} {
-    svg {
-      color: #e04b44;
-    }
-  }
-`;
+// const StyledLogout = styled.div`
+//   padding: 1rem;
+//   display: flex;
+//   align-items: center;
+//   gap: 0.7rem;
+//   cursor: pointer;
+//   border-radius: 0.8rem;
+//   &:hover {
+//     background-color: ${({ theme }) => theme.background.secondary};
+//   }
+//   ${StyledNavLinkLabel} {
+//     span {
+//       color: #e04b44;
+//     }
+//   }
+//   ${StyledNavLinkIcon} {
+//     svg {
+//       color: #e04b44;
+//     }
+//   }
+// `;

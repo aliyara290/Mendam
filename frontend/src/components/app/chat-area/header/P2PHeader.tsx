@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import Avatar from "../../avatar/Avatar";
+import Avatar from "@app/avatar/Avatar";
 import {
   Bars3BottomRightIcon,
   NoSymbolIcon,
@@ -132,38 +132,38 @@ const StyledRightPart = styled.div`
   gap: 2rem;
 `;
 
-const StyledCall = styled.div`
-  width: max-content;
-  border-radius: 8px;
-  background-color: ${({ theme }) => theme.background.thirdly};
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-`;
+// const StyledCall = styled.div`
+//   width: max-content;
+//   border-radius: 8px;
+//   background-color: ${({ theme }) => theme.background.thirdly};
+//   display: flex;
+//   align-items: center;
+//   overflow: hidden;
+// `;
 
-const StyledLine = styled.div`
-  width: 1px;
-  height: 2rem;
-  background-color: ${({ theme }) => theme.background.secondary};
-`;
+// const StyledLine = styled.div`
+//   width: 1px;
+//   height: 2rem;
+//   background-color: ${({ theme }) => theme.background.secondary};
+// `;
 
-const StyledIcon = styled.div`
-  width: 5rem;
-  height: 4.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  color: ${({ theme }) => theme.text.thirdly};
-  &:hover {
-    color: ${({ theme }) => theme.text.primary};
-    background-color: ${({ theme }) => theme.background.primary};
-  }
-  svg {
-    width: 2.2rem;
-  }
-`;
+// const StyledIcon = styled.div`
+//   width: 5rem;
+//   height: 4.2rem;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   cursor: pointer;
+//   transition: all 0.2s ease-in-out;
+//   color: ${({ theme }) => theme.text.thirdly};
+//   &:hover {
+//     color: ${({ theme }) => theme.text.primary};
+//     background-color: ${({ theme }) => theme.background.primary};
+//   }
+//   svg {
+//     width: 2.2rem;
+//   }
+// `;
 
 const StyledHamburgerIcon = styled.div`
   cursor: pointer;

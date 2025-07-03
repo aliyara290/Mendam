@@ -9,7 +9,7 @@ import { Cog6ToothIcon } from "@heroicons/react/24/outline";
 import { ChevronUpIcon, PlusIcon } from "@heroicons/react/16/solid";
 
 const Channel: React.FC = () => {
-  const [groupData, setGroupData] = useState<GroupProps | null>({
+  const [groupData] = useState<GroupProps | null>({
     id: "234567834567",
     name: "Heisenberg",
     teams: [
@@ -217,11 +217,11 @@ const StyledTeamName = styled.div`
   }
 `;
 
-const StyledPlusIcon = styled.div`
-  svg {
-    width: 2rem;
-  }
-`;
+// const StyledPlusIcon = styled.div`
+//   svg {
+//     width: 2rem;
+//   }
+// `;
 const StyledTeamChannel = styled.div`
   padding: 0.8rem;
 `;

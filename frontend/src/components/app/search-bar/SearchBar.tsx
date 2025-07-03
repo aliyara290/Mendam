@@ -9,9 +9,9 @@ interface SearchBarProps {
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
-  value,
+  // value,
   placeholder = "Search for",
-  onInputChange,
+  // onInputChange,
 }) => {
   return (
     <>

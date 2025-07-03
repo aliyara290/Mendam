@@ -34,9 +34,15 @@ const Appearance: React.FC = () => {
   const { themeMode, switchTheme } = useTheme();
   const { setOpenSettings } = useSettings();
 
+  const handleOpenContent = () => {
+    if (setOpenSettings) {
+      setOpenSettings(true);
+    }
+  };
+
   return (
     <StyledAppearance>
-      <Heading onClick={() => setOpenSettings(false)} title="Appearance" />
+      <Heading onClick={handleOpenContent} title="Appearance" />
       <StyledAppearanceContent>
         <StyledOptionItem>
           <StyledItemHeading>
@@ -76,16 +82,16 @@ const StyledAppearance = styled.div`
   width: 100%;
 `;
 
-const StyledHeading = styled.div`
-  width: 100%;
-  padding-bottom: 5rem;
-  h3 {
-    font-weight: 500;
-    font-size: var(--text-xxl);
-    line-height: 1;
-    color: ${({ theme }) => theme.text.primary};
-  }
-`;
+// const StyledHeading = styled.div`
+//   width: 100%;
+//   padding-bottom: 5rem;
+//   h3 {
+//     font-weight: 500;
+//     font-size: var(--text-xxl);
+//     line-height: 1;
+//     color: ${({ theme }) => theme.text.primary};
+//   }
+// `;
 
 const StyledAppearanceContent = styled.div`
   width: 100%;

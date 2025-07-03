@@ -10,7 +10,7 @@ import {
   UserPlusIcon,
 } from "@heroicons/react/24/solid";
 import { Link, useLocation } from "react-router-dom";
-import CreateWorkspace from "./modal/createWorkspace";
+import CreateWorkspace from "./modal/CreateWorkspace";
 
 interface NavigationProps { }
 interface StyledNavigationProps {
@@ -299,10 +299,10 @@ const StyledGroupImage = styled.div`
     object-fit: cover;
   }
 `;
-const StyledBottomLinks = styled.div`
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  gap: 1.8rem;
-`;
+// const StyledBottomLinks = styled.div`
+//   display: flex;
+//   align-items: center;
+//   flex-direction: column;
+//   gap: 1.8rem;
+// `;
 // const StyledImage = styled.img``;

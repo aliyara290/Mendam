@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import SearchBar from "@app/search-bar/SearchBar";
 import Heading from "@app/heading/Heading";
@@ -394,14 +394,14 @@ const StyledUserName = styled.div<{ hasUnread?: boolean }>`
   }
 `;
 
-const StyledLastMessage = styled.div`
-  width: 90%;
-  font-size: var(--text-sm);
-  color: ${({ theme }) => theme.text.secondary};
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
+// const StyledLastMessage = styled.div`
+//   width: 90%;
+//   font-size: var(--text-sm);
+//   color: ${({ theme }) => theme.text.secondary};
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+// `;
 
 const StyledUnreadBadge = styled.span`
   background-color: var(--blue);
