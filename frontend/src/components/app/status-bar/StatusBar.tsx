@@ -4,7 +4,6 @@ import Avatar from "@app/avatar/Avatar";
 import { Cog8ToothIcon, HomeIcon } from "@heroicons/react/24/outline";
 import QuickProfile from "./QuickProfile";
 import { Link, useLocation } from "react-router-dom";
-import { UserIcon } from "@heroicons/react/24/solid";
 
 interface StatusBarProps { }
 
@@ -12,9 +11,9 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const [shouldAnimate, setShouldAnimate] = useState<boolean>(false);
   const location = useLocation()
-  const handleCloseProfile = () => {
-    setIsProfileOpen(false);
-  };
+  // const handleCloseProfile = () => {
+  //   setIsProfileOpen(false);
+  // };
 
   const handleToggleProfile = () => {
     if (!isProfileOpen) {
@@ -87,7 +86,7 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
           </StyledStatusBarContainer>
         </StyledStatusBarContent>
         <QuickProfile
-          onClose={handleCloseProfile}
+          // onClose={handleCloseProfile}
           isOpen={isProfileOpen}
           shouldAnimate={shouldAnimate}
         />

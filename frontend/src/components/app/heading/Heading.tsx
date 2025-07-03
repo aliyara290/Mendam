@@ -10,7 +10,7 @@ interface StyledHeadignProps {
   fontSize?: string;
 }
 
-const Heading: React.FC<HeadignProps> = ({ title, fontSize, heading }) => {
+const Heading: React.FC<HeadignProps> = ({ title, heading }) => {
   return (
     <>
       <StyledHeading>

@@ -8,11 +8,16 @@ import Heading from "../heading/Heading";
 
 const Profile: React.FC = ({ }) => {
   const { setOpenSettings } = useSettings();
+  const handleCloseContent = () => {
+  if (setOpenSettings) {
+    setOpenSettings(true);
+  }
+};
 
   return (
     <>
       <StyledProfile>
-        <Heading onClick={() => setOpenSettings(false)} title="Profile" />
+        <Heading onClick={handleCloseContent} title="Profile" />
 
         <StyledProfileContent>
           <StyledLeftPart>
@@ -92,16 +97,16 @@ const StyledProfile = styled.div`
   width: 100%;
 `;
 
-const StyledHeading = styled.div`
-  width: 100%;
-  padding-bottom: 3rem;
-  h3 {
-    font-weight: 500;
-    font-size: var(--text-xxl);
-    line-height: 1;
-    color: ${({ theme }) => theme.text.primary};
-  }
-`;
+// const StyledHeading = styled.div`
+//   width: 100%;
+//   padding-bottom: 3rem;
+//   h3 {
+//     font-weight: 500;
+//     font-size: var(--text-xxl);
+//     line-height: 1;
+//     color: ${({ theme }) => theme.text.primary};
+//   }
+// `;
 
 const StyledProfileContent = styled.div`
   width: 100%;

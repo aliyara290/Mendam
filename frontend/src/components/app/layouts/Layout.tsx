@@ -1,4 +1,4 @@
-import React, { type ReactNode } from "react";
+import React from "react";
 import Navigation from "@app/navigation/Navigation";
 import styled from "styled-components";
 import StatusBar from "@app/status-bar/StatusBar";

@@ -5,7 +5,6 @@ import Heading from "@app/heading/Heading";
 import Avatar from "@app/avatar/Avatar";
 import SquareBtn from "@app/ui/button/SquareBtn";
 import { EllipsisHorizontalIcon } from "@heroicons/react/24/outline";
-import ModalComponent from "@app/modal/Modal";
 import CreateGroupModal from "./modals/CreateGroupModal";
 
 interface FriendsProps {}
