@@ -6,18 +6,19 @@ import {
   getGroupMessages,
   deleteMessage
 } from '@/controllers/messageController';
+import { validateMessage, validateObjectId } from '@/middleware/validation';
 
 const router = express.Router();
 
 // Send messages
-router.post('/direct', sendDirectMessage);
-router.post('/group', sendGroupMessage);
+router.post('/direct', validateMessage, sendDirectMessage);
+router.post('/group', validateMessage, sendGroupMessage);
 
 // Get messages
-router.get('/direct/:userId', getDirectMessages);
-router.get('/group/:groupId', getGroupMessages);
+router.get('/direct/:userId', validateObjectId('userId'), getDirectMessages);
+router.get('/group/:groupId', validateObjectId('groupId'), getGroupMessages);
 
 // Delete message
-router.delete('/:messageId', deleteMessage);
+router.delete('/:messageId', validateObjectId('messageId'), deleteMessage);
 
 export default router;

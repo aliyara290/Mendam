@@ -12,16 +12,14 @@ import { connectDB } from '@config/database';
 import { errorHandler } from '@middleware/errorHandler';
 import { notFoundHandler } from '@middleware/notFoundHandler';
 import { authMiddleware } from '@middleware/authMiddleware';
+import { validateRegistration, validateLogin } from '@middleware/validation';
 
 import authRoutes from '@routes/authRoutes';
 import userRoutes from '@routes/userRoutes';
 import chatGroupRoutes from '@routes/chatGroupRoutes';
-import teamRoutes from '@routes/teamRoutes';
-import channelRoutes from '@routes/channelRoutes';
 import messageRoutes from '@routes/messageRoutes';
 import friendRoutes from '@routes/friendRoutes';
 import notificationRoutes from '@routes/notificationRoutes';
-import reportRoutes from '@routes/reportRoutes';
 
 // Socket handlers
 import { SocketService } from '@socket/socketService';
@@ -67,12 +65,9 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/users', authMiddleware, userRoutes);
 app.use('/api/chat-groups', authMiddleware, chatGroupRoutes);
-app.use('/api/teams', authMiddleware, teamRoutes);
-app.use('/api/channels', authMiddleware, channelRoutes);
 app.use('/api/messages', authMiddleware, messageRoutes);
 app.use('/api/friends', authMiddleware, friendRoutes);
 app.use('/api/notifications', authMiddleware, notificationRoutes);
-app.use('/api/reports', authMiddleware, reportRoutes);
 
 // Error handling middleware
 app.use(notFoundHandler);
