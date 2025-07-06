@@ -3,13 +3,11 @@ import { Message } from '@/models/MessageModel';
 import { User } from '@/models/UserModel';
 import { ChatGroup, ChatGroupMember } from '@/models/ChatGroupModel';
 
-// Send a direct message
 export const sendDirectMessage = async (req: Request, res: Response) => {
   try {
     const { recipientId, content, type = 'text' } = req.body;
     const senderId = (req as any).user.id;
 
-    // Check if recipient exists
     const recipient = await User.findById(recipientId);
     if (!recipient) {
       return res.status(404).json({
@@ -18,7 +16,6 @@ export const sendDirectMessage = async (req: Request, res: Response) => {
       });
     }
 
-    // Create message
     const message = new Message({
       senderId,
       recipientId,
@@ -28,7 +25,6 @@ export const sendDirectMessage = async (req: Request, res: Response) => {
 
     await message.save();
 
-    // Populate sender info
     await message.populate('senderId', 'username fullName avatar');
 
     res.status(201).json({
@@ -45,7 +41,6 @@ export const sendDirectMessage = async (req: Request, res: Response) => {
   }
 };
 
-// Send a group message
 export const sendGroupMessage = async (req: Request, res: Response) => {
   try {
     const { chatGroupId, content, type = 'text' } = req.body;
@@ -65,7 +60,6 @@ export const sendGroupMessage = async (req: Request, res: Response) => {
       });
     }
 
-    // Create message
     const message = new Message({
       senderId,
       chatGroupId,
@@ -92,7 +86,6 @@ export const sendGroupMessage = async (req: Request, res: Response) => {
   }
 };
 
-// Get direct messages between two users
 export const getDirectMessages = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
@@ -134,7 +127,7 @@ export const getDirectMessages = async (req: Request, res: Response) => {
     res.json({
       success: true,
       data: {
-        messages: messages.reverse(), // Return in chronological order
+        messages: messages.reverse(),
         pagination: {
           page,
           limit,
@@ -151,7 +144,6 @@ export const getDirectMessages = async (req: Request, res: Response) => {
   }
 };
 
-// Get group messages
 export const getGroupMessages = async (req: Request, res: Response) => {
   try {
     const { groupId } = req.params;
@@ -187,7 +179,7 @@ export const getGroupMessages = async (req: Request, res: Response) => {
     res.json({
       success: true,
       data: {
-        messages: messages.reverse(), // Return in chronological order
+        messages: messages.reverse(), 
         pagination: {
           page,
           limit,
@@ -204,13 +196,11 @@ export const getGroupMessages = async (req: Request, res: Response) => {
   }
 };
 
-// Delete a message
 export const deleteMessage = async (req: Request, res: Response) => {
   try {
     const { messageId } = req.params;
     const currentUserId = (req as any).user.id;
 
-    // Find the message
     const message = await Message.findById(messageId);
     
     if (!message) {

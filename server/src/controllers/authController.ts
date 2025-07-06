@@ -9,7 +9,6 @@ const generateToken = (userId: string) => {
   });
 };
 
-// Register new user
 export const register = async (req: Request, res: Response) => {
   try {
     const { username, email, password, fullName } = req.body;
@@ -63,7 +62,6 @@ export const register = async (req: Request, res: Response) => {
   }
 };
 
-// Login user
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
@@ -122,7 +120,6 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// Logout user
 export const logout = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
@@ -147,7 +144,6 @@ export const logout = async (req: Request, res: Response) => {
   }
 };
 
-// Get current user profile
 export const getProfile = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
