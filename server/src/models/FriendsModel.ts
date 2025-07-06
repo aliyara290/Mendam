@@ -58,3 +58,10 @@ const friendSchema = new Schema<IFriend>(
     timestamps: true
   }
 );
+
+// Indexes
+friendSchema.index({ userId: 1, friendId: 1 }, { unique: true });
+friendSchema.index({ userId: 1, status: 1 });
+friendSchema.index({ friendId: 1, status: 1 });
+
+export const Friend = mongoose.model<IFriend>('Friend', friendSchema);
