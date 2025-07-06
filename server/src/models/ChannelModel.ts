@@ -43,7 +43,6 @@ export interface IWorkspaceMember extends Document {
   permissions: string[];
 }
 
-// Team Schema
 const teamSchema = new Schema<ITeam>(
   {
     name: {
@@ -72,7 +71,6 @@ const teamSchema = new Schema<ITeam>(
   }
 );
 
-// Channel Schema
 const channelSchema = new Schema<IChannel>(
   {
     name: {
@@ -102,7 +100,6 @@ const channelSchema = new Schema<IChannel>(
   }
 );
 
-// Team Member Schema
 const teamMemberSchema = new Schema<ITeamMember>(
   {
     userId: {

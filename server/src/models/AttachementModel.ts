@@ -48,3 +48,7 @@ const attachmentSchema = new Schema<IAttachment>(
     timestamps: true
   }
 );
+
+attachmentSchema.index({ messageId: 1 });
+
+export const Attachment = mongoose.model<IAttachment>('Attachment', attachmentSchema);

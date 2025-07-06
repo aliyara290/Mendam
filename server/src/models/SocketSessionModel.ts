@@ -43,3 +43,9 @@ const socketSessionSchema = new Schema<ISocketSession>(
     timestamps: true
   }
 );
+
+
+socketSessionSchema.index({ userId: 1 });
+socketSessionSchema.index({ socketId: 1 }, { unique: true });
+
+export const SocketSession = mongoose.model<ISocketSession>('SocketSession', socketSessionSchema);
