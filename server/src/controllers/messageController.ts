@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { Message } from '@/models/MessageModel';
-import { User } from '@/models/UserModel';
-import { ChatGroup, ChatGroupMember } from '@/models/ChatGroupModel';
+import { Message } from '../models/MessageModel';
+import { User } from '../models/UserModel';
+import { ChatGroup, ChatGroupMember } from '../models/ChatGroupModel';
 
 export const sendDirectMessage = async (req: Request, res: Response) => {
   try {

@@ -1,6 +1,6 @@
 import { Server } from 'socket.io';
 import jwt from 'jsonwebtoken';
-import { User } from '@/models/UserModel';
+import { User } from '../models/UserModel';
 
 interface AuthenticatedSocket {
   userId: string;

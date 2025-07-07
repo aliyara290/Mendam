@@ -5,7 +5,7 @@ import {
   getChatGroupDetails,
   addMemberToGroup,
   leaveGroup
-} from '@/controllers/chatGroupController';
+} from '../controllers/chatGroupController';
 
 const router = express.Router();
 
