@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { ChatGroup, ChatGroupMember } from '@/models/ChatGroupModel';
-import { User } from '@/models/UserModel';
+import { ChatGroup, ChatGroupMember } from '../models/ChatGroupModel';
+import { User } from '../models/UserModel';
 
 // Create a new chat group
 export const createChatGroup = async (req: Request, res: Response) => {

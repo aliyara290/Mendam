@@ -5,8 +5,8 @@ import {
   getDirectMessages,
   getGroupMessages,
   deleteMessage
-} from '@/controllers/messageController';
-import { validateMessage, validateObjectId } from '@/middleware/validation';
+} from '../controllers/messageController';
+import { validateMessage, validateObjectId } from '../middleware/validation';
 
 const router = express.Router();
 

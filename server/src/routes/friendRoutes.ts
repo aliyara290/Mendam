@@ -7,7 +7,7 @@ import {
   getFriends,
   removeFriend,
   blockUser
-} from '@/controllers/friendController';
+} from '../controllers/friendController';
 
 const router = express.Router();
 

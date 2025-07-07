@@ -7,8 +7,8 @@ import {
   sendChannelMessage,
   getChannelMessages,
   deleteChannel
-} from '@/controllers/channelController';
-import { validateObjectId, validateMessage } from '@/middleware/validation';
+} from '../controllers/channelController';
+import { validateObjectId, validateMessage } from '../middleware/validation';
 
 const router = express.Router();
 

@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Friend } from '@/models/FriendsModel';
-import { User } from '@/models/UserModel';
+import { Friend } from '../models/FriendsModel';
+import { User } from '../models/UserModel';
 
 // Send friend request
 export const sendFriendRequest = async (req: Request, res: Response) => {

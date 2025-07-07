@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { Team, TeamMember, workspace, worksapceMember } from '@/models/ChannelModel';
-import { User } from '@/models/UserModel';
+import { Team, TeamMember, workspace, worksapceMember } from '../models/ChannelModel';
+import { User } from '../models/UserModel';
 
 // Create a new team
 export const createTeam = async (req: Request, res: Response) => {

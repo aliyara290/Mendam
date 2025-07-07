@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { User } from '@/models/UserModel';
+import { User } from '../models/UserModel';
 
 // Get current user profile (already exists in authController, but adding here for completeness)
 export const getCurrentUser = async (req: Request, res: Response) => {

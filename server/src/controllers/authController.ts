@@ -1,28 +1,30 @@
-import { Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { User } from '@/models/UserModel';
+// src/controllers/authController.ts
+import { Request, Response } from "express";
+import jwt from "jsonwebtoken";
+import { User } from "../models/UserModel";
 
 // Generate JWT token
 const generateToken = (userId: string) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRES_IN || '7d'
+    expiresIn: process.env.JWT_EXPIRES_IN || "7d",
   });
 };
 
-export const register = async (req: Request, res: Response) => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, email, password, fullName } = req.body;
 
     // Check if user already exists
     const existingUser = await User.findOne({
-      $or: [{ email }, { username }]
+      $or: [{ email }, { username }],
     });
 
     if (existingUser) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
-        message: 'User with this email or username already exists'
+        message: "User with this email or username already exists",
       });
+      return;
     }
 
     // Create new user
@@ -30,7 +32,7 @@ export const register = async (req: Request, res: Response) => {
       username,
       email,
       password,
-      fullName
+      fullName,
     });
 
     await user.save();
@@ -40,7 +42,7 @@ export const register = async (req: Request, res: Response) => {
 
     res.status(201).json({
       success: true,
-      message: 'User registered successfully',
+      message: "User registered successfully",
       data: {
         user: {
           id: user._id,
@@ -48,49 +50,51 @@ export const register = async (req: Request, res: Response) => {
           email: user.email,
           fullName: user.fullName,
           avatar: user.avatar,
-          status: user.status
+          status: user.status,
         },
-        token
-      }
+        token,
+      },
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: 'Registration failed',
-      error: error.message
+      message: "Registration failed",
+      error: error.message,
     });
   }
 };
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { email, password } = req.body;
 
     // Find user by email
-    const user = await User.findOne({ email }).select('+password');
-    
+    const user = await User.findOne({ email }).select("+password");
+
     if (!user) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
-        message: 'Invalid email or password'
+        message: "Invalid email or password",
       });
+      return;
     }
 
     // Check password
     const isPasswordValid = await user.comparePassword(password);
-    
+
     if (!isPasswordValid) {
-      return res.status(401).json({
+      res.status(401).json({
         success: false,
-        message: 'Invalid email or password'
+        message: "Invalid email or password",
       });
+      return;
     }
 
     // Update user status to online
     await User.findByIdAndUpdate(user._id, {
       isOnline: true,
-      status: 'online',
-      lastSeen: new Date()
+      status: "online",
+      lastSeen: new Date(),
     });
 
     // Generate token
@@ -98,7 +102,7 @@ export const login = async (req: Request, res: Response) => {
 
     res.json({
       success: true,
-      message: 'Login successful',
+      message: "Login successful",
       data: {
         user: {
           id: user._id,
@@ -106,55 +110,75 @@ export const login = async (req: Request, res: Response) => {
           email: user.email,
           fullName: user.fullName,
           avatar: user.avatar,
-          status: 'online'
+          status: "online",
         },
-        token
-      }
+        token,
+      },
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: 'Login failed',
-      error: error.message
+      message: "Login failed",
+      error: error.message,
     });
   }
 };
 
-export const logout = async (req: Request, res: Response) => {
+export const logout = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userId = (req as any).user.id;
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({
+        success: false,
+        message: "User not authenticated",
+      });
+      return;
+    }
 
     // Update user status to offline
     await User.findByIdAndUpdate(userId, {
       isOnline: false,
-      status: 'offline',
-      lastSeen: new Date()
+      status: "offline",
+      lastSeen: new Date(),
     });
 
     res.json({
       success: true,
-      message: 'Logout successful'
+      message: "Logout successful",
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: 'Logout failed',
-      error: error.message
+      message: "Logout failed",
+      error: error.message,
     });
   }
 };
 
-export const getProfile = async (req: Request, res: Response) => {
+export const getProfile = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
-    const userId = (req as any).user.id;
-    
-    const user = await User.findById(userId);
-    
-    if (!user) {
-      return res.status(404).json({
+    const userId = req.user?.id;
+
+    if (!userId) {
+      res.status(401).json({
         success: false,
-        message: 'User not found'
+        message: "User not authenticated",
       });
+      return;
+    }
+
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+      return;
     }
 
     res.json({
@@ -167,15 +191,15 @@ export const getProfile = async (req: Request, res: Response) => {
           fullName: user.fullName,
           avatar: user.avatar,
           status: user.status,
-          lastSeen: user.lastSeen
-        }
-      }
+          lastSeen: user.lastSeen,
+        },
+      },
     });
   } catch (error: any) {
     res.status(500).json({
       success: false,
-      message: 'Failed to get profile',
-      error: error.message
+      message: "Failed to get profile",
+      error: error.message,
     });
   }
 };
