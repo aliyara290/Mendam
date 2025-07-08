@@ -15,7 +15,7 @@ import {
   GlassNightTheme,
 } from "@/themes";
 import Heading from "../heading/Heading";
-import { useSettings } from "@/contexts/openSettingContext";
+import { useSettings } from "@/contexts/OpenSettingContext";
 
 const themeOptions = {
   "minimal-white": MinimalWhiteTheme,

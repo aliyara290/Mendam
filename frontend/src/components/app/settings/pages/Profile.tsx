@@ -1,93 +1,208 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Button from "../../ui/button/Button";
+import Button from "@app/ui/button/Button";
 import { CameraIcon } from "@heroicons/react/24/outline";
-import { useSettings } from "@/contexts/openSettingContext";
-import Heading from "../heading/Heading";
+import { useSettings } from "@/contexts/OpenSettingContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { authAPI } from "@/services/Api";
+import Heading from "@app/heading/Heading";
 
-
-const Profile: React.FC = ({ }) => {
+const Profile: React.FC = () => {
   const { setOpenSettings } = useSettings();
+  const { user, updateUser } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  
+  const [formData, setFormData] = useState({
+    fullName: user?.fullName || '',
+    jobTitle: user?.jobTitle || '',
+    biography: user?.biography || '',
+  });
+
+  const [hasChanges, setHasChanges] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      const newFormData = {
+        fullName: user.fullName,
+        jobTitle: user.jobTitle || '',
+        biography: user.biography || '',
+      };
+      setFormData(newFormData);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (user) {
+      const hasFormChanges = 
+        formData.fullName !== user.fullName ||
+        formData.jobTitle !== (user.jobTitle || '') ||
+        formData.biography !== (user.biography || '');
+      setHasChanges(hasFormChanges);
+    }
+  }, [formData, user]);
+
   const handleCloseContent = () => {
-  if (setOpenSettings) {
-    setOpenSettings(true);
+    if (setOpenSettings) {
+      setOpenSettings(false);
+    }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    setError('');
+    setSuccess('');
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await authAPI.updateProfile(formData);
+      updateUser(response.data.user);
+      setSuccess('Profile updated successfully!');
+      setHasChanges(false);
+    } catch (error: any) {
+      setError(error.response?.data?.message || 'Failed to update profile');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    if (user) {
+      setFormData({
+        fullName: user.fullName,
+        jobTitle: user.jobTitle || '',
+        biography: user.biography || '',
+      });
+      setHasChanges(false);
+      setError('');
+      setSuccess('');
+    }
+  };
+
+  if (!user) {
+    return <div>Loading...</div>;
   }
-};
 
   return (
-    <>
-      <StyledProfile>
-        <Heading onClick={handleCloseContent} title="Profile" />
+    <StyledProfile>
+      <Heading onClick={handleCloseContent} title="Profile" />
 
-        <StyledProfileContent>
-          <StyledLeftPart>
-            <StyledUpdateAvatar>
-              <StyledUpdateAvatarContent htmlFor={"upload-image"}>
-                <CameraIcon />
-                <span>Update Avatar</span>
-                <input type="file" name="upload-image" id="upload-image" />
-              </StyledUpdateAvatarContent>
-            </StyledUpdateAvatar>
+      <StyledProfileContent>
+        <StyledLeftPart>
+          <StyledUpdateAvatar>
+            <StyledUpdateAvatarContent htmlFor="upload-image">
+              <CameraIcon />
+              <span>Update Avatar</span>
+              <input type="file" name="upload-image" id="upload-image" />
+            </StyledUpdateAvatarContent>
+          </StyledUpdateAvatar>
+
+          <form onSubmit={handleSubmit}>
             <StyledItemsList>
+              {error && (
+                <StyledMessage type="error">
+                  {error}
+                </StyledMessage>
+              )}
+              
+              {success && (
+                <StyledMessage type="success">
+                  {success}
+                </StyledMessage>
+              )}
+
               <StyledItems>
-                <StyledLabel htmlFor="display-name">Display Name</StyledLabel>
+                <StyledLabel htmlFor="fullName">Display Name</StyledLabel>
                 <StyledInput
                   type="text"
-                  name="display-name"
-                  id="display-name"
-                  value={"leibe"}
+                  name="fullName"
+                  id="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
                   placeholder="Display Name"
-                ></StyledInput>
+                  disabled={isLoading}
+                  required
+                />
               </StyledItems>
+
               <StyledItems>
-                <StyledLabel htmlFor="job-title">Job Title</StyledLabel>
+                <StyledLabel htmlFor="jobTitle">Job Title</StyledLabel>
                 <StyledInput
                   type="text"
-                  name="job-title"
-                  id="job-title"
-                  value={"Full Stack Developer"}
+                  name="jobTitle"
+                  id="jobTitle"
+                  value={formData.jobTitle}
+                  onChange={handleInputChange}
                   placeholder="Job Title"
-                ></StyledInput>
+                  disabled={isLoading}
+                />
               </StyledItems>
+
               <StyledItems>
-                <StyledLabel htmlFor="bio">Bio</StyledLabel>
+                <StyledLabel htmlFor="biography">Bio</StyledLabel>
                 <StyledTextarea
-                  name="bio"
-                  id="bio"
-                  value={"Passionate Software Engineer with experience in building scalable web applications and modern user interfaces. Skilled in JavaScript, TypeScript, React, and Node.js. Strong problem-solver with a focus on clean, efficient code and agile collaboration. Committed to continuous learning and delivering high-quality solutions that drive innovation and user satisfaction."}
-                  placeholder="Bio..."
-                ></StyledTextarea>
+                  name="biography"
+                  id="biography"
+                  value={formData.biography}
+                  onChange={handleInputChange}
+                  placeholder="Tell us about yourself..."
+                  disabled={isLoading}
+                />
               </StyledItems>
+
               <StyledButtons>
                 <StyledButtonsList>
-                  <Button variant="cancel" type="button" title="Cancel" />
-                  <Button disabled variant="primary" type="submit" title="Update" />
+                  <Button 
+                    onClick={handleCancel}
+                    variant="cancel" 
+                    type="button" 
+                    title="Cancel"
+                    disabled={isLoading || !hasChanges}
+                  />
+                  <Button 
+                    variant="primary" 
+                    type="submit" 
+                    title={isLoading ? "Updating..." : "Update"}
+                    disabled={isLoading || !hasChanges}
+                  />
                 </StyledButtonsList>
               </StyledButtons>
             </StyledItemsList>
-          </StyledLeftPart>
-          <StyledRightPart>
-            <StyledPortfolioCover>
-              <StyledAvatar>
-                <StyledAvatarPic>
-                  <StyledAvatarPicContent>
-                    <img
-                      src="https://res.cloudinary.com/decjm9mmr/image/upload/v1750110103/WhatsApp_Image_2025-06-14_at_01.49.57_ba9322cc_uoefdw.jpg"
-                      alt=""
-                    />
-                  </StyledAvatarPicContent>
-                  <StyledBar />
-                </StyledAvatarPic>
-                <StyledAvatarName>
-                  <h4>leibe</h4>
-                  <span>@imanejabouji</span>
-                </StyledAvatarName>
-              </StyledAvatar>
-            </StyledPortfolioCover>
-          </StyledRightPart>
-        </StyledProfileContent>
-      </StyledProfile>
-    </>
+          </form>
+        </StyledLeftPart>
+
+        <StyledRightPart>
+          <StyledPortfolioCover>
+            <StyledAvatar>
+              <StyledAvatarPic>
+                <StyledAvatarPicContent>
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.fullName} />
+                  ) : (
+                    <StyledAvatarPlaceholder>
+                      {user.fullName.charAt(0).toUpperCase()}
+                    </StyledAvatarPlaceholder>
+                  )}
+                </StyledAvatarPicContent>
+                <StyledBar />
+              </StyledAvatarPic>
+              <StyledAvatarName>
+                <h4>{formData.fullName || user.fullName}</h4>
+                <span>@{user.username}</span>
+              </StyledAvatarName>
+            </StyledAvatar>
+          </StyledPortfolioCover>
+        </StyledRightPart>
+      </StyledProfileContent>
+    </StyledProfile>
   );
 };
 
@@ -97,37 +212,45 @@ const StyledProfile = styled.div`
   width: 100%;
 `;
 
-// const StyledHeading = styled.div`
-//   width: 100%;
-//   padding-bottom: 3rem;
-//   h3 {
-//     font-weight: 500;
-//     font-size: var(--text-xxl);
-//     line-height: 1;
-//     color: ${({ theme }) => theme.text.primary};
-//   }
-// `;
-
 const StyledProfileContent = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  flex-direction: column;
-  gap: 3rem;
   gap: 3rem;
   padding: 3rem;
-   @media (max-width: 1000px) {
+  
+  @media (max-width: 1000px) {
     grid-template-columns: repeat(1, 1fr);
   }
-   @media (max-width: 700px) {
+  @media (max-width: 700px) {
     padding: 2rem;
   }
+`;
+
+const StyledMessage = styled.div<{ type: 'error' | 'success' }>`
+  padding: 1rem 1.5rem;
+  border-radius: 0.8rem;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  
+  ${({ type }) => type === 'error' && `
+    background-color: #fee2e2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+  `}
+  
+  ${({ type }) => type === 'success' && `
+    background-color: #d1fae5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+  `}
 `;
 
 const StyledUpdateAvatar = styled.div`
   width: 100%;
   padding-bottom: 2rem;
 `;
+
 const StyledUpdateAvatarContent = styled.label`
   width: 100%;
   height: 20rem;
@@ -143,13 +266,17 @@ const StyledUpdateAvatarContent = styled.label`
   font-weight: 500;
   border: 1px solid ${({ theme }) => theme.border.secondary};
   cursor: pointer;
+  transition: all 0.2s ease;
+  
   svg {
     width: 5rem;
     color: ${({ theme }) => theme.text.placeholder};
   }
+  
   input {
     display: none;
   }
+  
   &:hover {
     background-color: ${({ theme }) => theme.background.thirdly};
     svg {
@@ -157,6 +284,7 @@ const StyledUpdateAvatarContent = styled.label`
     }
   }
 `;
+
 const StyledLeftPart = styled.div`
   width: 100%;
 `;
@@ -167,19 +295,23 @@ const StyledItemsList = styled.div`
   flex-direction: column;
   gap: 2rem;
 `;
+
 const StyledItems = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 `;
+
 const StyledLabel = styled.label`
   line-height: 1;
   font-size: var(--text-md);
   color: ${({ theme }) => theme.text.secondary};
+  font-weight: 500;
 `;
+
 const StyledInput = styled.input`
-  padding: 0 1.5rem 0 1.5rem;
+  padding: 0 1.5rem;
   width: 100%;
   height: 4.5rem;
   border-radius: 0.8rem;
@@ -187,34 +319,62 @@ const StyledInput = styled.input`
   border: 1px solid ${({ theme }) => theme.border.secondary};
   outline: none;
   color: ${({ theme }) => theme.text.primary};
+  font-size: var(--text-md);
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(36, 146, 194, 0.1);
+  }
+  
   &::placeholder {
     color: ${({ theme }) => theme.text.placeholder};
   }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;
+
 const StyledTextarea = styled.textarea`
   padding: 1.5rem;
   width: 100%;
   height: 10rem;
-
   border-radius: 0.8rem;
   background-color: ${({ theme }) => theme.background.thirdly};
   border: 1px solid ${({ theme }) => theme.border.secondary};
   outline: none;
   color: ${({ theme }) => theme.text.primary};
-  resize: none;
+  resize: vertical;
+  font-size: var(--text-md);
+  font-family: inherit;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: var(--blue);
+    box-shadow: 0 0 0 3px rgba(36, 146, 194, 0.1);
+  }
+  
   &::placeholder {
     color: ${({ theme }) => theme.text.placeholder};
   }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 `;
+
 const StyledRightPart = styled.div`
   width: 100%;
   height: max-content;
   background-color: ${({ theme }) => theme.background.primary};
-  border: 1px solid ${({ theme }) => theme.border.primary};
+  border: 1px solid ${({ theme }) => theme.border.secondary};
   border-radius: 0.8rem;
   overflow: hidden;
-  border: 1px solid ${({ theme }) => theme.border.secondary};
-@media (max-width: 1000px) {
+  
+  @media (max-width: 1000px) {
     display: none;
   }
 `;
@@ -246,6 +406,7 @@ const StyledAvatarPic = styled.div`
   padding: 1rem;
   position: relative;
 `;
+
 const StyledBar = styled.div`
   width: 135%;
   height: 4rem;
@@ -264,12 +425,28 @@ const StyledAvatarPicContent = styled.div`
   background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 100%;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 20% 10%;
+    object-position: center;
   }
+`;
+
+const StyledAvatarPlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xxxl);
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, var(--blue), #764ba2);
 `;
 
 const StyledAvatarName = styled.div`
@@ -277,12 +454,14 @@ const StyledAvatarName = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 0.7rem;
+  
   h4 {
     font-size: var(--text-xl);
     line-height: 1;
     color: ${({ theme }) => theme.text.primary};
     font-weight: 500;
   }
+  
   span {
     font-size: var(--text-md);
     line-height: 1;
