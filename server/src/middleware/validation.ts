@@ -2,13 +2,29 @@ import { Request, Response, NextFunction } from 'express';
 
 // Validation for registration
 export const validateRegistration = (req: Request, res: Response, next: NextFunction) => {
+  // Debug logging
+  console.log('=== VALIDATION DEBUG ===');
+  console.log('req.body:', req.body);
+  console.log('Content-Type:', req.get('Content-Type'));
+  console.log('req.method:', req.method);
+  console.log('req.url:', req.url);
+  console.log('=======================');
+
+  if (!req.body) {
+    return res.status(400).json({
+      success: false,
+      message: 'Request body is missing. Make sure to send JSON data with Content-Type: application/json'
+    });
+  }
+
   const { username, email, password, fullName } = req.body;
 
   // Check required fields
   if (!username || !email || !password || !fullName) {
     return res.status(400).json({
       success: false,
-      message: 'Please provide all required fields: username, email, password, fullName'
+      message: 'Please provide all required fields: username, email, password, fullName',
+      received: { username, email, password: password ? '[HIDDEN]' : undefined, fullName }
     });
   }
 
