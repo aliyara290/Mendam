@@ -7,9 +7,9 @@ import path from "path";
 export default defineConfig({
   plugins: [react(), qrcode()],
   base: "./",
-  server: {
-    port: 3000,
-  },
+  // server: {
+  //   port: 8000,
+  // },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
@@ -21,6 +21,7 @@ export default defineConfig({
       "@routes": path.resolve(__dirname, "./src/routes"),
       "@pages": path.resolve(__dirname, "./src/pages"),
       "@styles": path.resolve(__dirname, "./src/styles"),
+      "@types": path.resolve(__dirname, "./src/types"),
     },
   },
 });
