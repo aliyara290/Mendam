@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Avatar from "@app/avatar/Avatar";
-import { Cog8ToothIcon, HomeIcon } from "@heroicons/react/24/outline";
+import { Cog8ToothIcon, HomeIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
 import QuickProfile from "./QuickProfile";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface StatusBarProps { }
 
 const StatusBar: React.FC<StatusBarProps> = ({ }) => {
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const [shouldAnimate, setShouldAnimate] = useState<boolean>(false);
-  const location = useLocation()
-  // const handleCloseProfile = () => {
-  //   setIsProfileOpen(false);
-  // };
+  const location = useLocation();
+  const { user, logout } = useAuth();
 
   const handleToggleProfile = () => {
     if (!isProfileOpen) {
@@ -23,6 +22,19 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
     }
     setIsProfileOpen((prev) => !prev);
   };
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
+  if (!user) {
+    return null; // Don't render if no user data
+  }
+
   return (
     <>
       <StyledStatusBar>
@@ -44,8 +56,13 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
                   <StyledItems isActive={location.pathname === "/app/friends"}>
                     <Link to={"/app/friends"}>
                       <StyledItemProfile isActive={location.pathname === "/app/friends"}>
-                        <img src="https://res.cloudinary.com/decjm9mmr/image/upload/q_10/linkedin_qeixe5.jpg" alt="" />
-                        {/* <UserIcon /> */}
+                        {user.avatar ? (
+                          <img src={user.avatar} alt={user.fullName} />
+                        ) : (
+                          <div className="placeholder">
+                            {user.fullName.charAt(0).toUpperCase()}
+                          </div>
+                        )}
                       </StyledItemProfile>
                       <StyledItemLabel>
                         <span>Profile</span>
@@ -68,27 +85,33 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
               <>
                 <StyledUserAvatar onClick={handleToggleProfile}>
                   <Avatar
-                    image="https://res.cloudinary.com/decjm9mmr/image/upload/q_10/linkedin_qeixe5.jpg"
-                    status="online"
+                    image={user.avatar}
+                    userName={user.fullName}
+                    status={user.status}
                     showStatus
                     showStatusCircle
                     showUserName
                   />
                 </StyledUserAvatar>
-                <StyledSettingIcon>
-                  <Link to={"/app/settings/profile"}>
-                    <Cog8ToothIcon />
-                  </Link>
-                </StyledSettingIcon>
+                <StyledActions>
+                  <StyledSettingIcon>
+                    <Link to={"/app/settings/profile"}>
+                      <Cog8ToothIcon />
+                    </Link>
+                  </StyledSettingIcon>
+                  <StyledLogoutIcon onClick={handleLogout}>
+                    <ArrowRightStartOnRectangleIcon />
+                  </StyledLogoutIcon>
+                </StyledActions>
               </>
             )}
-
           </StyledStatusBarContainer>
         </StyledStatusBarContent>
         <QuickProfile
-          // onClose={handleCloseProfile}
           isOpen={isProfileOpen}
           shouldAnimate={shouldAnimate}
+          user={user}
+          onLogout={handleLogout}
         />
       </StyledStatusBar>
     </>
@@ -99,14 +122,13 @@ export default StatusBar;
 
 interface StyledItemsProps {
   isActive?: boolean;
-
 }
 
 const StyledStatusBar = styled.div`
   width: 100%;
-
   position: relative;
 `;
+
 const StyledStatusBarContent = styled.div`
   width: 100%;
   height: 100%;
@@ -126,7 +148,6 @@ const StyledStatusBarContent = styled.div`
 const StyledStatusBarContainer = styled.div`
   width: 100%;
   height: 100%;
-  /* height: 7rem; */
   background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 0.8rem;
   padding: 1rem 1.5rem 1rem 1rem;
@@ -155,6 +176,12 @@ const StyledUserAvatar = styled.div`
   }
 `;
 
+const StyledActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
 const StyledSettingIcon = styled.div`
   a {
     color: ${({ theme }) => theme.text.primary};
@@ -171,45 +198,55 @@ const StyledSettingIcon = styled.div`
     }
   }
 `;
-const StyledItemsList = styled.div`
-width: 100%;
-display: grid;
-grid-template-columns: repeat(3, 1fr);
-align-items: center;
-padding: 0.6rem 0;
+
+const StyledLogoutIcon = styled.div`
+  color: ${({ theme }) => theme.text.primary};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  
+  svg {
+    width: 2.4rem;
+  }
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.background.primary};
+    color: #ef4444;
+  }
 `;
+
+const StyledItemsList = styled.div`
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  padding: 0.6rem 0;
+`;
+
 const StyledItems = styled.div<StyledItemsProps>`
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   a {
-  color: ${({ isActive }) => (isActive ? ({ theme }) => theme.text.primary : ({ theme }) => theme.text.placeholder)};
-
+    color: ${({ isActive }) => (isActive ? ({ theme }) => theme.text.primary : ({ theme }) => theme.text.placeholder)};
     display: flex;
     align-items: center;
     flex-direction: column;
-    /* gap: 0.1rem; */
-    position: relative;
-    /* &::after
-      {
-        content: "";
-        position: absolute;
-        bottom: -1rem;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 150%;
-        height: 3px;
-        background-color: ${({ theme }) => theme.text.thirdly};
-      } */
   }
 `;
+
 const StyledItemIcon = styled.div`
   svg {
     color: inherit;
     width: 2.4rem;
   }
 `;
+
 const StyledItemProfile = styled.div<StyledItemsProps>`
   width: 2.4rem;
   height: 2.4rem;
@@ -221,27 +258,25 @@ const StyledItemProfile = styled.div<StyledItemsProps>`
   justify-content: center;
   overflow: hidden;
   border: 0.7px solid ${({ theme }) => theme.text.placeholder};
-  svg {
-    width: 1rem;
-    /* color: ${({ theme }) => theme.text.placeholder}; */
-    color: inherit;
-
-  }
+  
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     opacity: ${({ isActive }) => (isActive ? "1" : "0.7")};
-    
+  }
+  
+  .placeholder {
+    color: inherit;
+    font-size: var(--text-sm);
+    font-weight: 600;
   }
 `;
-const StyledItemLabel = styled.div`
-/* color: ${({ theme }) => theme.text.thirdly}; */
-/* display: none; */
-    color: inherit;
 
-span {
-  font-size: var(--text-xxs);
-  line-height: 1;
-}
+const StyledItemLabel = styled.div`
+  color: inherit;
+  span {
+    font-size: var(--text-xxs);
+    line-height: 1;
+  }
 `;

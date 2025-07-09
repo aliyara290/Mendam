@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react";
 import { qrcode } from "vite-plugin-qrcode";
 import path from "path";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), qrcode()],
   base: "./",
@@ -21,6 +20,7 @@ export default defineConfig({
       "@routes": path.resolve(__dirname, "./src/routes"),
       "@pages": path.resolve(__dirname, "./src/pages"),
       "@styles": path.resolve(__dirname, "./src/styles"),
+      "@types": path.resolve(__dirname, "./src/types"),
     },
   },
 });

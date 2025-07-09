@@ -8,13 +8,7 @@ const HomePage = () => {
   return (
     <>
       <Header />
-      {/* <Avatar /> */}
-      {/* <Button
-        target="blank"
-        link="https://www.youtube.com"
-        title="Delete Account"
-        variant="cancel"
-      /> */}
+     
       <Hero />
       <Banner />
       <Footer />

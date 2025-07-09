@@ -85,7 +85,7 @@ app.use(errorHandler);
 const socketService = new SocketService(io);
 socketService.initialize();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.FRONTEND || 5173;
 
 const startServer = async () => {
   try {
