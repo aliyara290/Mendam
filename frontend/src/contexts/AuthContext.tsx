@@ -1,4 +1,3 @@
-// frontend/src/contexts/AuthContext.tsx - Fixed version
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { authAPI, type RegisterData, type LoginData } from '../services/Api';
 
@@ -9,6 +8,8 @@ interface User {
   fullName: string;
   avatar?: string;
   status: string;
+  jobTitle?: string;
+  biography?: string;
 }
 
 interface AuthContextType {
@@ -17,6 +18,7 @@ interface AuthContextType {
   login: (data: LoginData) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
   logout: () => void;
+  updateUser: (userData: Partial<User>) => void; // Add this method
   isAuthenticated: boolean;
 }
 
@@ -28,7 +30,7 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true); // Start with loading true
+  const [loading, setLoading] = useState(true);
 
   // 🔄 Check for existing token when app starts (handles page refresh)
   useEffect(() => {
@@ -54,16 +56,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         }
       } catch (error) {
         console.error('❌ Token verification failed:', error);
-        // Token is invalid or expired, remove it
         localStorage.removeItem('token');
         setUser(null);
       } finally {
-        setLoading(false); // Always stop loading
+        setLoading(false);
       }
     };
 
     initializeAuth();
-  }, []); // Only run once when component mounts
+  }, []);
 
   const login = async (data: LoginData) => {
     try {
@@ -126,12 +127,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const updateUser = (userData: Partial<User>) => {
+    setUser(prev => prev ? { ...prev, ...userData } : null);
+  };
+
   const value: AuthContextType = {
     user,
     loading,
     login,
     register,
     logout,
+    updateUser,
     isAuthenticated: !!user,
   };
 
