@@ -7,87 +7,129 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/solid";
 
-interface PortfolioProps {
-  onClick: () => void;
-  isOpen: boolean;
+interface User {
+  _id: string;
+  username: string;
+  fullName: string;
+  avatar?: string;
+  status: string;
+  isOnline: boolean;
+  lastSeen: Date;
+  jobTitle?: string;
+  biography?: string;
 }
 
-const Profile: React.FC<PortfolioProps> = ({ onClick, isOpen }) => {
+interface ProfileProps {
+  onClick: () => void;
+  isOpen: boolean;
+  user: User;
+}
+
+const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
   if (!isOpen) {
     return null;
   }
+
+  const formatJoinDate = (date: Date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+      month: 'long',
+      year: 'numeric'
+    });
+  };
+
+  const getStatusText = () => {
+    if (user.isOnline) {
+      return user.status === 'idle' ? 'Idle' : 'Online';
+    }
+    return 'Offline';
+  };
+
+  const getStatusColor = () => {
+    if (!user.isOnline) return '#6b7280';
+    return user.status === 'idle' ? '#f2c100' : '#43a25a';
+  };
+
   return (
     <>
-      <StyledPortfolio>
-        <StyledPortfolioContent>
-          <StyledPortfolioCover>
+      <StyledProfile>
+        <StyledProfileContent>
+          <StyledProfileCover>
             <StyledAvatar>
               <StyledAvatarPic>
                 <StyledAvatarPicContent>
-                  <img
-                    src="https://res.cloudinary.com/decjm9mmr/image/upload/v1750110103/WhatsApp_Image_2025-06-14_at_01.49.57_ba9322cc_uoefdw.jpg"
-                    alt=""
-                  />
+                  {user.avatar ? (
+                    <img src={user.avatar} alt={user.fullName} />
+                  ) : (
+                    <StyledAvatarPlaceholder>
+                      {user.fullName.charAt(0).toUpperCase()}
+                    </StyledAvatarPlaceholder>
+                  )}
                 </StyledAvatarPicContent>
                 <StyledBar />
               </StyledAvatarPic>
               <StyledAvatarName>
-                <h4>leibe</h4>
-                <span>@imanejabouji</span>
+                <h4>{user.fullName}</h4>
+                <span>@{user.username}</span>
+                <StyledStatusIndicator>
+                  <StyledStatusDot color={getStatusColor()} />
+                  <StyledStatusText>{getStatusText()}</StyledStatusText>
+                </StyledStatusIndicator>
               </StyledAvatarName>
             </StyledAvatar>
-          </StyledPortfolioCover>
+          </StyledProfileCover>
+          
           <StyledUserInfo>
             <StyledNavigation>
               <StyledButtonList>
-                <StyledButtonListItem>Personnal infos</StyledButtonListItem>
+                <StyledButtonListItem>Personal Info</StyledButtonListItem>
                 <StyledButtonListItem>Mutual Friends</StyledButtonListItem>
               </StyledButtonList>
             </StyledNavigation>
-            <StyledPersonnalInfo>
+            
+            <StyledPersonalInfo>
               <StyledInfoItem>
                 <StyledInfoIcon>
                   <EnvelopeIcon />
                 </StyledInfoIcon>
-                <StyledInfoData>ali.yara@gmail.com</StyledInfoData>
+                <StyledInfoData>@{user.username}</StyledInfoData>
               </StyledInfoItem>
+              
+              {user.jobTitle && (
+                <StyledInfoItem>
+                  <StyledInfoIcon>
+                    <BriefcaseIcon />
+                  </StyledInfoIcon>
+                  <StyledInfoData>{user.jobTitle}</StyledInfoData>
+                </StyledInfoItem>
+              )}
+              
               <StyledInfoItem>
                 <StyledInfoIcon>
                   <CalendarIcon />
                 </StyledInfoIcon>
-                <StyledInfoData>May 2023</StyledInfoData>
+                <StyledInfoData>Joined {formatJoinDate(user.lastSeen)}</StyledInfoData>
               </StyledInfoItem>
-              <StyledInfoItem>
-                <StyledInfoIcon>
-                  <BriefcaseIcon />
-                </StyledInfoIcon>
-                <StyledInfoData>Full Stack Developer</StyledInfoData>
-              </StyledInfoItem>
-            </StyledPersonnalInfo>
-            <StyledBio>
-              <p>
-                Passionate Software Engineer with experience in building
-                scalable web applications and modern user interfaces. Skilled in
-                JavaScript, TypeScript, React, and Node.js. Strong
-                problem-solver with a focus on clean, efficient code and agile
-                collaboration. Committed to continuous learning and delivering
-                high-quality solutions that drive innovation and user
-                satisfaction.
-              </p>
-            </StyledBio>
+            </StyledPersonalInfo>
+            
+            {user.biography && (
+              <StyledBio>
+                <p>{user.biography}</p>
+              </StyledBio>
+            )}
           </StyledUserInfo>
+          
           <StyledCloseModal onClick={onClick}>
             <XMarkIcon />
           </StyledCloseModal>
-        </StyledPortfolioContent>
-      </StyledPortfolio>
+        </StyledProfileContent>
+      </StyledProfile>
     </>
   );
 };
 
 export default Profile;
 
-const StyledPortfolio = styled.div`
+const StyledProfile = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -100,7 +142,7 @@ const StyledPortfolio = styled.div`
   z-index: 234567890876543;
 `;
 
-const StyledPortfolioContent = styled.div`
+const StyledProfileContent = styled.div`
   width: 100%;
   height: 50rem;
   max-width: 70rem;
@@ -111,6 +153,7 @@ const StyledPortfolioContent = styled.div`
   position: relative;
   border: 1px solid ${({ theme }) => theme.border.primary};
 `;
+
 const StyledCloseModal = styled.div`
   position: absolute;
   top: 2rem;
@@ -124,15 +167,17 @@ const StyledCloseModal = styled.div`
   background-color: #ffffff39;
   color: var(--light);
   cursor: pointer;
+  
   &:hover {
     background-color: #ffffff58;
   }
+  
   svg {
     width: 2.2rem;
   }
 `;
 
-const StyledPortfolioCover = styled.div`
+const StyledProfileCover = styled.div`
   width: 100%;
   height: 13rem;
   background: var(--blue);
@@ -159,6 +204,7 @@ const StyledAvatarPic = styled.div`
   padding: 1rem;
   position: relative;
 `;
+
 const StyledBar = styled.div`
   width: 135%;
   height: 7rem;
@@ -177,12 +223,28 @@ const StyledAvatarPicContent = styled.div`
   background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 100%;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 20% 10%;
+    object-position: center;
   }
+`;
+
+const StyledAvatarPlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-xxxl);
+  font-weight: 600;
+  color: white;
+  background: linear-gradient(135deg, var(--blue), #764ba2);
 `;
 
 const StyledAvatarName = styled.div`
@@ -190,12 +252,14 @@ const StyledAvatarName = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 0.7rem;
+  
   h4 {
     font-size: var(--text-xxl);
     line-height: 1;
     color: ${({ theme }) => theme.text.primary};
     font-weight: 500;
   }
+  
   span {
     font-size: var(--text-md);
     line-height: 1;
@@ -203,34 +267,55 @@ const StyledAvatarName = styled.div`
   }
 `;
 
+const StyledStatusIndicator = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+`;
+
+const StyledStatusDot = styled.div<{ color: string }>`
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background-color: ${({ color }) => color};
+`;
+
+const StyledStatusText = styled.span`
+  font-size: var(--text-sm);
+  color: ${({ theme }) => theme.text.secondary};
+`;
+
 const StyledUserInfo = styled.div`
   width: 100%;
   max-height: 19rem;
   overflow: auto;
 `;
+
 const StyledNavigation = styled.div`
-  /* width: 100%; */
   background-color: ${({ theme }) => theme.background.secondary};
   border-bottom: 1px solid ${({ theme }) => theme.border.secondary};
   margin: 0 2rem;
   position: sticky;
   top: 0;
 `;
+
 const StyledButtonList = styled.ul`
   display: flex;
   align-items: center;
   gap: 2rem;
-  /* padding-bottom: 1rem; */
 `;
+
 const StyledButtonListItem = styled.li`
   font-size: var(--text-md);
   color: ${({ theme }) => theme.text.thirdly};
   padding: 1rem 0;
   cursor: pointer;
   position: relative;
+  
   &:hover {
     color: ${({ theme }) => theme.text.primary};
   }
+  
   &:first-child::after {
     content: "";
     position: absolute;
@@ -241,32 +326,39 @@ const StyledButtonListItem = styled.li`
     background-color: ${({ theme }) => theme.text.thirdly};
   }
 `;
-const StyledPersonnalInfo = styled.div`
+
+const StyledPersonalInfo = styled.div`
   display: flex;
-  align-items: centere;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 1.5rem;
   padding: 2rem;
-  /* border-bottom: 1px solid ${({ theme }) => theme.border.secondary}; */
 `;
+
 const StyledInfoItem = styled.div`
   display: flex;
   align-items: center;
   gap: 1rem;
 `;
+
 const StyledInfoIcon = styled.div`
   color: ${({ theme }) => theme.text.thirdly};
+  
   svg {
     width: 2rem;
   }
 `;
+
 const StyledInfoData = styled.div`
   color: ${({ theme }) => theme.text.thirdly};
   font-size: var(--text-md);
 `;
+
 const StyledBio = styled.div`
-  padding: 0 2rem 0;
+  padding: 0 2rem 2rem;
+  
   p {
     font-size: var(--text-md);
     color: ${({ theme }) => theme.text.thirdly};
+    line-height: 1.6;
   }
 `;

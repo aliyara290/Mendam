@@ -10,19 +10,62 @@ import {
 } from "@heroicons/react/24/outline";
 import Profile from "@app/chat-area/profile/Profile";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
+import { useFriends } from "@/contexts/FriendsContext";
+import { useMessages } from "@/contexts/MessagesContext";
 
-interface P2PHeaderProps { }
+interface Recipient {
+  _id: string;
+  username: string;
+  fullName: string;
+  avatar?: string;
+  status: string;
+  isOnline: boolean;
+  lastSeen: Date;
+}
 
-const P2PHeader: React.FC<P2PHeaderProps> = ({ }) => {
-  const [openPortfolio, setOpenPortfolio] = useState<boolean>(false);
+interface P2PHeaderProps {
+  recipient: Recipient;
+}
+
+const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
+  const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  
+  const { removeFriend, blockUser } = useFriends();
+  const { setCurrentConversation } = useMessages();
 
-  const handleClosePortfolio = () => {
-    setOpenPortfolio(false);
+  const handleCloseProfile = () => {
+    setOpenProfile(false);
   };
 
   const handleOpenMenu = () => {
     setIsMenuOpen(true);
+  };
+
+  const handleRemoveFriend = async () => {
+    try {
+      await removeFriend(recipient._id);
+      setCurrentConversation(null); // Close the conversation
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.error('Failed to remove friend:', error);
+    }
+  };
+
+  const handleBlockUser = async () => {
+    try {
+      await blockUser(recipient._id);
+      setCurrentConversation(null); // Close the conversation
+      setIsMenuOpen(false);
+    } catch (error) {
+      console.error('Failed to block user:', error);
+    }
+  };
+
+  const handleClearMessages = () => {
+    // TODO: Implement clear messages functionality
+    alert("Clear messages functionality not implemented yet");
+    setIsMenuOpen(false);
   };
 
   const menuItems: MenuItemProps[] = [
@@ -30,62 +73,75 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ }) => {
       label: "View Profile",
       icon: <UserIcon />,
       onClick: () => {
-        setOpenPortfolio(true);
-        setIsMenuOpen(false);
-      },
-    },
-    {
-      label: "Block",
-      icon: <NoSymbolIcon />,
-      onClick: () => {
-        alert("Reply");
+        setOpenProfile(true);
         setIsMenuOpen(false);
       },
     },
     {
       label: "Clear messages",
       icon: <XMarkIcon />,
-      onClick: () => {
-        setIsMenuOpen(false);
-      },
+      onClick: handleClearMessages,
     },
     {
-      label: "Delete",
+      label: "Remove Friend",
       icon: <TrashIcon />,
+      onClick: handleRemoveFriend,
+    },
+    {
+      label: "Block User",
+      icon: <NoSymbolIcon />,
       danger: true,
-      onClick: () => {
-        setIsMenuOpen(false);
-      },
+      onClick: handleBlockUser,
     },
   ];
+
+  const getStatusColor = () => {
+    if (!recipient.isOnline) return "offline";
+    return recipient.status === "idle" ? "idle" : "online";
+  };
+
+  const formatLastSeen = (lastSeen: Date) => {
+    if (recipient.isOnline) return "Online";
+    
+    const now = new Date();
+    const diff = now.getTime() - new Date(lastSeen).getTime();
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (minutes < 1) return "Just now";
+    if (minutes < 60) return `${minutes}m ago`;
+    if (hours < 24) return `${hours}h ago`;
+    if (days < 7) return `${days}d ago`;
+    
+    return new Date(lastSeen).toLocaleDateString();
+  };
 
   return (
     <>
       <StyledP2PHeader>
-        <StyledLeftPart onClick={() => setOpenPortfolio(true)}>
+        <StyledLeftPart onClick={() => setOpenProfile(true)}>
           <Avatar
-            image="https://res.cloudinary.com/decjm9mmr/image/upload/v1750110103/WhatsApp_Image_2025-06-14_at_01.49.57_ba9322cc_uoefdw.jpg"
+            image={recipient.avatar}
             showStatus
             showStatusCircle
             showUserName
-            userName="leibe"
-            status="online"
+            userName={recipient.fullName}
+            status={getStatusColor()}
           />
+          <StyledUserStatus>
+            <StyledStatusText>
+              {formatLastSeen(recipient.lastSeen)}
+            </StyledStatusText>
+          </StyledUserStatus>
         </StyledLeftPart>
+        
         <StyledRightPart>
-          {/* <StyledCall>
-            <StyledIcon>
-              <VideoCameraIcon />
-            </StyledIcon>
-            <StyledLine />
-            <StyledIcon>
-              <PhoneIcon />
-            </StyledIcon>
-          </StyledCall> */}
           <StyledHamburgerIcon onClick={handleOpenMenu}>
             <Bars3BottomRightIcon />
           </StyledHamburgerIcon>
         </StyledRightPart>
+        
         <Menu
           onClose={() => setIsMenuOpen(false)}
           isOpen={isMenuOpen}
@@ -94,7 +150,12 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ }) => {
           items={menuItems}
         />
       </StyledP2PHeader>
-      <Profile isOpen={openPortfolio} onClick={handleClosePortfolio} />
+      
+      <Profile 
+        isOpen={openProfile} 
+        onClick={handleCloseProfile}
+        user={recipient}
+      />
     </>
   );
 };
@@ -103,13 +164,14 @@ export default P2PHeader;
 
 const StyledP2PHeader = styled.header`
   width: 100%;
-  /* height: 8rem; */
   padding: 1rem 1.5rem;
   border-bottom: 1px solid ${({ theme }) => theme.border.secondary};
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: relative;
+  background-color: ${({ theme }) => theme.background.secondary};
+  
   @media (max-width: 1000px) {
     padding: 0.5rem 1rem;
   }
@@ -120,9 +182,30 @@ const StyledLeftPart = styled.div`
   border-radius: 3rem;
   cursor: pointer;
   padding: 0.7em 2rem 0.7em 0.7em;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: background-color 0.2s ease;
+  
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
   }
+`;
+
+const StyledUserStatus = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  
+  @media (max-width: 600px) {
+    display: none;
+  }
+`;
+
+const StyledStatusText = styled.span`
+  font-size: var(--text-sm);
+  color: ${({ theme }) => theme.text.placeholder};
+  line-height: 1;
 `;
 
 const StyledRightPart = styled.div`
@@ -132,49 +215,22 @@ const StyledRightPart = styled.div`
   gap: 2rem;
 `;
 
-// const StyledCall = styled.div`
-//   width: max-content;
-//   border-radius: 8px;
-//   background-color: ${({ theme }) => theme.background.thirdly};
-//   display: flex;
-//   align-items: center;
-//   overflow: hidden;
-// `;
-
-// const StyledLine = styled.div`
-//   width: 1px;
-//   height: 2rem;
-//   background-color: ${({ theme }) => theme.background.secondary};
-// `;
-
-// const StyledIcon = styled.div`
-//   width: 5rem;
-//   height: 4.2rem;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   cursor: pointer;
-//   transition: all 0.2s ease-in-out;
-//   color: ${({ theme }) => theme.text.thirdly};
-//   &:hover {
-//     color: ${({ theme }) => theme.text.primary};
-//     background-color: ${({ theme }) => theme.background.primary};
-//   }
-//   svg {
-//     width: 2.2rem;
-//   }
-// `;
-
 const StyledHamburgerIcon = styled.div`
   cursor: pointer;
   color: ${({ theme }) => theme.text.placeholder};
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  
   svg {
     width: 3rem;
   }
+  
   &:hover {
     color: ${({ theme }) => theme.text.primary};
+    background-color: ${({ theme }) => theme.background.primary};
   }
 `;

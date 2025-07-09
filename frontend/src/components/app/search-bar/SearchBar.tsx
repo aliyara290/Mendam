@@ -1,3 +1,4 @@
+// frontend/src/components/app/search-bar/SearchBar.tsx - Updated with controlled input
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import React from "react";
 import styled from "styled-components";
@@ -5,19 +6,30 @@ import styled from "styled-components";
 interface SearchBarProps {
   value?: string;
   placeholder?: string;
-  onInputChange?: () => void;
+  onInputChange?: (value: string) => void;
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({
-  // value,
+  value,
   placeholder = "Search for",
-  // onInputChange,
+  onInputChange,
 }) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onInputChange) {
+      onInputChange(e.target.value);
+    }
+  };
+
   return (
     <>
       <StyledSearchBar>
         <StyledSearchInput>
-          <input type="text" placeholder={placeholder} />
+          <input 
+            type="text" 
+            placeholder={placeholder}
+            value={value || ""}
+            onChange={handleInputChange}
+          />
         </StyledSearchInput>
         <StyledSearchIcon>
           <span>ctrl</span>
@@ -37,9 +49,7 @@ const StyledSearchBar = styled.div`
   overflow: hidden;
   border-radius: 0.8rem;
   background-color: ${({ theme }) => theme.background.secondary};
-  /* box-shadow: var(--shadow-sm); */
   border: 1px solid ${({ theme }) => theme.border.primary};
-
   display: flex;
   align-items: center;
 `;
@@ -60,6 +70,7 @@ const StyledSearchInput = styled.div`
     }
   }
 `;
+
 const StyledSearchIcon = styled.div`
   color: ${({ theme }) => theme.text.placeholder};
   padding: 1.5rem;
@@ -75,8 +86,8 @@ const StyledSearchIcon = styled.div`
     border-radius: 3px;
     border: 1px solid ${({ theme }) => theme.text.placeholder};
     @media (max-width: 1000px) {
-    display: none;
-  }
+      display: none;
+    }
   }
   svg {
     width: 2.1rem;
