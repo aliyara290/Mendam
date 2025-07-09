@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import SearchBar from "@app/search-bar/SearchBar";
 import Heading from "@app/heading/Heading";
@@ -9,65 +9,209 @@ import {
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
 import AddFriendModal from "./modals/AddFriendModal";
+import { useFriends } from "@/contexts/FriendsContext";
+import { useMessages } from "@/contexts/MessagesContext";
+import { useNavigate } from "react-router-dom";
+import Menu, { type MenuItemProps } from "@app/menu/Menu";
+import { NoSymbolIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-interface FriendsProps { }
+interface FriendsProps {}
 
-const Friends: React.FC<FriendsProps> = ({ }) => {
+const Friends: React.FC<FriendsProps> = ({}) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [openMenuFriendId, setOpenMenuFriendId] = useState<string | null>(null);
+  
+  const { friends, loading, error, loadFriends, removeFriend, blockUser } = useFriends();
+  const { setCurrentConversation } = useMessages();
+  const navigate = useNavigate();
 
-  const handleCloseModale = () => {
+  // Load friends on component mount
+  useEffect(() => {
+    loadFriends();
+  }, []);
+
+  const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const handleStartChat = (friendId: string) => {
+    setCurrentConversation(friendId);
+    // Navigate to direct messages if not already there
+    navigate('/app/@me');
+  };
+
+  const handleRemoveFriend = async (friendId: string) => {
+    try {
+      await removeFriend(friendId);
+      setOpenMenuFriendId(null);
+    } catch (error) {
+      console.error('Failed to remove friend:', error);
+    }
+  };
+
+  const handleBlockUser = async (friendId: string) => {
+    try {
+      await blockUser(friendId);
+      setOpenMenuFriendId(null);
+    } catch (error) {
+      console.error('Failed to block user:', error);
+    }
+  };
+
+  const getMenuItems = (friendId: string): MenuItemProps[] => [
+    {
+      label: "Start Chat",
+      icon: <ChatBubbleOvalLeftEllipsisIcon />,
+      onClick: () => {
+        handleStartChat(friendId);
+        setOpenMenuFriendId(null);
+      },
+    },
+    {
+      label: "Remove Friend",
+      icon: <XMarkIcon />,
+      onClick: () => handleRemoveFriend(friendId),
+    },
+    {
+      label: "Block User",
+      icon: <NoSymbolIcon />,
+      danger: true,
+      onClick: () => handleBlockUser(friendId),
+    },
+  ];
+
+  // Filter friends based on search query
+  const filteredFriends = friends.filter(friend =>
+    friend.friendId.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    friend.friendId.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  if (loading && friends.length === 0) {
+    return (
+      <StyledFriends>
+        <StyledTopHeader>
+          <Heading title="Friends" heading="h3" />
+          <StyledSBarRow>
+            <SearchBar placeholder="Search for people" />
+            <SquareBtn onClick={() => setIsModalOpen(true)} />
+          </StyledSBarRow>
+        </StyledTopHeader>
+        <StyledLoadingContainer>
+          <StyledLoadingText>Loading friends...</StyledLoadingText>
+        </StyledLoadingContainer>
+        <AddFriendModal
+          title="Add new friend"
+          onClose={handleCloseModal}
+          isOpen={isModalOpen}
+        />
+      </StyledFriends>
+    );
+  }
+
+  if (error) {
+    return (
+      <StyledFriends>
+        <StyledTopHeader>
+          <Heading title="Friends" heading="h3" />
+          <StyledSBarRow>
+            <SearchBar placeholder="Search for people" />
+            <SquareBtn onClick={() => setIsModalOpen(true)} />
+          </StyledSBarRow>
+        </StyledTopHeader>
+        <StyledErrorContainer>
+          <StyledErrorText>Failed to load friends: {error}</StyledErrorText>
+          <StyledRetryButton onClick={loadFriends}>Retry</StyledRetryButton>
+        </StyledErrorContainer>
+        <AddFriendModal
+          title="Add new friend"
+          onClose={handleCloseModal}
+          isOpen={isModalOpen}
+        />
+      </StyledFriends>
+    );
+  }
+
   return (
-    <StyledFrineds>
+    <StyledFriends>
       <StyledTopHeader>
         <Heading title="Friends" heading="h3" />
         <StyledSBarRow>
-          <SearchBar placeholder="Search for people" />
+          <SearchBar 
+            placeholder="Search for people"
+            value={searchQuery}
+            onInputChange={(value) => setSearchQuery(value)}
+          />
           <SquareBtn onClick={() => setIsModalOpen(true)} />
         </StyledSBarRow>
       </StyledTopHeader>
-      <StyledChatsList>
-        {[...Array(12)].map((_, index) => (
-          <StyledChatItem key={index}>
-            <StyledChatItemContainer>
-              <Avatar
-                image="https://res.cloudinary.com/decjm9mmr/image/upload/q_10/linkedin_qeixe5.jpg"
-                status="offline"
-                userName="Ali Yara"
-                showStatusCircle
-                showUserName
-                size={35}
-              />
-              <StyledOptions>
-                <StyledOptionsItem>
-                  <ChatBubbleOvalLeftEllipsisIcon />
-                </StyledOptionsItem>
-                <StyledOptionsItem>
-                  <EllipsisHorizontalIcon />
-                </StyledOptionsItem>
-              </StyledOptions>
-            </StyledChatItemContainer>
-          </StyledChatItem>
-        ))}
-      </StyledChatsList>
+
+      {filteredFriends.length === 0 ? (
+        <StyledEmptyState>
+          <StyledEmptyText>
+            {searchQuery 
+              ? `No friends found matching "${searchQuery}"`
+              : "No friends yet. Add some friends to start chatting!"
+            }
+          </StyledEmptyText>
+        </StyledEmptyState>
+      ) : (
+        <StyledChatsList>
+          {filteredFriends.map((friend) => (
+            <StyledChatItem key={friend._id}>
+              <StyledChatItemContainer>
+                <Avatar
+                  image={friend.friendId.avatar}
+                  status={friend.friendId.isOnline ? "online" : "offline"}
+                  userName={friend.friendId.fullName}
+                  showStatusCircle
+                  showUserName
+                  size={35}
+                />
+                <StyledOptions>
+                  <StyledOptionsItem onClick={() => handleStartChat(friend.friendId._id)}>
+                    <ChatBubbleOvalLeftEllipsisIcon />
+                  </StyledOptionsItem>
+                  <StyledOptionsItem 
+                    onClick={() => setOpenMenuFriendId(
+                      openMenuFriendId === friend.friendId._id ? null : friend.friendId._id
+                    )}
+                  >
+                    <EllipsisHorizontalIcon />
+                  </StyledOptionsItem>
+                </StyledOptions>
+              </StyledChatItemContainer>
+              
+              {/* Menu for each friend */}
+              <div onClick={(e) => e.stopPropagation()}>
+                <Menu
+                  onClose={() => setOpenMenuFriendId(null)}
+                  isOpen={openMenuFriendId === friend.friendId._id}
+                  right="1"
+                  items={getMenuItems(friend.friendId._id)}
+                />
+              </div>
+            </StyledChatItem>
+          ))}
+        </StyledChatsList>
+      )}
+
       <AddFriendModal
         title="Add new friend"
-        onClose={handleCloseModale}
+        onClose={handleCloseModal}
         isOpen={isModalOpen}
       />
-    </StyledFrineds>
+    </StyledFriends>
   );
 };
 
 export default Friends;
 
-const StyledFrineds = styled.div`
+const StyledFriends = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* gap: 1.5rem; */
   overflow: auto;
   padding-bottom: 1rem;
   position: relative;
@@ -94,25 +238,28 @@ const StyledSBarRow = styled.div`
   display: flex;
   align-items: center;
   gap: 1.5rem;
-   @media (max-width: 1000px) {
-   gap: 1rem;
+  @media (max-width: 1000px) {
+    gap: 1rem;
   }
-   @media (max-width: 700px) {
-   gap: 1.5rem;
+  @media (max-width: 700px) {
+    gap: 1.5rem;
   }
 `;
+
 const StyledChatsList = styled.div`
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
   @media (max-width: 1000px) {
-   padding: 0;
+    padding: 0;
   }
 `;
 
 const StyledChatItem = styled.div`
   width: 100%;
+  position: relative;
 `;
+
 const StyledChatItemContainer = styled.div`
   width: 100%;
   display: flex;
@@ -129,7 +276,7 @@ const StyledChatItemContainer = styled.div`
   @media (max-width: 700px) {
     padding: 1rem 1.5rem;
     &:active {
-        background-color: ${({ theme }) => theme.background.thirdly}; 
+      background-color: ${({ theme }) => theme.background.thirdly};
     }
   }
   @media (min-width: 700px) {
@@ -138,11 +285,13 @@ const StyledChatItemContainer = styled.div`
     }
   }
 `;
+
 const StyledOptions = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
 `;
+
 const StyledOptionsItem = styled.div`
   width: 3rem;
   height: 3rem;
@@ -159,4 +308,58 @@ const StyledOptionsItem = styled.div`
     width: 2rem;
     color: inherit;
   }
+`;
+
+const StyledLoadingContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+`;
+
+const StyledLoadingText = styled.div`
+  color: ${({ theme }) => theme.text.secondary};
+  font-size: var(--text-md);
+`;
+
+const StyledErrorContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+`;
+
+const StyledErrorText = styled.div`
+  color: ${({ theme }) => theme.text.secondary};
+  font-size: var(--text-md);
+  text-align: center;
+`;
+
+const StyledRetryButton = styled.button`
+  padding: 0.8rem 1.6rem;
+  background-color: var(--blue);
+  color: white;
+  border: none;
+  border-radius: 0.8rem;
+  cursor: pointer;
+  font-size: var(--text-sm);
+  
+  &:hover {
+    background-color: var(--dark-blue);
+  }
+`;
+
+const StyledEmptyState = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+`;
+
+const StyledEmptyText = styled.div`
+  color: ${({ theme }) => theme.text.secondary};
+  font-size: var(--text-md);
+  text-align: center;
 `;

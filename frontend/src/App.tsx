@@ -1,19 +1,27 @@
-// frontend/src/App.tsx - Updated to include AuthProvider
 import AppRoutes from "@/routes/AppRoutes";
 import GlobalStyle from "@styles/GlobalStyle";
 import { ThemeProvider } from "@contexts/ThemeContext";
 import { OpenSettingProvider } from "./contexts/OpenSettingContext";
-import { AuthProvider } from "./contexts/AuthContext"; // Add this import
+import { AuthProvider } from "./contexts/AuthContext";
+import { FriendsProvider } from "./contexts/FriendsContext";
+import { MessagesProvider } from "./contexts/MessagesContext";
+import { SocketProvider } from "./contexts/SocketContext";
 
 function App() {
   return (
     <AuthProvider>
-      <OpenSettingProvider>
-        <ThemeProvider>
-          <GlobalStyle />
-          <AppRoutes />
-        </ThemeProvider>
-      </OpenSettingProvider>
+      <SocketProvider>
+        <FriendsProvider>
+          <MessagesProvider>
+            <OpenSettingProvider>
+              <ThemeProvider>
+                <GlobalStyle />
+                <AppRoutes />
+              </ThemeProvider>
+            </OpenSettingProvider>
+          </MessagesProvider>
+        </FriendsProvider>
+      </SocketProvider>
     </AuthProvider>
   );
 }

@@ -5,6 +5,7 @@ import { Cog8ToothIcon, HomeIcon, ArrowRightStartOnRectangleIcon } from "@heroic
 import QuickProfile from "./QuickProfile";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import FriendRequestsNotification from "../notifications/FriendRequestsNotification";
 
 interface StatusBarProps { }
 
@@ -32,7 +33,7 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
   };
 
   if (!user) {
-    return null; // Don't render if no user data
+    return null;
   }
 
   return (
@@ -94,6 +95,7 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
                   />
                 </StyledUserAvatar>
                 <StyledActions>
+                  <FriendRequestsNotification />
                   <StyledSettingIcon>
                     <Link to={"/app/settings/profile"}>
                       <Cog8ToothIcon />
