@@ -3,13 +3,12 @@ import react from "@vitejs/plugin-react";
 import { qrcode } from "vite-plugin-qrcode";
 import path from "path";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), qrcode()],
   base: "./",
-  // server: {
-  //   port: 8000,
-  // },
+  server: {
+    port: 3000,
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

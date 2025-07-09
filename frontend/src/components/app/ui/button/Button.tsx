@@ -9,6 +9,7 @@ interface ButtonProps {
   title: string;
   link?: string;
   target?: string;
+  full?: boolean,
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -19,6 +20,7 @@ const Button: React.FC<ButtonProps> = ({
   title,
   link,
   target = "self",
+  full
 }) => {
   // const buttonContent = disabled ? <Loader /> : title;
   const buttonContent = title;
@@ -29,6 +31,7 @@ const Button: React.FC<ButtonProps> = ({
       onClick={onClick}
       type={type}
       variant={variant}
+      full={full}
     >
       {buttonContent}
     </StyledButton>
@@ -51,7 +54,8 @@ const BUTTON_COLORS = {
   cancel: { default: "#1e1e20", hover: "#3c3c41" },
 } as const;
 
-const StyledButton = styled.button<Pick<ButtonProps, "variant" | "disabled">>`
+const StyledButton = styled.button<Pick<ButtonProps, "variant" | "disabled" | "full">>`
+width: ${({ full }) => (full ? "100%" : "max-width")};
   min-height: 4rem;
   max-height: 4rem;
   border-radius: 0.8rem;

@@ -32,12 +32,12 @@ const QuickProfile: React.FC<QuickProfileProps> = ({
   const getStatusText = (status: string) => {
     switch (status) {
       case 'online':
-        return 'Online';
+        return 'online';
       case 'idle':
-        return 'Idle';
+        return 'idle';
       case 'offline':
       default:
-        return 'Offline';
+        return 'offline';
     }
   };
 
@@ -67,9 +67,7 @@ const QuickProfile: React.FC<QuickProfileProps> = ({
           <StyledOptionsContainer>
             <StyledOptionItem as={Link} to="/app/settings/profile">
               <StyledLeftPart>
-                <StyledOptionIcon>
-                  <UserIcon />
-                </StyledOptionIcon>
+               
                 <StyledOptionName>Edit profile</StyledOptionName>
               </StyledLeftPart>
               <StyledRightPart>
@@ -108,9 +106,9 @@ const QuickProfile: React.FC<QuickProfileProps> = ({
             <StyledLine />
             <StyledOptionItem onClick={onLogout} isLogout>
               <StyledLeftPart>
-                <StyledOptionIcon>
+                {/* <StyledOptionIcon>
                   <ArrowRightStartOnRectangleIcon />
-                </StyledOptionIcon>
+                </StyledOptionIcon> */}
                 <StyledOptionName>Sign out</StyledOptionName>
               </StyledLeftPart>
             </StyledOptionItem>
@@ -135,7 +133,7 @@ interface StyledOptionItemProps {
 const StyledQuickProfile = styled.div<StyledQuickProfileProps>`
   position: absolute;
   left: 1.5rem;
-  top: ${({ isOpen }) => (isOpen ? "-31rem" : "31rem")};
+  top: ${({ isOpen }) => (isOpen ? "-36rem" : "31rem")};
   width: 25rem;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.background.secondary};
@@ -253,14 +251,14 @@ const StyledOptionItem = styled.div<StyledOptionItemProps>`
   
   &:hover {
     background-color: ${({ isLogout, theme }) => 
-      isLogout ? '#fee2e2' : theme.background.secondary};
+      isLogout ? '#554955' : theme.background.secondary};
     
     ${({ isLogout }) => isLogout && `
       ${StyledOptionName} {
-        color: #dc2626;
+        color: #ff99a4;
       }
       ${StyledOptionIcon} {
-        color: #dc2626;
+        color: #ff99a4;
       }
     `}
   }

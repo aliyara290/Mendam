@@ -1,14 +1,14 @@
+// frontend/src/services/Api.ts
 import axios from 'axios';
-import { type ApiResponse, type LoginResponse, type RegisterResponse, type User } from '@/types/User';
-import { type RegisterData } from '@/contexts/AuthContext';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // 10 seconds timeout
 });
 
 api.interceptors.request.use(
@@ -29,51 +29,60 @@ api.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
-      window.location.href = '/login';
+      window.location.href = '/auth/login';
     }
     return Promise.reject(error);
   }
 );
 
+export interface RegisterData {
+  username: string;
+  email: string;
+  password: string;
+  fullName: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
 export const authAPI = {
-  login: async (email: string, password: string): Promise<ApiResponse<LoginResponse>> => {
-    const response = await api.post('/auth/login', { email, password });
-    return response.data;
+  register: async (data: RegisterData) => {
+    try {
+      const response = await api.post('/auth/register', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Registration failed');
+    }
   },
 
-  register: async (userData: RegisterData): Promise<ApiResponse<RegisterResponse>> => {
-    const response = await api.post('/auth/register', userData);
-    return response.data;
+  login: async (data: LoginData) => {
+    try {
+      const response = await api.post('/auth/login', data);
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Login failed');
+    }
   },
 
-  logout: async (): Promise<ApiResponse<null>> => {
-    const response = await api.post('/auth/logout');
-    return response.data;
+  logout: async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      localStorage.removeItem('token');
+    }
   },
 
-  getProfile: async (): Promise<ApiResponse<{ user: User }>> => {
-    const response = await api.get('/auth/profile');
-    return response.data;
-  },
-
-  updateProfile: async (userData: Partial<User>): Promise<ApiResponse<{ user: User }>> => {
-    const response = await api.put('/users/profile', userData);
-    return response.data;
-  },
-
-  updateStatus: async (status: 'online' | 'offline' | 'idle'): Promise<ApiResponse<{ status: string; isOnline: boolean }>> => {
-    const response = await api.put('/users/status', { status });
-    return response.data;
-  },
-
-  searchUsers: async (query: string): Promise<ApiResponse<{ users: User[] }>> => {
-    const response = await api.get(`/users/search?query=${encodeURIComponent(query)}`);
-    return response.data;
-  },
-
-  getUserById: async (userId: string): Promise<ApiResponse<{ user: User }>> => {
-    const response = await api.get(`/users/${userId}`);
-    return response.data;
+  getProfile: async () => {
+    try {
+      const response = await api.get('/auth/profile');
+      return response.data;
+    } catch (error: any) {
+      throw new Error(error.response?.data?.message || 'Failed to get profile');
+    }
   },
 };
 

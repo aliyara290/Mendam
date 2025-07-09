@@ -1,22 +1,23 @@
+// frontend/src/contexts/AuthContext.tsx - Fixed version
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { type User } from '@/types/User';
-import { authAPI } from '@/services/Api';
+import { authAPI, type RegisterData, type LoginData } from '../services/Api';
 
-export interface AuthContextType {
-  user: User | null;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (userData: RegisterData) => Promise<void>;
-  logout: () => Promise<void>;
-  updateUser: (userData: Partial<User>) => void;
-}
-
-export interface RegisterData {
+interface User {
+  id: string;
   username: string;
   email: string;
-  password: string;
   fullName: string;
+  avatar?: string;
+  status: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  login: (data: LoginData) => Promise<void>;
+  register: (data: RegisterData) => Promise<void>;
+  logout: () => void;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,86 +28,111 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // Start with loading true
 
-  const isAuthenticated = !!user;
-
-  // Check if user is logged in on app start
+  // 🔄 Check for existing token when app starts (handles page refresh)
   useEffect(() => {
-    const initAuth = async () => {
+    const initializeAuth = async () => {
       try {
         const token = localStorage.getItem('token');
+        
         if (token) {
-          const userData = await authAPI.getProfile();
-          setUser(userData.data.user);
+          console.log('🔑 Token found in localStorage, verifying...');
+          
+          // Verify token with backend and get user info
+          const response = await authAPI.getProfile();
+          
+          if (response.success) {
+            console.log('✅ Token valid, user authenticated');
+            setUser(response.data.user);
+          } else {
+            console.log('❌ Token invalid, removing from storage');
+            localStorage.removeItem('token');
+          }
+        } else {
+          console.log('🔍 No token found in localStorage');
         }
       } catch (error) {
-        // Token might be expired or invalid
+        console.error('❌ Token verification failed:', error);
+        // Token is invalid or expired, remove it
         localStorage.removeItem('token');
-        console.error('Auth initialization failed:', error);
+        setUser(null);
       } finally {
-        setIsLoading(false);
+        setLoading(false); // Always stop loading
       }
     };
 
-    initAuth();
-  }, []);
+    initializeAuth();
+  }, []); // Only run once when component mounts
 
-  const login = async (email: string, password: string) => {
+  const login = async (data: LoginData) => {
     try {
-      setIsLoading(true);
-      const response = await authAPI.login(email, password);
-      const { user: userData, token } = response.data;
+      setLoading(true);
+      console.log('🔐 Attempting login...');
       
-      localStorage.setItem('token', token);
-      setUser(userData);
-    } catch (error) {
-      throw error;
+      const response = await authAPI.login(data);
+      
+      if (response.success) {
+        const { user, token } = response.data;
+        
+        console.log('✅ Login successful, storing token');
+        localStorage.setItem('token', token);
+        setUser(user);
+      } else {
+        throw new Error(response.message || 'Login failed');
+      }
+    } catch (error: any) {
+      console.error('❌ Login failed:', error.message);
+      throw new Error(error.message || 'Login failed');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const register = async (userData: RegisterData) => {
+  const register = async (data: RegisterData) => {
     try {
-      setIsLoading(true);
-      const response = await authAPI.register(userData);
-      const { user: newUser, token } = response.data;
+      setLoading(true);
+      console.log('📝 Attempting registration...');
       
-      localStorage.setItem('token', token);
-      setUser(newUser);
-    } catch (error) {
-      throw error;
+      const response = await authAPI.register(data);
+      
+      if (response.success) {
+        const { user, token } = response.data;
+        
+        console.log('✅ Registration successful, storing token');
+        localStorage.setItem('token', token);
+        setUser(user);
+      } else {
+        throw new Error(response.message || 'Registration failed');
+      }
+    } catch (error: any) {
+      console.error('❌ Registration failed:', error.message);
+      throw new Error(error.message || 'Registration failed');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   const logout = async () => {
     try {
+      console.log('🚪 Logging out...');
       await authAPI.logout();
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error('❌ Logout error:', error);
     } finally {
+      console.log('🗑️ Clearing token and user state');
       localStorage.removeItem('token');
       setUser(null);
     }
   };
 
-  const updateUser = (userData: Partial<User>) => {
-    if (user) {
-      setUser({ ...user, ...userData });
-    }
-  };
-
   const value: AuthContextType = {
     user,
-    isAuthenticated,
-    isLoading,
+    loading,
     login,
     register,
     logout,
-    updateUser,
+    isAuthenticated: !!user,
   };
 
   return (

@@ -8,116 +8,117 @@ import Loader from '@/components/app/ui/Loader';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline';
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-  const { login } = useAuth();
-  const navigate = useNavigate();
+    const { login } = useAuth();
+    const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setIsLoading(true);
 
-    try {
-      await login(email, password);
-      navigate('/app/@me');
-    } catch (error: any) {
-      setError(error.response?.data?.message || 'Login failed. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
+        try {
+            await login({ email: email, password: password });
+            navigate('/app/@me');
+        } catch (error: any) {
+            setError(error.response?.data?.message || 'Login failed. Please try again.');
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-  return (
-    <StyledLoginPage>
-      <StyledLoginContainer>
-        <StyledLoginCard>
-          <StyledHeader>
-            <Logo />
-            <StyledTitle>
-              <h1>Welcome back!</h1>
-              <p>We're so excited to see you again!</p>
-            </StyledTitle>
-          </StyledHeader>
+    return (
+        <StyledLoginPage>
+            <StyledLoginContainer>
+                <StyledLoginCard>
+                    <StyledHeader>
+                        <Logo />
+                        <StyledTitle>
+                            <h1>Welcome back!</h1>
+                            <p>We're so excited to see you again!</p>
+                        </StyledTitle>
+                    </StyledHeader>
 
-          <StyledForm onSubmit={handleSubmit}>
-            {error && (
-              <StyledError>
-                <span>{error}</span>
-              </StyledError>
-            )}
+                    <StyledForm onSubmit={handleSubmit}>
+                        {error && (
+                            <StyledError>
+                                <span>{error}</span>
+                            </StyledError>
+                        )}
 
-            <StyledInputGroup>
-              <StyledLabel htmlFor="email">
-                Email <span>*</span>
-              </StyledLabel>
-              <StyledInput
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                disabled={isLoading}
-                placeholder="Enter your email"
-              />
-            </StyledInputGroup>
+                        <StyledInputGroup>
+                            <StyledLabel htmlFor="email">
+                                Email <span>*</span>
+                            </StyledLabel>
+                            <StyledInput
+                                type="email"
+                                id="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                disabled={isLoading}
+                                placeholder="Enter your email"
+                            />
+                        </StyledInputGroup>
 
-            <StyledInputGroup>
-              <StyledLabel htmlFor="password">
-                Password <span>*</span>
-              </StyledLabel>
-              <StyledPasswordInput>
-                <StyledInput
-                  type={showPassword ? 'text' : 'password'}
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                  placeholder="Enter your password"
-                />
-                <StyledPasswordToggle
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  disabled={isLoading}
-                >
-                  {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
-                </StyledPasswordToggle>
-              </StyledPasswordInput>
-            </StyledInputGroup>
+                        <StyledInputGroup>
+                            <StyledLabel htmlFor="password">
+                                Password <span>*</span>
+                            </StyledLabel>
+                            <StyledPasswordInput>
+                                <StyledInput
+                                    type={showPassword ? 'text' : 'password'}
+                                    id="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    disabled={isLoading}
+                                    placeholder="Enter your password"
+                                />
+                                <StyledPasswordToggle
+                                    type="button"
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    disabled={isLoading}
+                                >
+                                    {showPassword ? <EyeSlashIcon /> : <EyeIcon />}
+                                </StyledPasswordToggle>
+                            </StyledPasswordInput>
+                        </StyledInputGroup>
 
-            <StyledForgotPassword>
-              <Link to="/forgot-password">Forgot your password?</Link>
-            </StyledForgotPassword>
+                        <StyledForgotPassword>
+                            <Link to="/forgot-password">Forgot your password?</Link>
+                        </StyledForgotPassword>
 
-            <StyledSubmitButton>
-              {isLoading ? (
-                <StyledLoaderWrapper>
-                  <Loader />
-                  <span>Signing in...</span>
-                </StyledLoaderWrapper>
-              ) : (
-                <Button
-                  type="submit"
-                  variant="primary"
-                  title="Log In"
-                  disabled={isLoading || !email || !password}
-                />
-              )}
-            </StyledSubmitButton>
+                        <StyledSubmitButton>
+                            {isLoading ? (
+                                <StyledLoaderWrapper>
+                                    <Loader />
+                                    <span>Signing in...</span>
+                                </StyledLoaderWrapper>
+                            ) : (
+                                <Button
+                                full
+                                    type="submit"
+                                    variant="primary"
+                                    title="Log In"
+                                    disabled={isLoading || !email || !password}
+                                />
+                            )}
+                        </StyledSubmitButton>
 
-            <StyledRegisterLink>
-              Need an account? <Link to="/register">Register</Link>
-            </StyledRegisterLink>
-          </StyledForm>
-        </StyledLoginCard>
-      </StyledLoginContainer>
-    </StyledLoginPage>
-  );
+                        <StyledRegisterLink>
+                            Need an account? <Link to="/auth/register">Register</Link>
+                        </StyledRegisterLink>
+                    </StyledForm>
+                </StyledLoginCard>
+            </StyledLoginContainer>
+        </StyledLoginPage>
+    );
 };
 
 export default LoginPage;
@@ -128,19 +129,33 @@ const StyledLoginPage = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--blue) 0%, #320460 100%);
   padding: 2rem;
+  position: relative;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url("/assets/auth__lines-bg.png");
+    background-position: center;
+    background-size: cover;
+    opacity: .5;
+  }
 `;
 
 const StyledLoginContainer = styled.div`
   width: 100%;
   max-width: 480px;
+  position: relative;
+  z-index: 45678;
 `;
 
 const StyledLoginCard = styled.div`
   background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 1.6rem;
-  padding: 4rem;
+  padding: 3rem;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
   border: 1px solid ${({ theme }) => theme.border.primary};
 
@@ -161,15 +176,14 @@ const StyledHeader = styled.div`
 
 const StyledTitle = styled.div`
   h1 {
-    font-size: var(--text-xxl);
+    font-size: var(--text-xl);
     color: ${({ theme }) => theme.text.primary};
     font-weight: 600;
     margin-bottom: 0.5rem;
     line-height: 1.2;
   }
-
   p {
-    font-size: var(--text-md);
+    font-size: var(--text-base);
     color: ${({ theme }) => theme.text.secondary};
     line-height: 1.4;
   }
@@ -178,7 +192,7 @@ const StyledTitle = styled.div`
 const StyledForm = styled.form`
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
 `;
 
 const StyledError = styled.div`
@@ -200,8 +214,8 @@ const StyledInputGroup = styled.div`
 const StyledLabel = styled.label`
   font-size: var(--text-sm);
   font-weight: 600;
-  color: ${({ theme }) => theme.text.secondary};
-  text-transform: uppercase;
+  color: ${({ theme }) => theme.text.thirdly};
+  text-transform: capitalize;
   letter-spacing: 0.5px;
 
   span {
@@ -223,7 +237,7 @@ const StyledInput = styled.input`
   &:focus {
     outline: none;
     border-color: var(--blue);
-    box-shadow: 0 0 0 3px rgba(36, 146, 194, 0.1);
+    /* box-shadow: 0 0 0 3px rgba(36, 146, 194, 0.1); */
   }
 
   &::placeholder {
@@ -270,14 +284,12 @@ const StyledPasswordToggle = styled.button`
 `;
 
 const StyledForgotPassword = styled.div`
-  text-align: right;
 
   a {
     color: var(--blue);
     text-decoration: none;
-    font-size: var(--text-sm);
+    font-size: var(--text-base);
     font-weight: 500;
-
     &:hover {
       text-decoration: underline;
     }
@@ -302,10 +314,8 @@ const StyledLoaderWrapper = styled.div`
 `;
 
 const StyledRegisterLink = styled.div`
-  text-align: center;
   color: ${({ theme }) => theme.text.secondary};
-  font-size: var(--text-sm);
-
+  font-size: var(--text-base);
   a {
     color: var(--blue);
     text-decoration: none;

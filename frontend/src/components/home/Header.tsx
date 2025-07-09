@@ -25,7 +25,7 @@ const Header = () => {
           <Logo />
         </StyledLogo>
         <StyledButtons>
-          <Button title={"Log in"} />
+          <Button isLink href="/auth/login" title={"Log in"} />
         </StyledButtons>
       </StyledHeader>
     </>
