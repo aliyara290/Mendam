@@ -1,3 +1,4 @@
+// server/server.ts - Fixed version with correct PORT and CORS
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -28,10 +29,21 @@ import { SocketService } from "./src/socket/socketService";
 
 const app = express();
 const httpServer = createServer(app);
+
+// Parse CORS origins from environment variable
+const corsOrigins = process.env.CORS_ORIGIN 
+  ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
+  : ["http://localhost:5173", "http://localhost:3000"];
+
+const socketCorsOrigins = process.env.SOCKET_CORS_ORIGIN 
+  ? process.env.SOCKET_CORS_ORIGIN.split(',').map(origin => origin.trim())
+  : ["http://localhost:5173", "http://localhost:3000"];
+
 const io = new Server(httpServer, {
   cors: {
-    origin: process.env.SOCKET_CORS_ORIGIN || "http://localhost:3000",
+    origin: socketCorsOrigins,
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -52,8 +64,10 @@ app.use(morgan("combined"));
 // CORS must be before body parsing
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN || "http://localhost:3000",
+    origin: corsOrigins,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
 
@@ -69,7 +83,6 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-// API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", authMiddleware, userRoutes);
 app.use("/api/chat-groups", authMiddleware, chatGroupRoutes);
@@ -77,15 +90,13 @@ app.use("/api/messages", authMiddleware, messageRoutes);
 app.use("/api/friends", authMiddleware, friendRoutes);
 app.use("/api/notifications", authMiddleware, notificationRoutes);
 
-// Error handling middleware (must be last)
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Socket service
 const socketService = new SocketService(io);
 socketService.initialize();
 
-const PORT = process.env.FRONTEND || 5173;
+const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
@@ -95,6 +106,7 @@ const startServer = async () => {
       console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
       console.log(`🔌 Socket.IO server ready`);
       console.log(`🏥 Health check: http://localhost:${PORT}/health`);
+      console.log(`🔗 CORS origins: ${corsOrigins.join(', ')}`);
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error);

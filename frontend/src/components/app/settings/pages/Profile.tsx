@@ -1,3 +1,4 @@
+// frontend/src/components/app/settings/pages/Profile.tsx - Fixed version
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "@app/ui/button/Button";
@@ -5,7 +6,7 @@ import { CameraIcon } from "@heroicons/react/24/outline";
 import { useSettings } from "@/contexts/OpenSettingContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { authAPI } from "@/services/Api";
-import Heading from "@app/heading/Heading";
+import Heading from "../heading/Heading";
 
 const Profile: React.FC = () => {
   const { setOpenSettings } = useSettings();
@@ -64,7 +65,9 @@ const Profile: React.FC = () => {
 
     try {
       const response = await authAPI.updateProfile(formData);
+      
       updateUser(response.data.user);
+      
       setSuccess('Profile updated successfully!');
       setHasChanges(false);
     } catch (error: any) {
@@ -208,6 +211,7 @@ const Profile: React.FC = () => {
 
 export default Profile;
 
+// Keep all your existing styled components here...
 const StyledProfile = styled.div`
   width: 100%;
 `;

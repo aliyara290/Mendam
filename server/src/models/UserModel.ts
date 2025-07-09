@@ -44,6 +44,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: [true, "Password is required"],
       minlength: [8, "Password must be at least 8 characters long"],
+      select: false, 
     },
     fullName: {
       type: String,
@@ -68,6 +69,18 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+    jobTitle: {
+      type: String,
+      trim: true,
+      maxlength: [100, "Job title cannot exceed 100 characters"],
+      default: "",
+    },
+    biography: {
+      type: String,
+      trim: true,
+      maxlength: [500, "Biography cannot exceed 500 characters"],
+      default: "",
+    },
   },
   {
     timestamps: true,
@@ -83,6 +96,8 @@ const userSchema = new Schema<IUser>(
 userSchema.index({ username: 1 });
 userSchema.index({ email: 1 });
 userSchema.index({ isOnline: 1 });
+userSchema.index({ status: 1 });
+userSchema.index({ fullName: 'text', username: 'text' }); // For search functionality
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
