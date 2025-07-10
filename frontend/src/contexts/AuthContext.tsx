@@ -32,7 +32,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 Check for existing token when app starts (handles page refresh)
   useEffect(() => {
     const initializeAuth = async () => {
       try {

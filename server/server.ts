@@ -1,4 +1,3 @@
-// server/server.ts - Fixed version with correct PORT and CORS
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -8,11 +7,8 @@ import compression from "compression";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
-
-// Load environment variables FIRST
 dotenv.config();
 
-// Import routes and middleware
 import { connectDB } from "./src/config/database";
 import { errorHandler } from "./src/middleware/errorHandler";
 import { notFoundHandler } from "./src/middleware/notFoundHandler";
@@ -49,46 +45,52 @@ const io = new Server(httpServer, {
 
 // Rate limiter
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "900000"),
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "100"),
-  message: "Too many requests from this IP, please try again later.",
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "60000"),
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "1000"),
+  message: {
+    success: false,
+    message: "Too many requests from this IP, please try again later."
+  },
   standardHeaders: true,
   legacyHeaders: false,
+  skip: (req) => {
+    if (process.env.NODE_ENV === 'development') {
+      return req.path.includes('/health') || req.path.includes('/auth');
+    }
+    return false;
+  }
 });
 
-// IMPORTANT: Apply middleware in this specific order
 app.use(helmet());
 app.use(compression());
 app.use(morgan("combined"));
 
-// CORS must be before body parsing
 app.use(
   cors({
     origin: corsOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
+    optionsSuccessStatus: 200,
+    preflightContinue: false,
   })
 );
 
-// Body parsing middleware - THESE ARE CRITICAL
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Rate limiting after body parsing
 app.use(limiter);
 
-// Health check route
 app.get("/health", (req, res) => {
   res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", authMiddleware, userRoutes);
-app.use("/api/chat-groups", authMiddleware, chatGroupRoutes);
-app.use("/api/messages", authMiddleware, messageRoutes);
-app.use("/api/friends", authMiddleware, friendRoutes);
-app.use("/api/notifications", authMiddleware, notificationRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', limiter, authMiddleware, userRoutes);
+app.use('/api/chat-groups', limiter, authMiddleware, chatGroupRoutes);
+app.use('/api/messages', limiter, authMiddleware, messageRoutes);
+app.use('/api/friends', limiter, authMiddleware, friendRoutes);
+app.use('/api/notifications', limiter, authMiddleware, notificationRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);

@@ -39,8 +39,8 @@ const StyledNavPart = styled.div`
 width: 100%;
     max-width: 47rem;
   height: 100svh;
-  position: sticky;
-  left: 0;
+  /* position: sticky; */
+  /* left: 0; */
   overflow: hidden;
   display: flex;
   flex-direction: column;

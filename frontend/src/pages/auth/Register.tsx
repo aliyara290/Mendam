@@ -115,7 +115,7 @@ const RegisterPage: React.FC = () => {
                         <Logo />
                         <StyledTitle>
                             <h1>Create an account</h1>
-                            <p>Join Mendom and start connecting with your team!</p>
+                            <p>Join Mendam and start connecting with your team!</p>
                         </StyledTitle>
                     </StyledHeader>
 

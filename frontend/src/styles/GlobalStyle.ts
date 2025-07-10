@@ -22,12 +22,13 @@ li {
 
 html {
     font-size: 10px;
+    scroll-behavior: smooth;
 }
 
 body {
     overflow-x: hidden;
     position: relative;
-    background-color: var(--light);
+    /* background-color: var(--light); */
 }
 
 

@@ -101,9 +101,6 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
                       <Cog8ToothIcon />
                     </Link>
                   </StyledSettingIcon>
-                  <StyledLogoutIcon onClick={handleLogout}>
-                    <ArrowRightStartOnRectangleIcon />
-                  </StyledLogoutIcon>
                 </StyledActions>
               </>
             )}
@@ -114,6 +111,7 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
           shouldAnimate={shouldAnimate}
           user={user}
           onLogout={handleLogout}
+          onClose={() => setIsProfileOpen(false)}
         />
       </StyledStatusBar>
     </>
@@ -187,17 +185,25 @@ const StyledActions = styled.div`
 const StyledSettingIcon = styled.div`
   a {
     color: ${({ theme }) => theme.text.primary};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  svg {
+    width: 2.4rem;
+  transition: transform 0.4s ease;
+
+  }
+  &:hover {
+    background-color: ${({ theme }) => theme.background.primary};
+    color: var(--blue);
     svg {
-      width: 2.7rem;
-      transition: transform 0.6s ease;
+    transform: rotate(90deg);
     }
-    &:hover svg {
-      transform: rotate(90deg);
-    }
+  }
   }
 `;
 

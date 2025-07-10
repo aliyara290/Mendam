@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { BellIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useFriends } from "@/contexts/FriendsContext";
 import { useMessages } from "@/contexts/MessagesContext";
@@ -9,21 +9,25 @@ import { useNavigate } from "react-router-dom";
 const FriendRequestsNotification: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const { 
-    friendRequests, 
-    acceptFriendRequest, 
+  const {
+    friendRequests,
+    acceptFriendRequest,
     declineFriendRequest,
-    loadFriendRequests 
+    loadFriendRequests
   } = useFriends();
   const { setCurrentConversation } = useMessages();
   const navigate = useNavigate();
 
-  // Load friend requests when component mounts
   useEffect(() => {
-    loadFriendRequests();
-  }, []);
+    const interval = setInterval(() => {
+      if (friendRequests.length === 0) {
+        loadFriendRequests();
+      }
+    }, 7000);
 
-  // Close dropdown when clicking outside
+    return () => clearInterval(interval);
+  }, [friendRequests.length, loadFriendRequests]);
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -49,20 +53,17 @@ const FriendRequestsNotification: React.FC = () => {
     }
   };
 
+
   const handleAcceptAndChat = async (requestId: string, friendId: string) => {
     try {
-      // Accept the friend request
       await acceptFriendRequest(requestId);
-      
-      // Close the notification dropdown
+
       setIsOpen(false);
-      
-      // Set up the conversation
+
       setCurrentConversation(friendId);
-      
-      // Navigate to Direct Messages
+
       navigate('/app/@me');
-      
+
       console.log('✅ Friend added and chat started!');
     } catch (error) {
       console.error('Failed to accept friend request:', error);
@@ -78,20 +79,16 @@ const FriendRequestsNotification: React.FC = () => {
     }
   };
 
-  // Don't render if no friend requests
-  if (friendRequests.length === 0) {
-    return null;
-  }
-
   return (
     <StyledNotificationContainer ref={dropdownRef}>
       <StyledNotificationButton onClick={() => setIsOpen(!isOpen)}>
         <BellIcon />
-        <StyledNotificationBadge>
-          {friendRequests.length}
-        </StyledNotificationBadge>
+        {friendRequests.length > 0 && (
+          <StyledNotificationBadge>
+            {friendRequests.length}
+          </StyledNotificationBadge>
+        )}
       </StyledNotificationButton>
-
       {isOpen && (
         <StyledNotificationDropdown>
           <StyledNotificationHeader>
@@ -100,43 +97,49 @@ const FriendRequestsNotification: React.FC = () => {
               <XMarkIcon />
             </StyledCloseButton>
           </StyledNotificationHeader>
-          
-          <StyledNotificationList>
-            {friendRequests.map((request) => (
-              <StyledNotificationItem key={request._id}>
-                <StyledRequestInfo>
-                  <Avatar
-                    image={request.friendId.avatar}
-                    userName={request.friendId.fullName}
-                    size={40}
-                  />
-                  <StyledRequestText>
-                    <StyledRequestName>{request.friendId.fullName}</StyledRequestName>
-                    <StyledRequestUsername>@{request.friendId.username}</StyledRequestUsername>
-                    <StyledRequestTime>
-                      {new Date(request.addedAt).toLocaleDateString()}
-                    </StyledRequestTime>
-                  </StyledRequestText>
-                </StyledRequestInfo>
-                
-                <StyledRequestActions>
-                  <StyledActionButton 
-                    accept 
-                    onClick={() => handleAccept(request._id)}
-                    title="Accept"
-                  >
-                    <CheckIcon />
-                  </StyledActionButton>
-                  <StyledActionButton 
-                    onClick={() => handleDecline(request._id)}
-                    title="Decline"
-                  >
-                    <XMarkIcon />
-                  </StyledActionButton>
-                </StyledRequestActions>
-              </StyledNotificationItem>
-            ))}
-          </StyledNotificationList>
+
+          {friendRequests.length === 0 ? (
+            <StyledEmptyState>
+              <StyledEmptyText>No pending friend requests</StyledEmptyText>
+            </StyledEmptyState>
+          ) : (
+            <StyledNotificationList>
+              {friendRequests.map((request) => (
+                <StyledNotificationItem key={request._id}>
+                  <StyledRequestInfo>
+                    <Avatar
+                      image={request.friendId.avatar}
+                      userName={request.friendId.fullName}
+                      size={35}
+                    />
+                    <StyledRequestText>
+                      <StyledRequestName>{request.friendId.fullName}</StyledRequestName>
+                      <StyledRequestUsername>@{request.friendId.username}</StyledRequestUsername>
+                      {/* <StyledRequestTime>
+                        {new Date(request.addedAt).toLocaleDateString()}
+                      </StyledRequestTime> */}
+                    </StyledRequestText>
+                  </StyledRequestInfo>
+
+                  <StyledRequestActions>
+                    <StyledActionButton
+                      accept
+                      onClick={() => handleAccept(request._id)}
+                      title="Accept"
+                    >
+                      <CheckIcon />
+                    </StyledActionButton>
+                    <StyledActionButton
+                      onClick={() => handleDecline(request._id)}
+                      title="Decline"
+                    >
+                      <XMarkIcon />
+                    </StyledActionButton>
+                  </StyledRequestActions>
+                </StyledNotificationItem>
+              ))}
+            </StyledNotificationList>
+          )}
 
           {friendRequests.length > 0 && (
             <StyledNotificationFooter>
@@ -153,10 +156,21 @@ const FriendRequestsNotification: React.FC = () => {
 
 export default FriendRequestsNotification;
 
-// Styled Components
 const StyledNotificationContainer = styled.div`
   position: relative;
 `;
+
+const RingBallAnim = keyframes`
+0% {
+  transform: rotate(-10deg);
+}
+50% {
+  transform: rotate(10deg);
+}
+100% {
+  transform: rotate(0);
+}
+`
 
 const StyledNotificationButton = styled.button`
   position: relative;
@@ -174,6 +188,9 @@ const StyledNotificationButton = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
     color: var(--blue);
+    svg {
+      animation: ${RingBallAnim} .3s ease-in;
+    }
   }
   
   svg {
@@ -217,11 +234,11 @@ const StyledNotificationBadge = styled.div`
 
 const StyledNotificationDropdown = styled.div`
   position: absolute;
-  bottom: calc(100% + 1rem);
-  right: 0;
+  bottom: 7rem;
+  right: -2rem;
   width: 36rem;
   max-height: 50rem;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
   border: 1px solid ${({ theme }) => theme.border.primary};
   border-radius: 1rem;
   box-shadow: var(--shadow-lg);
@@ -244,7 +261,7 @@ const StyledNotificationHeader = styled.div`
   h4 {
     font-size: var(--text-lg);
     color: ${({ theme }) => theme.text.primary};
-    font-weight: 600;
+    font-weight: 500;
     margin: 0;
   }
 `;
@@ -269,6 +286,16 @@ const StyledCloseButton = styled.button`
     width: 2rem;
     height: 2rem;
   }
+`;
+
+const StyledEmptyState = styled.div`
+  padding: 3rem 1.5rem;
+  text-align: center;
+`;
+
+const StyledEmptyText = styled.div`
+  color: ${({ theme }) => theme.text.placeholder};
+  font-size: var(--text-md);
 `;
 
 const StyledNotificationList = styled.div`
@@ -338,8 +365,8 @@ const StyledRequestActions = styled.div`
 `;
 
 const StyledActionButton = styled.button<{ accept?: boolean }>`
-  width: 3.2rem;
-  height: 3.2rem;
+  width: 2.9rem;
+  height: 2.9rem;
   border-radius: 50%;
   border: none;
   display: flex;
@@ -348,14 +375,13 @@ const StyledActionButton = styled.button<{ accept?: boolean }>`
   cursor: pointer;
   transition: all 0.2s ease;
   
-  background-color: ${({ accept, theme }) => 
-    accept ? '#22c55e' : theme.background.secondary};
-  color: ${({ accept, theme }) => 
-    accept ? 'white' : theme.text.secondary};
-  
+  background-color: ${({ accept }) =>
+    accept ? 'var(--blue)' : "#554955"};
+  color: ${({ accept, theme }) =>
+    accept ? 'white' : "#ff99a4"};
   &:hover {
-    background-color: ${({ accept }) => 
-      accept ? '#16a34a' : '#ef4444'};
+    background-color: ${({ accept }) =>
+    accept ? 'var(--dark-blue)' : '#ff99a4'};
     color: white;
     transform: scale(1.05);
   }

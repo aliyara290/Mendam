@@ -105,7 +105,6 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
     loadMessages(chatId);
   };
 
-  // Helper function to format time
   function formatTime(date: Date): string {
     const now = new Date();
     const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
@@ -256,6 +255,7 @@ const StyledChatsList = styled.div`
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
+      gap: 3px;
   @media (max-width: 1000px) {
     padding: 0;
   }

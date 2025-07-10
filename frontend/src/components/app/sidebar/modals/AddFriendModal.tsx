@@ -37,7 +37,6 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({
 
   const { searchUsers, sendFriendRequest, friends } = useFriends();
 
-  // Get friend IDs for filtering
   const friendIds = new Set(friends.map(friend => friend.friendId._id));
 
   const handleSearch = async () => {
@@ -51,7 +50,6 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({
 
     try {
       const results = await searchUsers(searchQuery.trim());
-      // Filter out current friends
       const filteredResults = results.filter(user => !friendIds.has(user._id));
       setSearchResults(filteredResults);
     } catch (error: any) {
@@ -72,7 +70,6 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({
     }
   };
 
-  // Clear search when modal opens/closes
   useEffect(() => {
     if (isOpen) {
       setSearchQuery("");
@@ -82,7 +79,6 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({
     }
   }, [isOpen]);
 
-  // Search on Enter key press
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
@@ -137,10 +133,10 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({
                   <StyledChatItemContainer>
                     <Avatar
                       image={user.avatar}
-                      status="offline" // We don't have real-time status in search results
                       userName={user.fullName}
                       showUserName
                       size={35}
+                      bg
                     />
                     <StyledUserInfo>
                       <StyledUsername>@{user.username}</StyledUsername>

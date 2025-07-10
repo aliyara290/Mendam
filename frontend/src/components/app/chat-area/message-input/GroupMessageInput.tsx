@@ -1,4 +1,3 @@
-// frontend/src/components/app/chat-area/message-input/MessageInput.tsx - Complete implementation
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { PaperClipIcon, PaperAirplaneIcon } from "@heroicons/react/24/solid";
@@ -6,14 +5,14 @@ import { DocumentIcon, FaceSmileIcon, PhotoIcon } from "@heroicons/react/24/outl
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useMessages } from "@/contexts/MessagesContext";
+import { useGroups } from "@/contexts/ChatGroupsContext";
 import { useSocket } from "@/contexts/SocketContext";
 
-interface MessageInputProps {
-  recipientId?: string;
+interface GroupMessageInputProps {
+  groupId: string;
 }
 
-const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
+const GroupMessageInput: React.FC<GroupMessageInputProps> = ({ groupId }) => {
   const [message, setMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,7 +20,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
   const [isSending, setIsSending] = useState(false);
   
   const { themeMode } = useTheme();
-  const { sendMessage } = useMessages();
+  const { sendGroupMessage } = useGroups();
   const { socket } = useSocket();
   
   const emojiRef = useRef<HTMLDivElement>(null);
@@ -30,11 +29,11 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
 
   // Handle typing indicators
   useEffect(() => {
-    if (!socket || !recipientId) return;
+    if (!socket || !groupId) return;
 
     if (message.trim() && !isTyping) {
       setIsTyping(true);
-      socket.emit('typing_start_direct', { recipientId });
+      socket.emit('typing_start_group', { groupId });
     }
 
     // Clear existing timeout
@@ -46,7 +45,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
     typingTimeoutRef.current = setTimeout(() => {
       if (isTyping) {
         setIsTyping(false);
-        socket.emit('typing_stop_direct', { recipientId });
+        socket.emit('typing_stop_group', { groupId });
       }
     }, 2000);
 
@@ -55,7 +54,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
         clearTimeout(typingTimeoutRef.current);
       }
     };
-  }, [message, socket, recipientId, isTyping]);
+  }, [message, socket, groupId, isTyping]);
 
   // Clean up on unmount
   useEffect(() => {
@@ -63,11 +62,11 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
-      if (isTyping && socket && recipientId) {
-        socket.emit('typing_stop_direct', { recipientId });
+      if (isTyping && socket && groupId) {
+        socket.emit('typing_stop_group', { groupId });
       }
     };
-  }, [isTyping, socket, recipientId]);
+  }, [isTyping, socket, groupId]);
 
   const handleEmojiClick = (emojiData: EmojiClickData) => {
     setMessage((prev) => prev + emojiData.emoji);
@@ -75,7 +74,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
   };
 
   const handleSendMessage = async () => {
-    if (!message.trim() || !recipientId || isSending) return;
+    if (!message.trim() || !groupId || isSending) return;
 
     const messageContent = message.trim();
     setMessage("");
@@ -85,14 +84,14 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
     if (isTyping) {
       setIsTyping(false);
       if (socket) {
-        socket.emit('typing_stop_direct', { recipientId });
+        socket.emit('typing_stop_group', { groupId });
       }
     }
 
     try {
-      await sendMessage(recipientId, messageContent);
+      await sendGroupMessage(groupId, messageContent);
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error('Failed to send group message:', error);
       // Restore message on error
       setMessage(messageContent);
     } finally {
@@ -112,6 +111,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
     setMessage(e.target.value);
   };
 
+  // Handle clicking outside emoji picker
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -154,18 +154,18 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
 
   const checkTheme = themeMode === "light" || themeMode === "clean-light" || themeMode === "minimal-white" || themeMode === "modern-sky" || themeMode === "soft-blush" ? "light" : "dark";
 
-  if (!recipientId) {
+  if (!groupId) {
     return (
-      <StyledMessageInput>
+      <StyledGroupMessageInput>
         <StyledDisabledMessage>
-          Select a conversation to start messaging
+          Select a group to start messaging
         </StyledDisabledMessage>
-      </StyledMessageInput>
+      </StyledGroupMessageInput>
     );
   }
 
   return (
-    <StyledMessageInput>
+    <StyledGroupMessageInput>
       <StyledLeftSide>
         <StyledIconItem onClick={() => setShowEmojiPicker((prev) => !prev)}>
           <FaceSmileIcon />
@@ -192,7 +192,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
           disabled={isSending}
-          autoFocus
         />
       </StyledInputContainer>
 
@@ -217,18 +216,18 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
           </StyledSendButton>
         )}
       </StyledRightSide>
-    </StyledMessageInput>
+    </StyledGroupMessageInput>
   );
 };
 
-export default MessageInput;
+export default GroupMessageInput;
 
-// Styled Components
+// Styled Components (similar to DirectMessages but for groups)
 interface StyledItemsListProps {
   isOpen?: boolean;
 }
 
-const StyledMessageInput = styled.div`
+const StyledGroupMessageInput = styled.div`
   width: 100%;
   height: 6rem;
   display: flex;

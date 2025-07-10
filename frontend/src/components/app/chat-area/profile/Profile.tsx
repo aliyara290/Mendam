@@ -77,7 +77,7 @@ const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
               </StyledAvatarName>
             </StyledAvatar>
           </StyledProfileCover>
-          
+
           <StyledUserInfo>
             <StyledNavigation>
               <StyledButtonList>
@@ -85,7 +85,7 @@ const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
                 <StyledButtonListItem>Mutual Friends</StyledButtonListItem>
               </StyledButtonList>
             </StyledNavigation>
-            
+
             <StyledPersonalInfo>
               <StyledInfoItem>
                 <StyledInfoIcon>
@@ -93,7 +93,7 @@ const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
                 </StyledInfoIcon>
                 <StyledInfoData>@{user.username}</StyledInfoData>
               </StyledInfoItem>
-              
+
               {user.jobTitle && (
                 <StyledInfoItem>
                   <StyledInfoIcon>
@@ -102,7 +102,7 @@ const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
                   <StyledInfoData>{user.jobTitle}</StyledInfoData>
                 </StyledInfoItem>
               )}
-              
+
               <StyledInfoItem>
                 <StyledInfoIcon>
                   <CalendarIcon />
@@ -110,14 +110,14 @@ const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
                 <StyledInfoData>Joined {formatJoinDate(user.lastSeen)}</StyledInfoData>
               </StyledInfoItem>
             </StyledPersonalInfo>
-            
+
             {user.biography && (
               <StyledBio>
                 <p>{user.biography}</p>
               </StyledBio>
             )}
           </StyledUserInfo>
-          
+
           <StyledCloseModal onClick={onClick}>
             <XMarkIcon />
           </StyledCloseModal>
@@ -147,7 +147,7 @@ const StyledProfileContent = styled.div`
   height: 50rem;
   max-width: 70rem;
   background-color: ${({ theme }) => theme.background.secondary};
-  border-radius: 0.8rem;
+  border-radius: 2rem;
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   position: relative;
@@ -181,13 +181,13 @@ const StyledProfileCover = styled.div`
   width: 100%;
   height: 13rem;
   background: var(--blue);
-  position: relative;
   margin-bottom: 16rem;
+  position: relative;
 `;
 
 const StyledAvatar = styled.div`
   position: absolute;
-  bottom: -14rem;
+  bottom: -16rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -231,7 +231,7 @@ const StyledAvatarPicContent = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: 50% 0%;
   }
 `;
 
@@ -241,10 +241,11 @@ const StyledAvatarPlaceholder = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: var(--text-xxxl);
+  font-size: var(--text-big);
   font-weight: 600;
-  color: white;
-  background: linear-gradient(135deg, var(--blue), #764ba2);
+  color: var(--light);
+  background: ${({ theme }) => theme.background.thirdly};
+  text-transform: uppercase;
 `;
 
 const StyledAvatarName = styled.div`

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { messagesAPI, type Message } from '../services/Api';
 import { useAuth } from './AuthContext';
 import { useSocket } from './SocketContext';
@@ -13,9 +13,7 @@ interface Conversation {
 interface MessagesContextType {
   conversations: Record<string, Conversation>;
   currentConversation: string | null;
-  
-  // Actions
-  setCurrentConversation: (userId: string) => void;
+  setCurrentConversation: (userId: string | null) => void;
   loadMessages: (userId: string, page?: number) => Promise<void>;
   sendMessage: (recipientId: string, content: string, type?: string) => Promise<void>;
   deleteMessage: (messageId: string) => Promise<void>;
@@ -47,11 +45,11 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
       timestamp: Date;
     }) => {
       const newMessage: Message = {
-        _id: `temp_${Date.now()}`, // Temporary ID until we get the real one
+        _id: `temp_${Date.now()}`,
         senderId: {
           _id: data.senderId,
           username: data.senderUsername,
-          fullName: data.senderUsername, // We might need to fetch this
+          fullName: data.senderUsername,
           avatar: undefined,
         },
         content: data.content,
@@ -65,12 +63,14 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         ...prev,
         [data.senderId]: {
           ...prev[data.senderId],
+          userId: data.senderId,
           messages: [...(prev[data.senderId]?.messages || []), newMessage],
+          hasMore: prev[data.senderId]?.hasMore || false,
+          loading: false,
         },
       }));
     };
 
-    // Listen for socket events
     socket.on('new_direct_message', handleNewDirectMessage);
 
     return () => {
@@ -78,9 +78,10 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
     };
   }, [socket, isAuthenticated]);
 
-  const loadMessages = async (userId: string, page: number = 1) => {
+  const loadMessages = useCallback(async (userId: string, page: number = 1) => {
     try {
-      // Set loading state
+      console.log(`📩 Loading messages with user: ${userId}, page: ${page}`);
+      
       setConversations(prev => ({
         ...prev,
         [userId]: {
@@ -118,22 +119,19 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         },
       }));
     }
-  };
+  }, []);
 
-  const sendMessage = async (recipientId: string, content: string, type: string = 'text') => {
+  const sendMessage = useCallback(async (recipientId: string, content: string, type: string = 'text') => {
     try {
-      // Send via socket for real-time delivery
       if (socket) {
         sendDirectMessage(recipientId, content, type);
       }
 
-      // Also send via API for persistence
       const response = await messagesAPI.sendDirectMessage(recipientId, content, type);
       
       if (response.success) {
         const message = response.data.message;
         
-        // Add to local state
         setConversations(prev => ({
           ...prev,
           [recipientId]: {
@@ -149,14 +147,13 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
       console.error('Failed to send message:', error);
       throw error;
     }
-  };
+  }, [socket, sendDirectMessage]);
 
-  const deleteMessage = async (messageId: string) => {
+  const deleteMessage = useCallback(async (messageId: string) => {
     try {
       const response = await messagesAPI.deleteMessage(messageId);
       
       if (response.success) {
-        // Remove message from all conversations
         setConversations(prev => {
           const updated = { ...prev };
           Object.keys(updated).forEach(userId => {
@@ -172,18 +169,16 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
       console.error('Failed to delete message:', error);
       throw error;
     }
-  };
+  }, []);
 
-  const markAsRead = (senderId: string, messageId: string) => {
+  const markAsRead = useCallback((senderId: string, messageId: string) => {
     if (!socket || !user) return;
 
-    // Send read receipt via socket
     socket.emit('message_read', {
       messageId,
       senderId,
     });
 
-    // Update local state to mark as read
     setConversations(prev => ({
       ...prev,
       [senderId]: {
@@ -202,7 +197,7 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         }) || [],
       },
     }));
-  };
+  }, [socket, user]);
 
   const value: MessagesContextType = {
     conversations,

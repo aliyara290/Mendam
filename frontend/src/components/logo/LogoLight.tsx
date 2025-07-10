@@ -12,7 +12,7 @@ const LogoLight = ({ width = 45, height = 45 }) => {
         <defs>
           <style>
             {`
-            .cls-1 { fill: #ffe8ff }
+            .cls-1 { fill: #ffffff }
           `}
           </style>
         </defs>
