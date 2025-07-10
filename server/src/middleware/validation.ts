@@ -129,7 +129,6 @@ export const validateChatGroup = (req: Request, res: Response, next: NextFunctio
   next();
 };
 
-// Validation for MongoDB ObjectId
 export const validateObjectId = (paramName: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
     const id = req.params[paramName];

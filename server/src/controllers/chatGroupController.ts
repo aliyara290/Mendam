@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { ChatGroup, ChatGroupMember } from '../models/ChatGroupModel';
 import { User } from '../models/UserModel';
 
-// Create a new chat group
 export const createChatGroup = async (req: Request, res: Response) => {
   try {
     const { name, description, isPrivate = false, maxMembers = 100 } = req.body;
@@ -45,7 +44,6 @@ export const createChatGroup = async (req: Request, res: Response) => {
   }
 };
 
-// Get user's chat groups
 export const getUserChatGroups = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
@@ -77,7 +75,6 @@ export const getUserChatGroups = async (req: Request, res: Response) => {
   }
 };
 
-// Get group details
 export const getChatGroupDetails = async (req: Request, res: Response) => {
   try {
     const { groupId } = req.params;
@@ -131,7 +128,6 @@ export const getChatGroupDetails = async (req: Request, res: Response) => {
   }
 };
 
-// Add member to group
 export const addMemberToGroup = async (req: Request, res: Response) => {
   try {
     const { groupId } = req.params;
@@ -216,7 +212,6 @@ export const addMemberToGroup = async (req: Request, res: Response) => {
   }
 };
 
-// Remove member from group
 export const removeMemberFromGroup = async (req: Request, res: Response) => {
   try {
     const { groupId, memberId } = req.params;
@@ -275,7 +270,6 @@ export const removeMemberFromGroup = async (req: Request, res: Response) => {
   }
 };
 
-// Update member role
 export const updateMemberRole = async (req: Request, res: Response) => {
   try {
     const { groupId, memberId } = req.params;
@@ -335,7 +329,6 @@ export const updateMemberRole = async (req: Request, res: Response) => {
   }
 };
 
-// Leave group
 export const leaveGroup = async (req: Request, res: Response) => {
   try {
     const { groupId } = req.params;
@@ -388,7 +381,6 @@ export const leaveGroup = async (req: Request, res: Response) => {
   }
 };
 
-// Join group (for public groups)
 export const joinGroup = async (req: Request, res: Response) => {
   try {
     const { groupId } = req.params;
@@ -464,7 +456,6 @@ export const joinGroup = async (req: Request, res: Response) => {
   }
 };
 
-// Search public groups
 export const searchPublicGroups = async (req: Request, res: Response) => {
   try {
     const { query } = req.query;
