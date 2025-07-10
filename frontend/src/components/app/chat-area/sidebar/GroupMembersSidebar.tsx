@@ -14,7 +14,7 @@ import { CheckIcon } from "@heroicons/react/24/solid";
 import Avatar from "@app/avatar/Avatar";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { useAuth } from "@/contexts/AuthContext";
-import { useGroups } from "@/contexts/GroupsContext";
+import { useGroups } from "@/contexts/ChatGroupsContext";
 import type { ChatGroup, GroupMember } from "@/services/Api";
 
 interface GroupMembersSidebarProps {

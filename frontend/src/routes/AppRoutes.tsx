@@ -40,7 +40,6 @@ const AppRoutes = () => {
           <Route path="channel/:id" element={<Channel />} />
         </Route>
 
-        {/* Protected Settings Routes */}
         <Route path="/app/settings" element={
           <ProtectedRoute>
             <SettingLayout />

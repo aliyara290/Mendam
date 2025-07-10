@@ -1,3 +1,4 @@
+// frontend/src/contexts/GroupsContext.tsx - Complete group chat implementation
 import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { groupsAPI, type ChatGroup, type GroupMember, type GroupMessage } from '../services/Api';
 import { useAuth } from './AuthContext';

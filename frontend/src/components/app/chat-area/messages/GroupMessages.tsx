@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useAuth } from "@/contexts/AuthContext";
-import { useGroups } from "@/contexts/GroupsContext";
+import { useGroups } from "@/contexts/ChatGroupsContext";
 import Avatar from "@app/avatar/Avatar";
 
 interface GroupMessagesProps {

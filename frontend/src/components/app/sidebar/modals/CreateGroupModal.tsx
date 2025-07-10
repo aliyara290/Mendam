@@ -1,3 +1,4 @@
+// frontend/src/components/app/sidebar/modals/CreateGroupModal.tsx - Updated with functionality
 import React, { useState } from "react";
 import styled from "styled-components";
 import ModalComponent from "@app/modal/Modal";

@@ -1,4 +1,3 @@
-// frontend/src/components/app/sidebar/Groups.tsx - Updated with group chat integration
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import SearchBar from "@app/search-bar/SearchBar";

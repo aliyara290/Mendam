@@ -5,7 +5,7 @@ import { DocumentIcon, FaceSmileIcon, PhotoIcon } from "@heroicons/react/24/outl
 import EmojiPicker, { type EmojiClickData } from "emoji-picker-react";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { useTheme } from "@/contexts/ThemeContext";
-import { useGroups } from "@/contexts/GroupsContext";
+import { useGroups } from "@/contexts/ChatGroupsContext";
 import { useSocket } from "@/contexts/SocketContext";
 
 interface GroupMessageInputProps {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useGroups } from "@/contexts/GroupsContext";
+import { useGroups } from "@/contexts/ChatGroupsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import GroupHeader from "./header/GroupHeader";
 import GroupMessages from "./messages/GroupMessages";
