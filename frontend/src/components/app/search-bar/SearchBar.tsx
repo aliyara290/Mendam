@@ -32,8 +32,6 @@ const SearchBar: React.FC<SearchBarProps> = ({
           />
         </StyledSearchInput>
         <StyledSearchIcon>
-          <span>ctrl</span>
-          <span>k</span>
           <MagnifyingGlassIcon />
         </StyledSearchIcon>
       </StyledSearchBar>
@@ -76,19 +74,7 @@ const StyledSearchIcon = styled.div`
   padding: 1.5rem;
   display: flex;
   align-items: center;
-  span {
-    &:first-child {
-      margin-right: 0.3rem;
-    }
-    line-height: 1;
-    font-size: var(--text-sm);
-    padding: 0.2rem 0.5rem;
-    border-radius: 3px;
-    border: 1px solid ${({ theme }) => theme.text.placeholder};
-    @media (max-width: 1000px) {
-      display: none;
-    }
-  }
+  
   svg {
     width: 2.1rem;
     margin-left: 1.5rem;

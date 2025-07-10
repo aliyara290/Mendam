@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
 import { messagesAPI, type Message } from '../services/Api';
 import { useAuth } from './AuthContext';
 import { useSocket } from './SocketContext';
@@ -15,7 +15,7 @@ interface MessagesContextType {
   currentConversation: string | null;
   
   // Actions
-  setCurrentConversation: (userId: string) => void;
+  setCurrentConversation: (userId: string | null) => void;
   loadMessages: (userId: string, page?: number) => Promise<void>;
   sendMessage: (recipientId: string, content: string, type?: string) => Promise<void>;
   deleteMessage: (messageId: string) => Promise<void>;
@@ -47,11 +47,11 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
       timestamp: Date;
     }) => {
       const newMessage: Message = {
-        _id: `temp_${Date.now()}`, // Temporary ID until we get the real one
+        _id: `temp_${Date.now()}`,
         senderId: {
           _id: data.senderId,
           username: data.senderUsername,
-          fullName: data.senderUsername, // We might need to fetch this
+          fullName: data.senderUsername,
           avatar: undefined,
         },
         content: data.content,
@@ -65,21 +65,26 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         ...prev,
         [data.senderId]: {
           ...prev[data.senderId],
+          userId: data.senderId,
           messages: [...(prev[data.senderId]?.messages || []), newMessage],
+          hasMore: prev[data.senderId]?.hasMore || false,
+          loading: false,
         },
       }));
     };
 
-    // Listen for socket events
     socket.on('new_direct_message', handleNewDirectMessage);
 
     return () => {
       socket.off('new_direct_message', handleNewDirectMessage);
     };
-  }, [socket, isAuthenticated]);
+  }, [socket, isAuthenticated]); // Remove conversations from dependencies
 
-  const loadMessages = async (userId: string, page: number = 1) => {
+  // Memoize loadMessages to prevent infinite loops
+  const loadMessages = useCallback(async (userId: string, page: number = 1) => {
     try {
+      console.log(`📩 Loading messages with user: ${userId}, page: ${page}`);
+      
       // Set loading state
       setConversations(prev => ({
         ...prev,
@@ -118,9 +123,9 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         },
       }));
     }
-  };
+  }, []); // Empty dependency array since we don't need any external values
 
-  const sendMessage = async (recipientId: string, content: string, type: string = 'text') => {
+  const sendMessage = useCallback(async (recipientId: string, content: string, type: string = 'text') => {
     try {
       // Send via socket for real-time delivery
       if (socket) {
@@ -149,9 +154,9 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
       console.error('Failed to send message:', error);
       throw error;
     }
-  };
+  }, [socket, sendDirectMessage]);
 
-  const deleteMessage = async (messageId: string) => {
+  const deleteMessage = useCallback(async (messageId: string) => {
     try {
       const response = await messagesAPI.deleteMessage(messageId);
       
@@ -172,9 +177,9 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
       console.error('Failed to delete message:', error);
       throw error;
     }
-  };
+  }, []);
 
-  const markAsRead = (senderId: string, messageId: string) => {
+  const markAsRead = useCallback((senderId: string, messageId: string) => {
     if (!socket || !user) return;
 
     // Send read receipt via socket
@@ -202,7 +207,7 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         }) || [],
       },
     }));
-  };
+  }, [socket, user]);
 
   const value: MessagesContextType = {
     conversations,

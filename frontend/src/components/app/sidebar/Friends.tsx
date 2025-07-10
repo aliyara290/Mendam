@@ -13,20 +13,19 @@ import { useFriends } from "@/contexts/FriendsContext";
 import { useMessages } from "@/contexts/MessagesContext";
 import { useNavigate } from "react-router-dom";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
-import { NoSymbolIcon, TrashIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { NoSymbolIcon, XMarkIcon } from "@heroicons/react/24/solid";
 
-interface FriendsProps {}
+interface FriendsProps { }
 
-const Friends: React.FC<FriendsProps> = ({}) => {
+const Friends: React.FC<FriendsProps> = ({ }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [openMenuFriendId, setOpenMenuFriendId] = useState<string | null>(null);
-  
+
   const { friends, loading, error, loadFriends, removeFriend, blockUser } = useFriends();
   const { setCurrentConversation } = useMessages();
   const navigate = useNavigate();
 
-  // Load friends on component mount
   useEffect(() => {
     loadFriends();
   }, []);
@@ -37,7 +36,6 @@ const Friends: React.FC<FriendsProps> = ({}) => {
 
   const handleStartChat = (friendId: string) => {
     setCurrentConversation(friendId);
-    // Navigate to direct messages if not already there
     navigate('/app/@me');
   };
 
@@ -81,7 +79,6 @@ const Friends: React.FC<FriendsProps> = ({}) => {
     },
   ];
 
-  // Filter friends based on search query
   const filteredFriends = friends.filter(friend =>
     friend.friendId.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     friend.friendId.username.toLowerCase().includes(searchQuery.toLowerCase())
@@ -137,7 +134,7 @@ const Friends: React.FC<FriendsProps> = ({}) => {
       <StyledTopHeader>
         <Heading title="Friends" heading="h3" />
         <StyledSBarRow>
-          <SearchBar 
+          <SearchBar
             placeholder="Search for people"
             value={searchQuery}
             onInputChange={(value) => setSearchQuery(value)}
@@ -149,7 +146,7 @@ const Friends: React.FC<FriendsProps> = ({}) => {
       {filteredFriends.length === 0 ? (
         <StyledEmptyState>
           <StyledEmptyText>
-            {searchQuery 
+            {searchQuery
               ? `No friends found matching "${searchQuery}"`
               : "No friends yet. Add some friends to start chatting!"
             }
@@ -172,7 +169,7 @@ const Friends: React.FC<FriendsProps> = ({}) => {
                   <StyledOptionsItem onClick={() => handleStartChat(friend.friendId._id)}>
                     <ChatBubbleOvalLeftEllipsisIcon />
                   </StyledOptionsItem>
-                  <StyledOptionsItem 
+                  <StyledOptionsItem
                     onClick={() => setOpenMenuFriendId(
                       openMenuFriendId === friend.friendId._id ? null : friend.friendId._id
                     )}
@@ -181,7 +178,7 @@ const Friends: React.FC<FriendsProps> = ({}) => {
                   </StyledOptionsItem>
                 </StyledOptions>
               </StyledChatItemContainer>
-              
+
               {/* Menu for each friend */}
               <div onClick={(e) => e.stopPropagation()}>
                 <Menu

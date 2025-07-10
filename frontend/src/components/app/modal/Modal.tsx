@@ -63,25 +63,26 @@ const ModalBackdrop = styled.div`
   position: fixed;
   inset: 0;
   background-color: #00000039;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   z-index: 10034567890987650;
   padding: 1.5rem;
 `;
 
 const ModalContent = styled.div`
-  position: relative;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   width: 100%;
   max-width: 60rem;
   max-height: 70vh;
   background-color: ${({ theme }) => theme.background.thirdly};
-  border-radius: 1rem;
+  border-radius: 2rem;
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.border.primary};
+   z-index: 10034567890987650;
 `;
 
 const ModalHeader = styled.div`

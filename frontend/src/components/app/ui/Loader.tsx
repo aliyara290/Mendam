@@ -13,7 +13,7 @@ const rotation = keyframes`
 const StyledSpinner = styled.div`
   width: 20px;
   height: 20px;
-  border: 3px solid #fff;
+  border: 3px solid ${({ theme }) => theme.text.placeholder};
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;

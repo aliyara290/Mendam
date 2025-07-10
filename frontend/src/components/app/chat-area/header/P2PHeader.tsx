@@ -45,7 +45,7 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
   const handleRemoveFriend = async () => {
     try {
       await removeFriend(recipient._id);
-      setCurrentConversation(null); // Close the conversation
+      setCurrentConversation(null);
       setIsMenuOpen(false);
     } catch (error) {
       console.error('Failed to remove friend:', error);
@@ -55,7 +55,7 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
   const handleBlockUser = async () => {
     try {
       await blockUser(recipient._id);
-      setCurrentConversation(null); // Close the conversation
+      setCurrentConversation(null);
       setIsMenuOpen(false);
     } catch (error) {
       console.error('Failed to block user:', error);
@@ -63,7 +63,6 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
   };
 
   const handleClearMessages = () => {
-    // TODO: Implement clear messages functionality
     alert("Clear messages functionality not implemented yet");
     setIsMenuOpen(false);
   };
@@ -129,11 +128,11 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
             userName={recipient.fullName}
             status={getStatusColor()}
           />
-          <StyledUserStatus>
+          {/* <StyledUserStatus>
             <StyledStatusText>
               {formatLastSeen(recipient.lastSeen)}
             </StyledStatusText>
-          </StyledUserStatus>
+          </StyledUserStatus> */}
         </StyledLeftPart>
         
         <StyledRightPart>

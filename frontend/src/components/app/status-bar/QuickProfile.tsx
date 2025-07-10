@@ -1,5 +1,5 @@
 import { ChevronRightIcon, ArrowRightStartOnRectangleIcon, UserIcon } from "@heroicons/react/16/solid";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 import { type User } from "@/types/User";
 import { Link } from "react-router-dom";
@@ -9,6 +9,7 @@ interface QuickProfileProps {
   shouldAnimate: boolean;
   user: User;
   onLogout: () => void;
+  onClose: () => void;
 }
 
 const QuickProfile: React.FC<QuickProfileProps> = ({
@@ -16,7 +17,29 @@ const QuickProfile: React.FC<QuickProfileProps> = ({
   shouldAnimate,
   user,
   onLogout,
+  onClose,
 }) => {
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen, onClose]);
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'online':
@@ -43,7 +66,7 @@ const QuickProfile: React.FC<QuickProfileProps> = ({
 
   return (
     <>
-      <StyledQuickProfile isOpen={isOpen} shouldAnimate={shouldAnimate}>
+      <StyledQuickProfile ref={profileRef} isOpen={isOpen} shouldAnimate={shouldAnimate}>
         <StyledPortfolioCover>
           <StyledAvatar>
             <StyledAvatarPic>
@@ -140,7 +163,7 @@ const StyledQuickProfile = styled.div<StyledQuickProfileProps>`
   z-index: 456566;
   overflow: hidden;
   border: 1px solid ${({ theme }) => theme.border.primary};
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-sm);
   transition: ${({ shouldAnimate }) =>
     shouldAnimate ? "top 0.3s ease" : "none"};
 `;
@@ -186,7 +209,7 @@ const StyledAvatarPicContent = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
+    object-position: 10% 10%;
   }
 `;
 
@@ -251,7 +274,7 @@ const StyledOptionItem = styled.div<StyledOptionItemProps>`
   
   &:hover {
     background-color: ${({ isLogout, theme }) => 
-      isLogout ? '#554955' : theme.background.secondary};
+      isLogout ? '#eedde3' : theme.background.secondary};
     
     ${({ isLogout }) => isLogout && `
       ${StyledOptionName} {

@@ -112,7 +112,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
     setMessage(e.target.value);
   };
 
-  // Handle clicking outside emoji picker
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -193,6 +192,7 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
           disabled={isSending}
+          autoFocus
         />
       </StyledInputContainer>
 

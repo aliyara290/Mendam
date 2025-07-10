@@ -27,7 +27,7 @@ html {
 body {
     overflow-x: hidden;
     position: relative;
-    background-color: var(--light);
+    /* background-color: var(--light); */
 }
 
 
