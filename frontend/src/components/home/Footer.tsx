@@ -85,7 +85,7 @@ const Footer: React.FC = () => {
             
             <StyledCompanyDescription>
               Empowering teams worldwide with intelligent, secure, and seamless 
-              communication tools. Join thousands of organizations who trust Mendom 
+              communication tools. Join thousands of organizations who trust Mendam 
               for their daily collaboration needs.
             </StyledCompanyDescription>
             
@@ -142,7 +142,7 @@ const Footer: React.FC = () => {
         {/* Footer Bottom */}
         <StyledFooterBottom>
           <StyledCopyright>
-            © 2024 Mendom Technologies Inc. All rights reserved.
+            © 2024 Mendam Technologies Inc. All rights reserved.
           </StyledCopyright>
           
           <StyledBottomLinks>

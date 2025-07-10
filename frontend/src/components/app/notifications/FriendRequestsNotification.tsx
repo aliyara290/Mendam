@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { BellIcon, CheckIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useFriends } from "@/contexts/FriendsContext";
 import { useMessages } from "@/contexts/MessagesContext";
@@ -7,151 +7,151 @@ import Avatar from "@app/avatar/Avatar";
 import { useNavigate } from "react-router-dom";
 
 const FriendRequestsNotification: React.FC = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
-    const {
-        friendRequests,
-        acceptFriendRequest,
-        declineFriendRequest,
-        loadFriendRequests
-    } = useFriends();
-    const { setCurrentConversation } = useMessages();
-    const navigate = useNavigate();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const {
+    friendRequests,
+    acceptFriendRequest,
+    declineFriendRequest,
+    loadFriendRequests
+  } = useFriends();
+  const { setCurrentConversation } = useMessages();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            if (friendRequests.length === 0) {
-                loadFriendRequests();
-            }
-        }, 7000);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (friendRequests.length === 0) {
+        loadFriendRequests();
+      }
+    }, 7000);
 
-        return () => clearInterval(interval);
-    }, [friendRequests.length, loadFriendRequests]);
+    return () => clearInterval(interval);
+  }, [friendRequests.length, loadFriendRequests]);
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-
-        if (isOpen) {
-            document.addEventListener('mousedown', handleClickOutside);
-        }
-
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isOpen]);
-
-    const handleAccept = async (requestId: string) => {
-        try {
-            await acceptFriendRequest(requestId);
-            console.log('✅ Friend request accepted!');
-        } catch (error) {
-            console.error('Failed to accept friend request:', error);
-        }
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
     };
 
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
 
-    const handleAcceptAndChat = async (requestId: string, friendId: string) => {
-        try {
-            await acceptFriendRequest(requestId);
-
-            setIsOpen(false);
-
-            setCurrentConversation(friendId);
-
-            navigate('/app/@me');
-
-            console.log('✅ Friend added and chat started!');
-        } catch (error) {
-            console.error('Failed to accept friend request:', error);
-        }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
     };
+  }, [isOpen]);
 
-    const handleDecline = async (requestId: string) => {
-        try {
-            await declineFriendRequest(requestId);
-            console.log('❌ Friend request declined');
-        } catch (error) {
-            console.error('Failed to decline friend request:', error);
-        }
-    };
+  const handleAccept = async (requestId: string) => {
+    try {
+      await acceptFriendRequest(requestId);
+      console.log('✅ Friend request accepted!');
+    } catch (error) {
+      console.error('Failed to accept friend request:', error);
+    }
+  };
 
-    return (
-        <StyledNotificationContainer ref={dropdownRef}>
-            <StyledNotificationButton onClick={() => setIsOpen(!isOpen)}>
-                <BellIcon />
-                {friendRequests.length > 0 && (
-                    <StyledNotificationBadge>
-                        {friendRequests.length}
-                    </StyledNotificationBadge>
-                )}
-            </StyledNotificationButton>
-            {isOpen && (
-                <StyledNotificationDropdown>
-                    <StyledNotificationHeader>
-                        <h4>Friend Requests</h4>
-                        <StyledCloseButton onClick={() => setIsOpen(false)}>
-                            <XMarkIcon />
-                        </StyledCloseButton>
-                    </StyledNotificationHeader>
 
-                    {friendRequests.length === 0 ? (
-                        <StyledEmptyState>
-                            <StyledEmptyText>No pending friend requests</StyledEmptyText>
-                        </StyledEmptyState>
-                    ) : (
-                        <StyledNotificationList>
-                            {friendRequests.map((request) => (
-                                <StyledNotificationItem key={request._id}>
-                                    <StyledRequestInfo>
-                                        <Avatar
-                                            image={request.friendId.avatar}
-                                            userName={request.friendId.fullName}
-                                            size={35}
-                                        />
-                                        <StyledRequestText>
-                                            <StyledRequestName>{request.friendId.fullName}</StyledRequestName>
-                                            <StyledRequestUsername>@{request.friendId.username}</StyledRequestUsername>
-                                            {/* <StyledRequestTime>
+  const handleAcceptAndChat = async (requestId: string, friendId: string) => {
+    try {
+      await acceptFriendRequest(requestId);
+
+      setIsOpen(false);
+
+      setCurrentConversation(friendId);
+
+      navigate('/app/@me');
+
+      console.log('✅ Friend added and chat started!');
+    } catch (error) {
+      console.error('Failed to accept friend request:', error);
+    }
+  };
+
+  const handleDecline = async (requestId: string) => {
+    try {
+      await declineFriendRequest(requestId);
+      console.log('❌ Friend request declined');
+    } catch (error) {
+      console.error('Failed to decline friend request:', error);
+    }
+  };
+
+  return (
+    <StyledNotificationContainer ref={dropdownRef}>
+      <StyledNotificationButton onClick={() => setIsOpen(!isOpen)}>
+        <BellIcon />
+        {friendRequests.length > 0 && (
+          <StyledNotificationBadge>
+            {friendRequests.length}
+          </StyledNotificationBadge>
+        )}
+      </StyledNotificationButton>
+      {isOpen && (
+        <StyledNotificationDropdown>
+          <StyledNotificationHeader>
+            <h4>Friend Requests</h4>
+            <StyledCloseButton onClick={() => setIsOpen(false)}>
+              <XMarkIcon />
+            </StyledCloseButton>
+          </StyledNotificationHeader>
+
+          {friendRequests.length === 0 ? (
+            <StyledEmptyState>
+              <StyledEmptyText>No pending friend requests</StyledEmptyText>
+            </StyledEmptyState>
+          ) : (
+            <StyledNotificationList>
+              {friendRequests.map((request) => (
+                <StyledNotificationItem key={request._id}>
+                  <StyledRequestInfo>
+                    <Avatar
+                      image={request.friendId.avatar}
+                      userName={request.friendId.fullName}
+                      size={35}
+                    />
+                    <StyledRequestText>
+                      <StyledRequestName>{request.friendId.fullName}</StyledRequestName>
+                      <StyledRequestUsername>@{request.friendId.username}</StyledRequestUsername>
+                      {/* <StyledRequestTime>
                         {new Date(request.addedAt).toLocaleDateString()}
                       </StyledRequestTime> */}
-                                        </StyledRequestText>
-                                    </StyledRequestInfo>
+                    </StyledRequestText>
+                  </StyledRequestInfo>
 
-                                    <StyledRequestActions>
-                                        <StyledActionButton
-                                            accept
-                                            onClick={() => handleAccept(request._id)}
-                                            title="Accept"
-                                        >
-                                            <CheckIcon />
-                                        </StyledActionButton>
-                                        <StyledActionButton
-                                            onClick={() => handleDecline(request._id)}
-                                            title="Decline"
-                                        >
-                                            <XMarkIcon />
-                                        </StyledActionButton>
-                                    </StyledRequestActions>
-                                </StyledNotificationItem>
-                            ))}
-                        </StyledNotificationList>
-                    )}
+                  <StyledRequestActions>
+                    <StyledActionButton
+                      accept
+                      onClick={() => handleAccept(request._id)}
+                      title="Accept"
+                    >
+                      <CheckIcon />
+                    </StyledActionButton>
+                    <StyledActionButton
+                      onClick={() => handleDecline(request._id)}
+                      title="Decline"
+                    >
+                      <XMarkIcon />
+                    </StyledActionButton>
+                  </StyledRequestActions>
+                </StyledNotificationItem>
+              ))}
+            </StyledNotificationList>
+          )}
 
-                    {friendRequests.length > 0 && (
-                        <StyledNotificationFooter>
-                            <StyledFooterText>
-                                {friendRequests.length} pending request{friendRequests.length !== 1 ? 's' : ''}
-                            </StyledFooterText>
-                        </StyledNotificationFooter>
-                    )}
-                </StyledNotificationDropdown>
-            )}
-        </StyledNotificationContainer>
-    );
+          {friendRequests.length > 0 && (
+            <StyledNotificationFooter>
+              <StyledFooterText>
+                {friendRequests.length} pending request{friendRequests.length !== 1 ? 's' : ''}
+              </StyledFooterText>
+            </StyledNotificationFooter>
+          )}
+        </StyledNotificationDropdown>
+      )}
+    </StyledNotificationContainer>
+  );
 };
 
 export default FriendRequestsNotification;
@@ -159,6 +159,18 @@ export default FriendRequestsNotification;
 const StyledNotificationContainer = styled.div`
   position: relative;
 `;
+
+const RingBallAnim = keyframes`
+0% {
+  transform: rotate(-10deg);
+}
+50% {
+  transform: rotate(10deg);
+}
+100% {
+  transform: rotate(0);
+}
+`
 
 const StyledNotificationButton = styled.button`
   position: relative;
@@ -176,6 +188,9 @@ const StyledNotificationButton = styled.button`
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
     color: var(--blue);
+    svg {
+      animation: ${RingBallAnim} .3s ease-in;
+    }
   }
   
   svg {
@@ -361,12 +376,12 @@ const StyledActionButton = styled.button<{ accept?: boolean }>`
   transition: all 0.2s ease;
   
   background-color: ${({ accept }) =>
-        accept ? 'var(--blue)' : "#554955"};
+    accept ? 'var(--blue)' : "#554955"};
   color: ${({ accept, theme }) =>
-        accept ? 'white' : "#ff99a4"};
+    accept ? 'white' : "#ff99a4"};
   &:hover {
     background-color: ${({ accept }) =>
-        accept ? 'var(--dark-blue)' : '#ff99a4'};
+    accept ? 'var(--dark-blue)' : '#ff99a4'};
     color: white;
     transform: scale(1.05);
   }

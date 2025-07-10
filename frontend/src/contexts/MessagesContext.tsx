@@ -13,8 +13,6 @@ interface Conversation {
 interface MessagesContextType {
   conversations: Record<string, Conversation>;
   currentConversation: string | null;
-  
-  // Actions
   setCurrentConversation: (userId: string | null) => void;
   loadMessages: (userId: string, page?: number) => Promise<void>;
   sendMessage: (recipientId: string, content: string, type?: string) => Promise<void>;
@@ -78,14 +76,12 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
     return () => {
       socket.off('new_direct_message', handleNewDirectMessage);
     };
-  }, [socket, isAuthenticated]); // Remove conversations from dependencies
+  }, [socket, isAuthenticated]);
 
-  // Memoize loadMessages to prevent infinite loops
   const loadMessages = useCallback(async (userId: string, page: number = 1) => {
     try {
       console.log(`📩 Loading messages with user: ${userId}, page: ${page}`);
       
-      // Set loading state
       setConversations(prev => ({
         ...prev,
         [userId]: {
@@ -123,22 +119,19 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         },
       }));
     }
-  }, []); // Empty dependency array since we don't need any external values
+  }, []);
 
   const sendMessage = useCallback(async (recipientId: string, content: string, type: string = 'text') => {
     try {
-      // Send via socket for real-time delivery
       if (socket) {
         sendDirectMessage(recipientId, content, type);
       }
 
-      // Also send via API for persistence
       const response = await messagesAPI.sendDirectMessage(recipientId, content, type);
       
       if (response.success) {
         const message = response.data.message;
         
-        // Add to local state
         setConversations(prev => ({
           ...prev,
           [recipientId]: {
@@ -161,7 +154,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
       const response = await messagesAPI.deleteMessage(messageId);
       
       if (response.success) {
-        // Remove message from all conversations
         setConversations(prev => {
           const updated = { ...prev };
           Object.keys(updated).forEach(userId => {
@@ -182,13 +174,11 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
   const markAsRead = useCallback((senderId: string, messageId: string) => {
     if (!socket || !user) return;
 
-    // Send read receipt via socket
     socket.emit('message_read', {
       messageId,
       senderId,
     });
 
-    // Update local state to mark as read
     setConversations(prev => ({
       ...prev,
       [senderId]: {

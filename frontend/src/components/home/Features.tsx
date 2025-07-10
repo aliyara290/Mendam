@@ -81,7 +81,7 @@ const Features: React.FC = () => {
     ];
 
     return (
-        <StyledFeatures>
+        <StyledFeatures id="features">
             <StyledContainer>
                 <StyledHeader>
                     <StyledBadge>Features</StyledBadge>
@@ -90,7 +90,7 @@ const Features: React.FC = () => {
                         <StyledGradientText> modern communication</StyledGradientText>
                     </StyledTitle>
                     <StyledSubtitle>
-                        Discover the powerful features that make Mendom the preferred choice
+                        Discover the powerful features that make Mendam the preferred choice
                         for teams who demand excellence in their communication tools.
                     </StyledSubtitle>
                 </StyledHeader>
@@ -113,11 +113,11 @@ const Features: React.FC = () => {
                     ))}
                 </StyledFeaturesGrid>
 
-                <StyledCTASection>
+                <StyledCTASection id="cta">
                     <StyledCTAContent>
                         <StyledCTATitle>Ready to transform your team communication?</StyledCTATitle>
                         <StyledCTADescription>
-                            Join thousands of teams already using Mendom to collaborate more effectively.
+                            Join thousands of teams already using Mendam to collaborate more effectively.
                         </StyledCTADescription>
                         <StyledCTAButtons>
                             <StyledPrimaryButton>

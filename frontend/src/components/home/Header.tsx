@@ -1,9 +1,9 @@
-// frontend/src/components/home/Header.tsx - Simple professional header with transparent background
 import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import Logo from "@components/logo/Logo";
 import { Link } from "react-router-dom";
 import LogoLight from "../logo/LogoLight";
+import { useAuth } from "@/contexts/AuthContext";
 
 const fadeInDown = keyframes`
   from {
@@ -19,6 +19,7 @@ const fadeInDown = keyframes`
 const Header: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,16 +32,15 @@ const Header: React.FC = () => {
 
   const navigationItems = [
     { label: "Features", href: "#features" },
-    { label: "Pricing", href: "#pricing" },
-    { label: "About", href: "#about" },
-    { label: "Contact", href: "#contact" },
+    { label: "CTA", href: "#cta" },
+    { label: "Trust", href: "#trust" },
+    { label: "Testimonials", href: "#testimonials" },
   ];
 
   return (
     <StyledHeader isScrolled={isScrolled}>
       <StyledContainer>
         <StyledNavigation>
-          {/* Logo */}
           <StyledLogoSection>
             <StyledLogo>
               {isScrolled ? (
@@ -49,7 +49,7 @@ const Header: React.FC = () => {
                 <LogoLight />
               )}
             </StyledLogo>
-            <StyledBrandName isScrolled={isScrolled}>Mendom</StyledBrandName>
+            <StyledBrandName isScrolled={isScrolled}>Mendam</StyledBrandName>
           </StyledLogoSection>
 
           {/* Desktop Navigation */}
@@ -69,16 +69,27 @@ const Header: React.FC = () => {
 
           {/* Actions */}
           <StyledActionsSection>
-            <Link to="/auth/login">
-              <StyledLoginLink isScrolled={isScrolled}>
-                Sign In
-              </StyledLoginLink>
-            </Link>
-            <Link to="/auth/register">
-              <StyledSignupButton>
-                Get Started
-              </StyledSignupButton>
-            </Link>
+            {!isAuthenticated && (
+              <>
+                <Link to="/auth/login">
+                  <StyledLoginLink isScrolled={isScrolled}>
+                    Sign In
+                  </StyledLoginLink>
+                </Link>
+                <Link to="/auth/register">
+                  <StyledSignupButton>
+                    Get Started
+                  </StyledSignupButton>
+                </Link>
+              </>
+            )}
+            {isAuthenticated && (
+              <Link to="/app/@me">
+                <StyledSignupButton>
+                  Open Mendam
+                </StyledSignupButton>
+              </Link>
+            )}
 
             {/* Mobile Menu Button */}
             <StyledMobileMenuButton

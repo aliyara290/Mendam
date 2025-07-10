@@ -51,7 +51,7 @@ const Hero: React.FC = () => {
           </StyledMainHeading>
 
           <StyledSubheading>
-            Experience the future of team communication with Mendom's
+            Experience the future of team communication with Mendam's
             AI-powered chat platform. Real-time collaboration,
             custom workflows, and seamless integration - all in one place.
           </StyledSubheading>
@@ -85,7 +85,7 @@ const Hero: React.FC = () => {
                 <StyledDot color="#ff5f57" />
                 <StyledDot color="#ffbd2e" />
                 <StyledDot color="#28ca42" />
-                <StyledMockupTitle>Mendom</StyledMockupTitle>
+                <StyledMockupTitle>Mendam</StyledMockupTitle>
               </StyledMockupHeader>
 
               <StyledMockupContent>
@@ -173,7 +173,6 @@ const Hero: React.FC = () => {
 
 export default Hero;
 
-// Styled Components
 const StyledHero = styled.section`
   min-height: 100vh;
   padding: 8rem 3rem 4rem;
@@ -239,7 +238,7 @@ const StyledMainHeading = styled.h1`
 `;
 
 const StyledGradientText = styled.span`
-  background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+  background: linear-gradient(135deg, #ffd89b 0%, #ffffff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;

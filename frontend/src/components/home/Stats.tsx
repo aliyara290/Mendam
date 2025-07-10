@@ -27,7 +27,7 @@ const Stats: React.FC = () => {
     {
       number: "10,000+",
       label: "Active Teams",
-      description: "Trust Mendom for daily communication"
+      description: "Trust Mendam for daily communication"
     },
     {
       number: "99.9%",
@@ -42,13 +42,13 @@ const Stats: React.FC = () => {
     {
       number: "150+",
       label: "Countries",
-      description: "Teams worldwide using Mendom"
+      description: "Teams worldwide using Mendam"
     }
   ];
 
   const testimonials = [
     {
-      quote: "Mendom transformed how our distributed team communicates. The AI features save us hours every week.",
+      quote: "Mendam transformed how our distributed team communicates. The AI features save us hours every week.",
       author: "Sarah Chen",
       role: "Engineering Manager",
       company: "TechFlow Inc",
@@ -74,7 +74,7 @@ const Stats: React.FC = () => {
   ];
 
   return (
-    <StyledStats>
+    <StyledStats id="trust">
       <StyledContainer>
         {/* Statistics Section */}
         <StyledStatsSection>
@@ -99,12 +99,12 @@ const Stats: React.FC = () => {
         </StyledStatsSection>
 
         {/* Testimonials Section */}
-        <StyledTestimonialsSection>
+        <StyledTestimonialsSection id="testimonials">
           <StyledSectionHeader>
             <StyledBadge>Customer Stories</StyledBadge>
             <StyledTitle>What our customers are saying</StyledTitle>
             <StyledSubtitle>
-              Don't just take our word for it. Here's what real teams say about their Mendom experience.
+              Don't just take our word for it. Here's what real teams say about their Mendam experience.
             </StyledSubtitle>
           </StyledSectionHeader>
 

@@ -15,6 +15,7 @@ interface AvatarProps {
   showUserName?: boolean;
   size?: number;
   isGroup?: boolean;
+  bg?: boolean
 }
 
 const Avatar: React.FC<AvatarProps> = ({
@@ -27,10 +28,11 @@ const Avatar: React.FC<AvatarProps> = ({
   showUserName = false,
   size = 40,
   isGroup = false,
+  bg
 }) => {
   const avatarContent = (
     <StyledAvatar>
-      <StyledAvatarImage size={size}>
+      <StyledAvatarImage bg={bg} size={size}>
         {image ? (
           <img
             src={image}
@@ -100,12 +102,12 @@ const StyledAvatar = styled.div`
   width: max-content;
 `;
 
-const StyledAvatarImage = styled.div<{ size: number }>`
+const StyledAvatarImage = styled.div<{ size: number, bg: boolean }>`
   overflow: hidden;
   border-radius: 50%;
   width: ${({ size }) => size}px;
   height: ${({ size }) => size}px;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({bg}) => (bg ? ({ theme }) => theme.background.secondary : ({ theme }) => theme.background.thirdly)};
   display: flex;
   align-items: center;
   justify-content: center;

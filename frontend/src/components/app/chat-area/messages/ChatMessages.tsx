@@ -47,6 +47,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
       const latestUnread = unreadMessages[unreadMessages.length - 1];
       markAsRead(latestUnread.senderId._id, latestUnread._id);
     }
+    
   }, [conversation?.messages, user, recipientId, markAsRead]);
 
   const scrollToBottom = useCallback(() => {
@@ -252,6 +253,7 @@ const StyledMessageItem = styled.div<{ isOwn: boolean }>`
 `;
 
 const StyledMessageContent = styled.div<{ isOwn: boolean }>`
+
   display: flex;
   align-items: flex-end;
   gap: 0.5rem;
@@ -264,9 +266,12 @@ const StyledMessageAvatar = styled.div`
 `;
 
 const StyledMessageBubble = styled.div<{ isOwn: boolean; hasAvatar: boolean }>`
+max-width: 50rem;
+
 display: flex;
+flex-direction: column;
 align-items: end;
-gap: 1rem;
+/* gap: 1rem; */
   background-color: ${({ isOwn, theme }) =>
     isOwn ? theme.background.primary : theme.background.thirdly};
   color: ${({ isOwn, theme }) =>
@@ -293,7 +298,7 @@ const StyledMessageTime = styled.div<{ isOwn: boolean }>`
   align-items: center;
   gap: 0.3rem;
   justify-content: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
-  margin-bottom: 0.2rem;
+  /* margin-left: 2rem; */
 
 `;
 

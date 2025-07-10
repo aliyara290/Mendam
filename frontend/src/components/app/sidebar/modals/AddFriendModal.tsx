@@ -133,10 +133,10 @@ const AddFriendModal: React.FC<AddFriendModalProps> = ({
                   <StyledChatItemContainer>
                     <Avatar
                       image={user.avatar}
-                      status="offline" // We don't have real-time status in search results
                       userName={user.fullName}
                       showUserName
                       size={35}
+                      bg
                     />
                     <StyledUserInfo>
                       <StyledUsername>@{user.username}</StyledUsername>

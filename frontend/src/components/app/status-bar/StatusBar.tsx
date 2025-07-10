@@ -192,14 +192,17 @@ const StyledSettingIcon = styled.div`
   padding: 0.5rem;
   border-radius: 0.5rem;
   transition: all 0.2s ease;
-  
   svg {
     width: 2.4rem;
+  transition: transform 0.4s ease;
+
   }
-  
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
     color: var(--blue);
+    svg {
+    transform: rotate(90deg);
+    }
   }
   }
 `;
