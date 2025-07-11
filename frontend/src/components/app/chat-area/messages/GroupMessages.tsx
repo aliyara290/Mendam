@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { useAuth } from "@/contexts/AuthContext";
 import { useGroups } from "@/contexts/GroupsContext";
@@ -18,6 +18,7 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
   const { user } = useAuth();
   const { loadGroupMessages } = useGroups();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   // Scroll to bottom when new messages arrive
   useEffect(() => {
@@ -29,14 +30,17 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
   };
 
   const loadMoreMessages = async () => {
-    if (!conversation?.hasMore || conversation?.loading) return;
+    if (!conversation?.hasMore || conversation?.loading || isLoadingMore) return;
 
+    setIsLoadingMore(true);
     try {
       const currentLength = conversation.messages.length;
       const page = Math.floor(currentLength / 50) + 1;
       await loadGroupMessages(groupId, page);
     } catch (error) {
       console.error('Failed to load more messages:', error);
+    } finally {
+      setIsLoadingMore(false);
     }
   };
 
@@ -64,7 +68,17 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
     return messageDate.toLocaleDateString();
   };
 
-  if (!conversation || conversation.loading) {
+  if (!conversation) {
+    return (
+      <StyledGroupMessages>
+        <StyledLoadingState>
+          <StyledLoadingText>Loading messages...</StyledLoadingText>
+        </StyledLoadingState>
+      </StyledGroupMessages>
+    );
+  }
+
+  if (conversation.loading && conversation.messages.length === 0) {
     return (
       <StyledGroupMessages>
         <StyledLoadingState>
@@ -94,9 +108,9 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
         <StyledLoadMoreContainer>
           <StyledLoadMoreButton
             onClick={loadMoreMessages}
-            disabled={conversation.loading}
+            disabled={isLoadingMore || conversation.loading}
           >
-            {conversation.loading ? "Loading..." : "Load older messages"}
+            {isLoadingMore || conversation.loading ? "Loading..." : "Load older messages"}
           </StyledLoadMoreButton>
         </StyledLoadMoreContainer>
       )}
@@ -109,8 +123,9 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
           lastMessageDate = messageDate;
 
           const prevMessage = index > 0 ? conversation.messages[index - 1] : null;
-          const showAvatar = !prevMessage || prevMessage.senderId._id !== message.senderId._id;
           const nextMessage = index < conversation.messages.length - 1 ? conversation.messages[index + 1] : null;
+          
+          const showAvatar = !prevMessage || prevMessage.senderId._id !== message.senderId._id;
           const isLastInGroup = !nextMessage || nextMessage.senderId._id !== message.senderId._id;
 
           return (
@@ -121,35 +136,37 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
                 </StyledDateSeparator>
               )}
 
-              <StyledMessageItem isOwn={isOwn} showAvatar={showAvatar}>
-                {!isOwn && showAvatar && (
-                  <StyledMessageAvatar>
-                    <Avatar
-                      image={message.senderId.avatar}
-                      userName={message.senderId.fullName}
-                      size={36}
-                    />
-                  </StyledMessageAvatar>
-                )}
-
+              <StyledMessageItem isOwn={isOwn}>
                 <StyledMessageContent isOwn={isOwn}>
                   {!isOwn && showAvatar && (
-                    <StyledSenderName>{message.senderId.fullName}</StyledSenderName>
+                    <StyledMessageAvatar>
+                      <Avatar
+                        image={message.senderId.avatar}
+                        userName={message.senderId.fullName}
+                        size={36}
+                      />
+                    </StyledMessageAvatar>
                   )}
 
-                  <StyledMessageBubble
-                    isOwn={isOwn}
-                    hasAvatar={!isOwn && showAvatar}
-                    isLastInGroup={isLastInGroup}
-                  >
-                    <StyledMessageText>{message.content}</StyledMessageText>
-                    <StyledMessageTime isOwn={isOwn}>
-                      {formatTime(message.createdAt)}
-                      {isOwn && message.readBy.length > 1 && (
-                        <StyledReadIndicator>✓✓</StyledReadIndicator>
-                      )}
-                    </StyledMessageTime>
-                  </StyledMessageBubble>
+                  <StyledMessageGroup isOwn={isOwn}>
+                    {!isOwn && showAvatar && (
+                      <StyledSenderName>{message.senderId.fullName}</StyledSenderName>
+                    )}
+
+                    <StyledMessageBubble
+                      isOwn={isOwn}
+                      hasAvatar={!isOwn && showAvatar}
+                      isLastInGroup={isLastInGroup}
+                    >
+                      <StyledMessageText>{message.content}</StyledMessageText>
+                      <StyledMessageTime isOwn={isOwn}>
+                        {formatTime(message.createdAt)}
+                        {isOwn && message.readBy.length > 1 && (
+                          <StyledReadIndicator>✓✓</StyledReadIndicator>
+                        )}
+                      </StyledMessageTime>
+                    </StyledMessageBubble>
+                  </StyledMessageGroup>
                 </StyledMessageContent>
               </StyledMessageItem>
             </React.Fragment>
@@ -176,31 +193,25 @@ const StyledGroupMessages = styled.div`
 const StyledMessagesList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  gap: 0.3rem;
 `;
 
-const StyledMessageItem = styled.div<{ isOwn: boolean; showAvatar: boolean }>`
+const StyledMessageItem = styled.div<{ isOwn: boolean }>`
   display: flex;
-  align-items: flex-start;
+  justify-content: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
+  margin-bottom: 0.3rem;
+`;
+
+const StyledMessageContent = styled.div<{ isOwn: boolean }>`
+  display: flex;
+  align-items: flex-end;
   gap: 0.8rem;
-  margin-bottom: 0.5rem;
-  padding: 0 0.5rem;
+  max-width: 70%;
+  flex-direction: ${({ isOwn }) => isOwn ? 'row-reverse' : 'row'};
   
-  ${({ isOwn }) => isOwn && `
-    flex-direction: row-reverse;
-    
-    ${StyledMessageContent} {
-      align-items: flex-end;
-    }
-  `}
-  
-  ${({ showAvatar }) => !showAvatar && `
-    margin-left: 4.4rem;
-    
-    @media (max-width: 600px) {
-      margin-left: 4rem;
-    }
-  `}
+  @media (max-width: 600px) {
+    max-width: 85%;
+  }
 `;
 
 const StyledMessageAvatar = styled.div`
@@ -208,16 +219,12 @@ const StyledMessageAvatar = styled.div`
   align-self: flex-end;
 `;
 
-const StyledMessageContent = styled.div<{ isOwn: boolean }>`
+const StyledMessageGroup = styled.div<{ isOwn: boolean }>`
   display: flex;
   flex-direction: column;
+  align-items: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
   gap: 0.2rem;
-  max-width: 70%;
   min-width: 0;
-  
-  @media (max-width: 600px) {
-    max-width: 85%;
-  }
 `;
 
 const StyledSenderName = styled.div`
@@ -225,6 +232,7 @@ const StyledSenderName = styled.div`
   font-weight: 600;
   color: ${({ theme }) => theme.text.primary};
   margin-bottom: 0.2rem;
+  margin-left: 0.2rem;
 `;
 
 const StyledMessageBubble = styled.div<{
@@ -236,10 +244,12 @@ const StyledMessageBubble = styled.div<{
     isOwn ? 'var(--blue)' : theme.background.thirdly};
   color: ${({ isOwn, theme }) =>
     isOwn ? 'white' : theme.text.primary};
-  padding: 0.8rem 1rem;
+  padding: 0.8rem 1.2rem;
   border-radius: 1.2rem;
   word-wrap: break-word;
   position: relative;
+  max-width: 50rem;
+  min-width: 0;
   
   ${({ isOwn, hasAvatar, isLastInGroup }) => {
     if (isOwn) {
@@ -253,8 +263,8 @@ const StyledMessageBubble = styled.div<{
 const StyledMessageText = styled.div`
   font-size: var(--text-md);
   line-height: 1.4;
-  margin-bottom: 0.3rem;
   word-break: break-word;
+  margin-bottom: 0.3rem;
 `;
 
 const StyledMessageTime = styled.div<{ isOwn: boolean }>`

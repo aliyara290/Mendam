@@ -40,17 +40,22 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
     const handleNewDirectMessage = (data: {
       senderId: string;
       senderUsername: string;
+      senderFullName: string;
+      senderAvatar?: string;
       content: string;
       type: string;
       timestamp: Date;
+      messageId: string;
     }) => {
+      console.log('📩 New direct message received:', data);
+      
       const newMessage: Message = {
-        _id: `temp_${Date.now()}`,
+        _id: data.messageId || `temp_${Date.now()}`,
         senderId: {
           _id: data.senderId,
           username: data.senderUsername,
-          fullName: data.senderUsername,
-          avatar: undefined,
+          fullName: data.senderFullName || data.senderUsername,
+          avatar: data.senderAvatar,
         },
         content: data.content,
         type: data.type,
@@ -59,22 +64,29 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         readBy: [],
       };
 
-      setConversations(prev => ({
-        ...prev,
-        [data.senderId]: {
-          ...prev[data.senderId],
-          userId: data.senderId,
-          messages: [...(prev[data.senderId]?.messages || []), newMessage],
-          hasMore: prev[data.senderId]?.hasMore || false,
-          loading: false,
-        },
-      }));
+      setConversations(prev => {
+        const existingConv = prev[data.senderId];
+        return {
+          ...prev,
+          [data.senderId]: {
+            userId: data.senderId,
+            messages: [...(existingConv?.messages || []), newMessage],
+            hasMore: existingConv?.hasMore || false,
+            loading: false,
+          },
+        };
+      });
     };
 
-    socket.on('new_direct_message', handleNewDirectMessage);
+    // Listen to custom events dispatched by SocketContext
+    const handleSocketMessage = (event: CustomEvent) => {
+      handleNewDirectMessage(event.detail);
+    };
 
+    window.addEventListener('new_direct_message', handleSocketMessage as EventListener);
+    
     return () => {
-      socket.off('new_direct_message', handleNewDirectMessage);
+      window.removeEventListener('new_direct_message', handleSocketMessage as EventListener);
     };
   }, [socket, isAuthenticated]);
 
@@ -82,10 +94,10 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
     try {
       console.log(`📩 Loading messages with user: ${userId}, page: ${page}`);
       
+      // Set loading state
       setConversations(prev => ({
         ...prev,
         [userId]: {
-          ...prev[userId],
           userId,
           messages: prev[userId]?.messages || [],
           hasMore: true,
@@ -99,6 +111,8 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         const messages = response.data.messages || [];
         const hasMore = response.data.pagination?.hasMore || false;
 
+        console.log(`✅ Messages loaded: ${messages.length}, hasMore: ${hasMore}`);
+
         setConversations(prev => ({
           ...prev,
           [userId]: {
@@ -110,11 +124,13 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         }));
       }
     } catch (error) {
-      console.error('Failed to load messages:', error);
+      console.error('❌ Failed to load messages:', error);
       setConversations(prev => ({
         ...prev,
         [userId]: {
-          ...prev[userId],
+          userId,
+          messages: prev[userId]?.messages || [],
+          hasMore: false,
           loading: false,
         },
       }));
@@ -123,31 +139,76 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
 
   const sendMessage = useCallback(async (recipientId: string, content: string, type: string = 'text') => {
     try {
+      console.log('📤 Sending message to:', recipientId);
+      
+      // Create optimistic message
+      const optimisticMessage: Message = {
+        _id: `temp_${Date.now()}`,
+        senderId: {
+          _id: user?.id || '',
+          username: user?.username || '',
+          fullName: user?.fullName || '',
+          avatar: user?.avatar,
+        },
+        content,
+        type,
+        createdAt: new Date(),
+        isEdited: false,
+        readBy: [],
+      };
+
+      // Add optimistic message to UI immediately
+      setConversations(prev => ({
+        ...prev,
+        [recipientId]: {
+          userId: recipientId,
+          messages: [...(prev[recipientId]?.messages || []), optimisticMessage],
+          hasMore: prev[recipientId]?.hasMore || false,
+          loading: false,
+        },
+      }));
+
+      // Send via socket for real-time
       if (socket) {
         sendDirectMessage(recipientId, content, type);
       }
 
+      // Send via API for persistence
       const response = await messagesAPI.sendDirectMessage(recipientId, content, type);
       
       if (response.success) {
         const message = response.data.message;
+        console.log('✅ Message sent successfully');
         
+        // Replace optimistic message with real message
         setConversations(prev => ({
           ...prev,
           [recipientId]: {
-            ...prev[recipientId],
             userId: recipientId,
-            messages: [...(prev[recipientId]?.messages || []), message],
+            messages: [
+              ...(prev[recipientId]?.messages.filter(m => m._id !== optimisticMessage._id) || []),
+              message
+            ],
             hasMore: prev[recipientId]?.hasMore || false,
             loading: false,
           },
         }));
       }
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error('❌ Failed to send message:', error);
+      
+      // Remove optimistic message on error
+      setConversations(prev => ({
+        ...prev,
+        [recipientId]: {
+          ...prev[recipientId],
+          messages: prev[recipientId]?.messages.filter(m => m._id !== `temp_${Date.now()}`) || [],
+        },
+      }));
+      
       throw error;
     }
-  }, [socket, sendDirectMessage]);
+  }, [socket, sendDirectMessage, user]);
 
   const deleteMessage = useCallback(async (messageId: string) => {
     try {
@@ -166,7 +227,7 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         });
       }
     } catch (error) {
-      console.error('Failed to delete message:', error);
+      console.error('❌ Failed to delete message:', error);
       throw error;
     }
   }, []);
@@ -199,10 +260,16 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
     }));
   }, [socket, user]);
 
+  // Set current conversation with logging
+  const setCurrentConversationWithLogging = useCallback((userId: string | null) => {
+    console.log('🔄 Setting current conversation to:', userId);
+    setCurrentConversation(userId);
+  }, []);
+
   const value: MessagesContextType = {
     conversations,
     currentConversation,
-    setCurrentConversation,
+    setCurrentConversation: setCurrentConversationWithLogging,
     loadMessages,
     sendMessage,
     deleteMessage,

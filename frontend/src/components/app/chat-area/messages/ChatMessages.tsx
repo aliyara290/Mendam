@@ -145,7 +145,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
     );
   }
 
-
   let lastMessageDate = "";
 
   return (
@@ -156,7 +155,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
             onClick={loadMoreMessages}
             disabled={isLoadingMore}
           >
-            {isLoadingMore ?? (<Loader />)}
+            {isLoadingMore ? <Loader /> : "Load older messages"}
           </StyledLoadMoreButton>
         </StyledLoadMoreContainer>
       )}
@@ -167,10 +166,12 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
           const messageDate = formatDate(message.createdAt);
           const showDateSeparator = messageDate !== lastMessageDate;
           lastMessageDate = messageDate;
+          
           const prevMessage = index > 0 ? conversation.messages[index - 1] : null;
+          const nextMessage = index < conversation.messages.length - 1 ? conversation.messages[index + 1] : null;
+          
           const showAvatar = !prevMessage || prevMessage.senderId._id !== message.senderId._id;
-          const isSameSenderAsPrevious =
-            prevMessage && prevMessage.senderId._id === message.senderId._id;
+          const isLastInGroup = !nextMessage || nextMessage.senderId._id !== message.senderId._id;
 
           return (
             <React.Fragment key={message._id}>
@@ -180,46 +181,38 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
                 </StyledDateSeparator>
               )}
 
-              {!isSameSenderAsPrevious && (
-                <StyledMessageItem isOwn={isOwn}>
-                  <StyledMessageContent isOwn={isOwn}>
-                    {!isOwn && showAvatar && (
-                      <StyledMessageAvatar>
-                        <Avatar user={message.senderId} />
-                      </StyledMessageAvatar>
-                    )}
-                    <StyledMessageGroup>
-                      <StyledMessageBubble isOwn={isOwn} hasAvatar={showAvatar}>
-                        <StyledMessageText>{message.content}</StyledMessageText>
-                        <StyledMessageTime isOwn={isOwn}>
-                          {formatTime(message.createdAt)}
-                          {isOwn && message.readBy.length > 1 && (
-                            <StyledReadIndicator>✓✓</StyledReadIndicator>
-                          )}
-                        </StyledMessageTime>
-                      </StyledMessageBubble>
-                    </StyledMessageGroup>
-                  </StyledMessageContent>
-                </StyledMessageItem>
-              )}
-
-              {isSameSenderAsPrevious && (
-                <StyledMessageInline isOwn={isOwn}>
-                  <StyledMessageBubble isOwn={isOwn} hasAvatar={false}>
-                    <StyledMessageText>{message.content}</StyledMessageText>
-                    <StyledMessageTime isOwn={isOwn}>
-                      {formatTime(message.createdAt)}
-                      {isOwn && message.readBy.length > 1 && (
-                        <StyledReadIndicator>✓✓</StyledReadIndicator>
-                      )}
-                    </StyledMessageTime>
-                  </StyledMessageBubble>
-                </StyledMessageInline>
-              )}
+              <StyledMessageItem isOwn={isOwn}>
+                <StyledMessageContent isOwn={isOwn}>
+                  {!isOwn && showAvatar && (
+                    <StyledMessageAvatar>
+                      <Avatar 
+                        image={message.senderId.avatar}
+                        userName={message.senderId.fullName}
+                        size={36}
+                      />
+                    </StyledMessageAvatar>
+                  )}
+                  
+                  <StyledMessageGroup isOwn={isOwn}>
+                    <StyledMessageBubble 
+                      isOwn={isOwn} 
+                      hasAvatar={!isOwn && showAvatar}
+                      isLastInGroup={isLastInGroup}
+                    >
+                      <StyledMessageText>{message.content}</StyledMessageText>
+                      <StyledMessageTime isOwn={isOwn}>
+                        {formatTime(message.createdAt)}
+                        {isOwn && message.readBy.length > 1 && (
+                          <StyledReadIndicator>✓✓</StyledReadIndicator>
+                        )}
+                      </StyledMessageTime>
+                    </StyledMessageBubble>
+                  </StyledMessageGroup>
+                </StyledMessageContent>
+              </StyledMessageItem>
             </React.Fragment>
           );
         })}
-
       </StyledMessagesList>
 
       <div ref={messagesEndRef} />
@@ -229,12 +222,10 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
 
 export default ChatMessages;
 
-
 const StyledChatMessages = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 1.5rem;
-  padding-bottom: 3rem;
+  padding: 1rem;
   display: flex;
   flex-direction: column;
   background-color: ${({ theme }) => theme.background.secondary};
@@ -243,52 +234,68 @@ const StyledChatMessages = styled.div`
 const StyledMessagesList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.3rem;
 `;
 
 const StyledMessageItem = styled.div<{ isOwn: boolean }>`
   display: flex;
   justify-content: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
-  /* margin-bottom: 0.5rem; */
+  margin-bottom: 0.3rem;
 `;
 
 const StyledMessageContent = styled.div<{ isOwn: boolean }>`
-
   display: flex;
   align-items: flex-end;
-  gap: 0.5rem;
+  gap: 0.8rem;
   max-width: 70%;
   flex-direction: ${({ isOwn }) => isOwn ? 'row-reverse' : 'row'};
+  
+  @media (max-width: 600px) {
+    max-width: 85%;
+  }
 `;
 
 const StyledMessageAvatar = styled.div`
   flex-shrink: 0;
+  align-self: flex-end;
 `;
 
-const StyledMessageBubble = styled.div<{ isOwn: boolean; hasAvatar: boolean }>`
-max-width: 50rem;
+const StyledMessageGroup = styled.div<{ isOwn: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
+`;
 
-display: flex;
-flex-direction: column;
-align-items: end;
-/* gap: 1rem; */
+const StyledMessageBubble = styled.div<{ 
+  isOwn: boolean; 
+  hasAvatar: boolean; 
+  isLastInGroup: boolean;
+}>`
   background-color: ${({ isOwn, theme }) =>
-    isOwn ? theme.background.primary : theme.background.thirdly};
+    isOwn ? 'var(--blue)' : theme.background.thirdly};
   color: ${({ isOwn, theme }) =>
-    isOwn ? theme.text.primary : theme.text.primary};
-  padding: 0.8rem 1rem;
-  border-radius: 0.8rem;
-  /* border-bottom-left-radius: ${({ isOwn, hasAvatar }) =>
-    !isOwn && hasAvatar ? '0.3rem' : '1.2rem'};
-  border-bottom-right-radius: ${({ isOwn }) =>
-    isOwn ? '0.3rem' : '1.2rem'}; */
+    isOwn ? 'white' : theme.text.primary};
+  padding: 0.8rem 1.2rem;
+  border-radius: 1.2rem;
   word-wrap: break-word;
   position: relative;
+  max-width: 50rem;
+  min-width: 0;
+  
+  ${({ isOwn, hasAvatar, isLastInGroup }) => {
+    if (isOwn) {
+      return isLastInGroup ? 'border-bottom-right-radius: 0.3rem;' : '';
+    } else {
+      return hasAvatar && isLastInGroup ? 'border-bottom-left-radius: 0.3rem;' : '';
+    }
+  }}
 `;
 
 const StyledMessageText = styled.div`
   font-size: var(--text-md);
   line-height: 1.4;
+  word-break: break-word;
+  margin-bottom: 0.3rem;
 `;
 
 const StyledMessageTime = styled.div<{ isOwn: boolean }>`
@@ -298,27 +305,26 @@ const StyledMessageTime = styled.div<{ isOwn: boolean }>`
   align-items: center;
   gap: 0.3rem;
   justify-content: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
-  /* margin-left: 2rem; */
-
 `;
 
 const StyledReadIndicator = styled.span`
-  color: ${({ theme }) => theme.text.primary};
+  color: #4ade80;
   font-size: var(--text-xs);
 `;
 
 const StyledDateSeparator = styled.div`
   display: flex;
   justify-content: center;
-  margin: 1rem 0;
+  margin: 1.5rem 0 1rem;
 `;
 
 const StyledDateText = styled.div`
-  background-color: ${({ theme }) => theme.background.primary};
+  background-color: ${({ theme }) => theme.background.thirdly};
   color: ${({ theme }) => theme.text.secondary};
-  padding: 0.6rem 1.2rem;
-  border-radius: 3px;
+  padding: 0.4rem 1.2rem;
+  border-radius: 1.5rem;
   font-size: var(--text-sm);
+  font-weight: 500;
 `;
 
 const StyledLoadMoreContainer = styled.div`
@@ -379,20 +385,4 @@ const StyledLoadingState = styled.div`
 const StyledLoadingText = styled.div`
   font-size: var(--text-md);
   color: ${({ theme }) => theme.text.secondary};
-`;
-
-const StyledMessageGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-`;
-
-const StyledMessageInline = styled.div<{ isOwn: boolean }>`
-  display: flex;
-  justify-content: ${({ isOwn }) => (isOwn ? 'flex-end' : 'flex-start')};
-  margin-top: 0.2rem;
-
-  & > div {
-    margin-left: ${({ isOwn }) => (isOwn ? '0' : '4.5rem')};
-  }
 `;

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { useGroups } from "@/contexts/GroupsContext"; // Fixed import path
+import { useGroups } from "@/contexts/GroupsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import GroupHeader from "./header/GroupHeader";
 import GroupMessages from "./messages/GroupMessages";
@@ -32,14 +32,12 @@ const GroupChatArea: React.FC<GroupChatAreaProps> = ({ groupId: propGroupId }) =
   const members = groupMembers[groupId || ''] || [];
   const conversation = groupConversations[groupId || ''];
 
-  // Set current group when component mounts
   useEffect(() => {
     if (groupId) {
       setCurrentGroup(groupId);
     }
   }, [groupId, setCurrentGroup]);
 
-  // Load group data when groupId changes
   useEffect(() => {
     if (groupId) {
       loadGroupMembers(groupId);
@@ -49,12 +47,10 @@ const GroupChatArea: React.FC<GroupChatAreaProps> = ({ groupId: propGroupId }) =
     }
   }, [groupId, loadGroupMembers, loadGroupMessages, conversation]);
 
-  // Check if user is member of the group
   useEffect(() => {
     if (currentGroup && user && groupId) {
       const userMember = members.find(m => m.userId._id === user.id);
       if (!userMember && members.length > 0) {
-        // User is not a member of this group, redirect to groups page
         navigate('/app/groups');
         return;
       }

@@ -23,29 +23,26 @@ const ChatArea = () => {
     groupConversations,
     loadGroupMembers,
     loadGroupMessages,
-    setCurrentGroup 
+    setCurrentGroup,
+    currentGroup
   } = useGroups();
   const { user } = useAuth();
   const [showMembersSidebar, setShowMembersSidebar] = useState(false);
   
-  // Use refs to track if we've already loaded data for this group
   const loadedGroupMembers = useRef<Set<string>>(new Set());
   const loadedGroupMessages = useRef<Set<string>>(new Set());
 
-  // Check if we're in group chat mode
   const isGroupChat = !!groupId;
 
-  // Set current group when groupId changes
   useEffect(() => {
-    if (groupId && groupId !== setCurrentGroup) {
+    if (groupId && groupId !== currentGroup) {
       console.log('Setting current group:', groupId);
       setCurrentGroup(groupId);
     } else if (!groupId) {
       setCurrentGroup(null);
     }
-  }, [groupId, setCurrentGroup]);
+  }, [groupId, setCurrentGroup, currentGroup]);
 
-  // Load group members only once per group
   useEffect(() => {
     if (groupId && !loadedGroupMembers.current.has(groupId)) {
       console.log('Loading group members for:', groupId);
@@ -54,7 +51,6 @@ const ChatArea = () => {
     }
   }, [groupId, loadGroupMembers]);
 
-  // Load group messages only once per group if not already loaded
   useEffect(() => {
     if (groupId && !loadedGroupMessages.current.has(groupId)) {
       const conversation = groupConversations[groupId];
@@ -67,12 +63,11 @@ const ChatArea = () => {
   }, [groupId, groupConversations, loadGroupMessages]);
 
   if (isGroupChat) {
-    // Group Chat Mode
-    const currentGroup = groups.find(g => g._id === groupId);
+    const currentGroupData = groups.find(g => g._id === groupId);
     const members = groupMembers[groupId || ''] || [];
     const conversation = groupConversations[groupId || ''];
 
-    if (!currentGroup) {
+    if (!currentGroupData) {
       return (
         <StyledChatArea>
           <StyledWelcomeScreen>
@@ -110,21 +105,21 @@ const ChatArea = () => {
       <StyledChatArea>
         <StyledMainChatArea showSidebar={showMembersSidebar}>
           <GroupHeader 
-            group={currentGroup}
+            group={currentGroupData}
             memberCount={members.length}
             userRole={userMember?.role || 'member'}
             onToggleMembersSidebar={() => setShowMembersSidebar(!showMembersSidebar)}
           />
           <GroupMessages 
-            groupId={groupId}
+            groupId={groupId!}
             conversation={conversation}
           />
-          <GroupMessageInput groupId={groupId} />
+          <GroupMessageInput groupId={groupId!} />
         </StyledMainChatArea>
         
         {showMembersSidebar && (
           <GroupMembersSidebar
-            group={currentGroup}
+            group={currentGroupData}
             members={members}
             userRole={userMember?.role || 'member'}
             onClose={() => setShowMembersSidebar(false)}
@@ -133,7 +128,6 @@ const ChatArea = () => {
       </StyledChatArea>
     );
   } else {
-    // P2P Chat Mode (existing logic)
     const recipient = currentConversation
       ? friends.find(f => f.friendId._id === currentConversation)?.friendId
       : null;
@@ -167,11 +161,11 @@ const ChatArea = () => {
     }
 
     return (
-      <StyledChatArea>
+      <StyledChatAreaPToP>
         <P2PHeader recipient={recipient} />
         <ChatMessages recipientId={currentConversation} />
         <MessageInput recipientId={currentConversation} />
-      </StyledChatArea>
+      </StyledChatAreaPToP>
     );
   }
 };
@@ -182,6 +176,13 @@ const StyledChatArea = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  background-color: ${({ theme }) => theme.background.secondary};
+`;
+const StyledChatAreaPToP = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   background-color: ${({ theme }) => theme.background.secondary};
 `;
 
