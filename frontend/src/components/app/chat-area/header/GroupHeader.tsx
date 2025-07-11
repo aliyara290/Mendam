@@ -13,7 +13,7 @@ import { HashtagIcon } from "@heroicons/react/24/solid";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import GroupInfoModal from "../modals/GroupInfoModal";
 import AddMemberModal from "../modals/AddMemberModal";
-import { useGroups } from "@/contexts/ChatGroupsContext";
+import { useGroups } from "@/contexts/GroupsContext";
 import type { ChatGroup } from "@/services/Api";
 
 interface GroupHeaderProps {

@@ -7,7 +7,6 @@ import {
   UserGroupIcon,
   GlobeAltIcon,
   LockClosedIcon,
-  CrownIcon,
 } from "@heroicons/react/24/outline";
 import { HashtagIcon } from "@heroicons/react/24/solid";
 import Avatar from "@app/avatar/Avatar";
@@ -172,7 +171,7 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
 
             <StyledStatItem>
               <StyledStatIcon>
-                <CrownIcon />
+                {/* <CrownIcon /> */}
               </StyledStatIcon>
               <StyledStatContent>
                 <StyledStatLabel>Created by</StyledStatLabel>

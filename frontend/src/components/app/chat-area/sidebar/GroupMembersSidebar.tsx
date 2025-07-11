@@ -3,7 +3,7 @@ import styled from "styled-components";
 import {
   XMarkIcon,
   MagnifyingGlassIcon,
-  CrownIcon,
+  // CrownIcon,
   ShieldCheckIcon,
   EllipsisHorizontalIcon,
   UserMinusIcon,
@@ -14,7 +14,7 @@ import { CheckIcon } from "@heroicons/react/24/solid";
 import Avatar from "@app/avatar/Avatar";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { useAuth } from "@/contexts/AuthContext";
-import { useGroups } from "@/contexts/ChatGroupsContext";
+import { useGroups } from "@/contexts/GroupsContext";
 import type { ChatGroup, GroupMember } from "@/services/Api";
 
 interface GroupMembersSidebarProps {
@@ -82,7 +82,7 @@ const GroupMembersSidebar: React.FC<GroupMembersSidebarProps> = ({
       if (member.role !== 'admin') {
         items.push({
           label: "Make Admin",
-          icon: <CrownIcon />,
+          icon: <UserMinusIcon />,
           onClick: () => handleUpdateRole(member.userId._id, 'admin'),
         });
       }
@@ -120,7 +120,7 @@ const GroupMembersSidebar: React.FC<GroupMembersSidebarProps> = ({
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'admin':
-        return <CrownIcon />;
+        return <UserMinusIcon />;
       case 'moderator':
         return <ShieldCheckIcon />;
       default:

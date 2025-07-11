@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/solid";
 import Avatar from "@app/avatar/Avatar";
 import Button from "@app/ui/button/Button";
-import { useGroups } from "@/contexts/ChatGroupsContext";
+import { useGroups } from "@/contexts/GroupsContext";
 import { useFriends } from "@/contexts/FriendsContext";
 import type { ChatGroup } from "@/services/Api";
 
