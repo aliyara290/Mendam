@@ -1,4 +1,4 @@
-import { useSettings } from "@/contexts/OpenSettingContext";
+import { useSettings } from "@/contexts/OpenSettingsContext";
 import {
   Cog6ToothIcon,
   SunIcon,

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "../../ui/button/Button";
-import { useSettings } from "@/contexts/OpenSettingContext";
+import { useSettings } from "@/contexts/OpenSettingsContext";
 import Heading from "../heading/Heading";
 
 
