@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useParams, useNavigate } from "react-router-dom";
 import SearchBar from "@app/search-bar/SearchBar";
 import Heading from "@app/heading/Heading";
 import Avatar from "@app/avatar/Avatar";
@@ -14,7 +15,6 @@ import { HashtagIcon } from "@heroicons/react/24/solid";
 import CreateGroupModal from "./modals/CreateGroupModal";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { useGroups } from "@/contexts/GroupsContext";
-import { useNavigate } from "react-router-dom";
 
 interface GroupsProps {}
 
@@ -22,6 +22,9 @@ const Groups: React.FC<GroupsProps> = ({}) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [openMenuGroupId, setOpenMenuGroupId] = useState<string | null>(null);
+  
+  const { groupId } = useParams<{ groupId: string }>();
+  const navigate = useNavigate();
   
   const { 
     groups, 
@@ -32,28 +35,34 @@ const Groups: React.FC<GroupsProps> = ({}) => {
     setCurrentGroup,
     currentGroup 
   } = useGroups();
-  const navigate = useNavigate();
 
   // Load groups on component mount
   useEffect(() => {
     loadGroups();
   }, []);
 
+  // Set current group based on URL parameter
+  useEffect(() => {
+    if (groupId) {
+      setCurrentGroup(groupId);
+    }
+  }, [groupId, setCurrentGroup]);
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
 
-  const handleGroupClick = (groupId: string) => {
-    setCurrentGroup(groupId);
-    // Navigate to group chat - you may need to adjust this route
-    navigate(`/app/groups/${groupId}`);
+  const handleGroupClick = (clickedGroupId: string) => {
+    setCurrentGroup(clickedGroupId);
+    // Navigate to group chat using the same layout
+    navigate(`/app/groups/${clickedGroupId}`);
   };
 
-  const handleLeaveGroup = async (groupId: string) => {
+  const handleLeaveGroup = async (leaveGroupId: string) => {
     try {
-      await leaveGroup(groupId);
+      await leaveGroup(leaveGroupId);
       setOpenMenuGroupId(null);
-      if (currentGroup === groupId) {
+      if (currentGroup === leaveGroupId) {
         setCurrentGroup(null);
         navigate('/app/groups');
       }
@@ -62,7 +71,7 @@ const Groups: React.FC<GroupsProps> = ({}) => {
     }
   };
 
-  const getMenuItems = (groupId: string): MenuItemProps[] => [
+  const getMenuItems = (menuGroupId: string): MenuItemProps[] => [
     {
       label: "Group Settings",
       icon: <Cog6ToothIcon />,
@@ -76,7 +85,7 @@ const Groups: React.FC<GroupsProps> = ({}) => {
       label: "Leave Group",
       icon: <ArrowLeftOnRectangleIcon />,
       danger: true,
-      onClick: () => handleLeaveGroup(groupId),
+      onClick: () => handleLeaveGroup(menuGroupId),
     },
   ];
 
@@ -167,7 +176,7 @@ const Groups: React.FC<GroupsProps> = ({}) => {
             <StyledGroupItem key={group._id}>
               <StyledGroupItemContainer 
                 onClick={() => handleGroupClick(group._id)}
-                isActive={currentGroup === group._id}
+                isActive={currentGroup === group._id || groupId === group._id}
               >
                 <StyledGroupIcon>
                   {group.avatar ? (
