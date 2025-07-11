@@ -11,6 +11,7 @@
   },
   "keywords": ["chat", "socket.io", "express", "mongodb", "real-time"],
   "author": "",
+  
   "license": "ISC",
   "description": "Real-time chat application with Socket.IO and MongoDB",
   "dependencies": {
