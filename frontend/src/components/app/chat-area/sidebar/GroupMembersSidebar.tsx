@@ -7,7 +7,6 @@ import {
   ShieldCheckIcon,
   EllipsisHorizontalIcon,
   UserMinusIcon,
-  UserPlusIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/solid";
@@ -38,13 +37,11 @@ const GroupMembersSidebar: React.FC<GroupMembersSidebarProps> = ({
   const canManageMembers = userRole === 'admin' || userRole === 'moderator';
   const isAdmin = userRole === 'admin';
 
-  // Filter members based on search
   const filteredMembers = members.filter(member =>
     member.userId.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     member.userId.username.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // Group members by role
   const membersByRole = {
     admin: filteredMembers.filter(m => m.role === 'admin'),
     moderator: filteredMembers.filter(m => m.role === 'moderator'),
@@ -72,12 +69,10 @@ const GroupMembersSidebar: React.FC<GroupMembersSidebarProps> = ({
   const getMemberMenuItems = (member: GroupMember): MenuItemProps[] => {
     const items: MenuItemProps[] = [];
     
-    // Can't manage yourself or if you don't have permission
     if (member.userId._id === user?.id || !canManageMembers) {
       return items;
     }
 
-    // Admin actions
     if (isAdmin) {
       if (member.role !== 'admin') {
         items.push({
@@ -104,7 +99,6 @@ const GroupMembersSidebar: React.FC<GroupMembersSidebarProps> = ({
       }
     }
 
-    // Both admin and moderator can remove members (but admins can't be removed by moderators)
     if (canManageMembers && !(userRole === 'moderator' && member.role === 'admin')) {
       items.push({
         label: "Remove from Group",

@@ -37,7 +37,6 @@ const AppRoutes = () => {
           <Route path="@me" element={<DirectMessages />} />
           <Route path="friends" element={<Friends />} />
           <Route path="groups" element={<Groups />} />
-          {/* Updated: Use the same layout for group chats */}
           <Route path="groups/:groupId" element={<Groups />} />
           <Route path="channel/:id" element={<Channel />} />
         </Route>

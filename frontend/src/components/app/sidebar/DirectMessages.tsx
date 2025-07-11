@@ -100,9 +100,22 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
     setHoveredChatId(null);
   };
 
-  const handleChatClick = (chatId: string) => {
-    setCurrentConversation(chatId);
-    loadMessages(chatId);
+  const handleChatClick = async (chatId: string) => {
+    console.log('🔄 Selecting chat with:', chatId);
+    
+    try {
+      // Set the current conversation immediately
+      setCurrentConversation(chatId);
+      
+      // Load messages for this conversation if not already loaded
+      const conversation = conversations[chatId];
+      if (!conversation || conversation.messages.length === 0) {
+        console.log('📩 Loading messages for:', chatId);
+        await loadMessages(chatId, 1);
+      }
+    } catch (error) {
+      console.error('❌ Failed to load conversation:', error);
+    }
   };
 
   function formatTime(date: Date): string {
@@ -255,7 +268,7 @@ const StyledChatsList = styled.div`
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
-      gap: 3px;
+  gap: 3px;
   @media (max-width: 1000px) {
     padding: 0;
   }
@@ -296,7 +309,8 @@ const StyledChatItemContainer = styled.div<StyledChatItemContainerProps>`
   }
   @media (min-width: 700px) {
     &:hover {
-      background-color: ${({ theme }) => theme.background.secondary};
+      background-color: ${({ theme, isActive }) => 
+        isActive ? theme.background.secondary : theme.background.thirdly};
     }
   }
 `;
@@ -323,7 +337,7 @@ const StyledUserName = styled.div<{ hasUnread?: boolean }>`
   gap: 0.5rem;
   font-weight: ${({ hasUnread }) => (hasUnread ? "500" : "400")};
   font-size: var(--text-base);
-  color: ${({ hasUnread }) => (hasUnread ? ({ theme }) => theme.text.primary : ({ theme }) => theme.text.thirdly)};
+  color: ${({ hasUnread, theme }) => (hasUnread ? theme.text.primary : theme.text.thirdly)};
   @media (max-width: 1000px) {
     font-size: var(--text-sm);
   }

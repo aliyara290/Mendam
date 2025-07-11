@@ -48,7 +48,7 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
   const { user, isAuthenticated } = useAuth();
   const { socket, joinGroup: socketJoinGroup, leaveGroup: socketLeaveGroup } = useSocket();
 
-  // Memoize the loadGroups function to prevent recreating it on every render
+  // Load groups when authenticated
   const loadGroups = useCallback(async () => {
     try {
       setLoading(true);
@@ -81,7 +81,7 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
     }
   }, [isAuthenticated, groups.length, loading, loadGroups]);
 
-  // Memoize socket event handlers
+  // Socket event handlers
   useEffect(() => {
     if (!socket || !isAuthenticated) return;
 
@@ -114,25 +114,47 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
         readBy: [],
       };
 
-      setGroupConversations(prev => ({
+      setGroupConversations(prev => {
+        const existingConv = prev[data.groupId];
+        return {
+          ...prev,
+          [data.groupId]: {
+            groupId: data.groupId,
+            messages: [...(existingConv?.messages || []), newMessage],
+            hasMore: existingConv?.hasMore || false,
+            loading: false,
+          },
+        };
+      });
+    };
+
+    const handleGroupMemberJoined = (data: { groupId: string; member: GroupMember }) => {
+      console.log('👋 Member joined group:', data);
+      setGroupMembers(prev => ({
         ...prev,
-        [data.groupId]: {
-          groupId: data.groupId,
-          messages: [...(prev[data.groupId]?.messages || []), newMessage],
-          hasMore: prev[data.groupId]?.hasMore || false,
-          loading: false,
-        },
+        [data.groupId]: [...(prev[data.groupId] || []), data.member],
+      }));
+    };
+
+    const handleGroupMemberLeft = (data: { groupId: string; userId: string }) => {
+      console.log('👋 Member left group:', data);
+      setGroupMembers(prev => ({
+        ...prev,
+        [data.groupId]: (prev[data.groupId] || []).filter(member => member.userId._id !== data.userId),
       }));
     };
 
     socket.on('new_group_message', handleNewGroupMessage);
+    socket.on('group_member_joined', handleGroupMemberJoined);
+    socket.on('group_member_left', handleGroupMemberLeft);
 
     return () => {
       socket.off('new_group_message', handleNewGroupMessage);
+      socket.off('group_member_joined', handleGroupMemberJoined);
+      socket.off('group_member_left', handleGroupMemberLeft);
     };
   }, [socket, isAuthenticated]);
 
-  // Memoize loadGroupMembers to prevent infinite loops
   const loadGroupMembers = useCallback(async (groupId: string) => {
     try {
       setError(null);
@@ -151,7 +173,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Memoize loadGroupMessages to prevent infinite loops
   const loadGroupMessages = useCallback(async (groupId: string, page: number = 1) => {
     try {
       console.log('💬 Loading group messages for:', groupId, 'page:', page);
@@ -202,7 +223,36 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
     try {
       console.log('📤 Sending group message to:', groupId);
       
-      // Send via socket first for real-time update
+      // Create optimistic message
+      const optimisticMessage: GroupMessage = {
+        _id: `temp_${Date.now()}`,
+        senderId: {
+          _id: user?.id || '',
+          username: user?.username || '',
+          fullName: user?.fullName || '',
+          avatar: user?.avatar,
+        },
+        chatGroupId: groupId,
+        content,
+        type,
+        createdAt: new Date(),
+        isEdited: false,
+        readBy: [],
+      };
+
+      // Add optimistic message to UI immediately
+      setGroupConversations(prev => ({
+        ...prev,
+        [groupId]: {
+          ...prev[groupId],
+          groupId,
+          messages: [...(prev[groupId]?.messages || []), optimisticMessage],
+          hasMore: prev[groupId]?.hasMore || false,
+          loading: false,
+        },
+      }));
+
+      // Send via socket for real-time
       if (socket) {
         socket.emit('send_group_message', {
           groupId,
@@ -211,20 +261,23 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
         });
       }
 
-      // Then send via API for persistence
+      // Send via API for persistence
       const response = await groupsAPI.sendGroupMessage(groupId, content, type);
       
       if (response.success) {
         const message = response.data.message;
         console.log('✅ Group message sent successfully');
         
-        // Update local state with the confirmed message
+        // Replace optimistic message with real message
         setGroupConversations(prev => ({
           ...prev,
           [groupId]: {
             ...prev[groupId],
             groupId,
-            messages: [...(prev[groupId]?.messages || []), message],
+            messages: [
+              ...(prev[groupId]?.messages.filter(m => m._id !== optimisticMessage._id) || []),
+              message
+            ],
             hasMore: prev[groupId]?.hasMore || false,
             loading: false,
           },
@@ -232,9 +285,19 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
       }
     } catch (error) {
       console.error('❌ Failed to send group message:', error);
+      
+      // Remove optimistic message on error
+      setGroupConversations(prev => ({
+        ...prev,
+        [groupId]: {
+          ...prev[groupId],
+          messages: prev[groupId]?.messages.filter(m => m._id !== `temp_${Date.now()}`) || [],
+        },
+      }));
+      
       throw error;
     }
-  }, [socket]);
+  }, [socket, user]);
 
   const createGroup = useCallback(async (name: string, description?: string, isPrivate: boolean = false) => {
     try {
