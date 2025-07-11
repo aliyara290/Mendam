@@ -12,9 +12,7 @@ services:
       - key: PORT
         value: 10000
       - key: MONGODB_URI
-        fromDatabase:
-          name: mendam-db
-          property: connectionString
+        value: mongodb+srv://aliyarafr:u8VkSJPE5Bt30Gn0@yara-cluster.imvrw4p.mongodb.net/?retryWrites=true&w=majority&appName=yara-cluster
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
@@ -32,12 +30,6 @@ services:
       - key: RATE_LIMIT_MAX_REQUESTS
         value: 1000
       - key: CORS_ORIGIN
-        value: https://your-frontend-domain.com
+        value: https://www.vercel.app
       - key: SOCKET_CORS_ORIGIN
-        value: https://your-frontend-domain.com
-
-databases:
-  - name: mendam-db
-    databaseName: mendam
-    user: mendam_user
-    plan: free
+        value: https://www.vercel.app
