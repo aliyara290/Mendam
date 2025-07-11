@@ -168,6 +168,7 @@ const ChatArea = () => {
       </StyledChatAreaPToP>
     );
   }
+  
 };
 
 export default ChatArea;
