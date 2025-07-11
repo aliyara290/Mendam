@@ -17,6 +17,9 @@ import Register from "@/pages/auth/Register";
 import ProtectedRoute from "@/routes/ProtectedRoutes";
 import { useAuth } from "@/contexts/AuthContext";
 import styled from "styled-components";
+import { useParams } from "react-router-dom";
+
+import GroupChatArea from "@app/chat-area/GroupChatArea";
 
 const AppRoutes = () => {
   return (
@@ -40,6 +43,13 @@ const AppRoutes = () => {
           <Route path="channel/:id" element={<Channel />} />
         </Route>
 
+        {/* Add the new group chat route */}
+        <Route path="/app/groups/:groupId" element={
+          <ProtectedRoute>
+            <GroupChatLayout />
+          </ProtectedRoute>
+        } />
+
         <Route path="/app/settings" element={
           <ProtectedRoute>
             <SettingLayout />
@@ -55,6 +65,22 @@ const AppRoutes = () => {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
+  );
+};
+
+// New component for group chat layout
+const GroupChatLayout = () => {
+  const { groupId } = useParams();
+  
+  return (
+    <StyledGroupChatLayout>
+      <StyledNavPart>
+        <Groups />
+      </StyledNavPart>
+      <StyledChatPart>
+        <GroupChatArea groupId={groupId} />
+      </StyledChatPart>
+    </StyledGroupChatLayout>
   );
 };
 
@@ -91,14 +117,46 @@ const AuthRedirect: React.FC<{ children: React.ReactNode }> = ({ children }) => 
 export default AppRoutes;
 
 const StyledLoading = styled.div`
-width: 100%;
-height: 100svh;
-display: flex;
-align-items: center;
-justify-content: center;
-background-color: ${({ theme }) => theme.background.primary};
-`
+  width: 100%;
+  height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: ${({ theme }) => theme.background.primary};
+`;
 
 const StyledLogoPath = styled.path`
   fill: ${({ theme }) => theme.text.placeholder};
+`;
+
+const StyledGroupChatLayout = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  background-color: ${({ theme }) => theme.background.primary};
+`;
+
+const StyledNavPart = styled.div`
+  width: 100%;
+  max-width: 35rem;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background-color: ${({ theme }) => theme.background.primary};
+  border-right: 1px solid ${({ theme }) => theme.border.primary};
+
+  @media (max-width: 1200px) {
+    max-width: 30rem;
+  }
+  
+  @media (max-width: 700px) {
+    display: none;
+  }
+`;
+
+const StyledChatPart = styled.div`
+  flex: 1;
+  height: 100vh;
+  background-color: ${({ theme }) => theme.background.secondary};
 `;
