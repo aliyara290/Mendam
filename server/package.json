@@ -6,10 +6,17 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules server.ts",
+    "postinstall": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rm -rf dist"
   },
-  "keywords": ["chat", "socket.io", "express", "mongodb", "real-time"],
+  "keywords": [
+    "chat",
+    "socket.io",
+    "express",
+    "mongodb",
+    "real-time"
+  ],
   "author": "",
   "license": "ISC",
   "description": "Real-time chat application with Socket.IO and MongoDB",
