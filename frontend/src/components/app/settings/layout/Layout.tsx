@@ -4,7 +4,7 @@ import Navigation from "@app/navigation/Navigation";
 import SettingNavigation from "../Navigation";
 import { Outlet } from "react-router-dom";
 import StatusBar from "../../status-bar/StatusBar";
-import { useSettings } from "@/contexts/OpenSettingContext";
+import { useSettings } from "@/contexts/OpenSettingsContext";
 
 interface LayoutProps { }
 

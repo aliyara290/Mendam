@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "@app/ui/button/Button";
 import { CameraIcon } from "@heroicons/react/24/outline";
-import { useSettings } from "@/contexts/OpenSettingContext";
+import { useSettings } from "@/contexts/OpenSettingsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { authAPI } from "@/services/Api";
 import Heading from "../heading/Heading";
