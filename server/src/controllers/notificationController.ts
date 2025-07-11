@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { Notification } from '../models/NotificationsModel';
 
 // Get user notifications
-export const getNotifications = async (req: Request, res: Response) => {
+export const getNotifications = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user.id;
     const page = parseInt(req.query.page as string) || 1;
@@ -41,7 +41,7 @@ export const getNotifications = async (req: Request, res: Response) => {
 };
 
 // Mark notification as read
-export const markAsRead = async (req: Request, res: Response) => {
+export const markAsRead = async (req: Request, res: Response): Promise<void> => {
   try {
     const { notificationId } = req.params;
     const userId = (req as any).user.id;
@@ -53,10 +53,11 @@ export const markAsRead = async (req: Request, res: Response) => {
     );
 
     if (!notification) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Notification not found'
       });
+      return;
     }
 
     res.json({
@@ -73,7 +74,7 @@ export const markAsRead = async (req: Request, res: Response) => {
 };
 
 // Mark all notifications as read
-export const markAllAsRead = async (req: Request, res: Response) => {
+export const markAllAsRead = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user.id;
 
@@ -96,7 +97,7 @@ export const markAllAsRead = async (req: Request, res: Response) => {
 };
 
 // Delete notification
-export const deleteNotification = async (req: Request, res: Response) => {
+export const deleteNotification = async (req: Request, res: Response): Promise<void> => {
   try {
     const { notificationId } = req.params;
     const userId = (req as any).user.id;
@@ -107,10 +108,11 @@ export const deleteNotification = async (req: Request, res: Response) => {
     });
 
     if (!notification) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Notification not found'
       });
+      return;
     }
 
     res.json({

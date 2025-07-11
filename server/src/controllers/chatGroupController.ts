@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { ChatGroup, ChatGroupMember } from '../models/ChatGroupModel';
 import { User } from '../models/UserModel';
 
-export const createChatGroup = async (req: Request, res: Response) => {
+export const createChatGroup = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, description, isPrivate = false, maxMembers = 100 } = req.body;
     const createdBy = (req as any).user.id;
@@ -44,7 +44,7 @@ export const createChatGroup = async (req: Request, res: Response) => {
   }
 };
 
-export const getUserChatGroups = async (req: Request, res: Response) => {
+export const getUserChatGroups = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user.id;
 
@@ -75,7 +75,7 @@ export const getUserChatGroups = async (req: Request, res: Response) => {
   }
 };
 
-export const getChatGroupDetails = async (req: Request, res: Response) => {
+export const getChatGroupDetails = async (req: Request, res: Response): Promise<void> => {
   try {
     const { groupId } = req.params;
     const userId = (req as any).user.id;
@@ -88,10 +88,11 @@ export const getChatGroupDetails = async (req: Request, res: Response) => {
     });
 
     if (!membership) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: 'You are not a member of this group'
       });
+      return;
     }
 
     // Get group details
@@ -99,10 +100,11 @@ export const getChatGroupDetails = async (req: Request, res: Response) => {
       .populate('createdBy', 'username fullName avatar');
 
     if (!chatGroup) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Chat group not found'
       });
+      return;
     }
 
     // Get group members
@@ -128,7 +130,7 @@ export const getChatGroupDetails = async (req: Request, res: Response) => {
   }
 };
 
-export const addMemberToGroup = async (req: Request, res: Response) => {
+export const addMemberToGroup = async (req: Request, res: Response): Promise<void> => {
   try {
     const { groupId } = req.params;
     const { userId } = req.body;
@@ -142,19 +144,21 @@ export const addMemberToGroup = async (req: Request, res: Response) => {
     });
 
     if (!currentMembership || !['admin', 'moderator'].includes(currentMembership.role)) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: 'You do not have permission to add members'
       });
+      return;
     }
 
     // Check if user exists
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'User not found'
       });
+      return;
     }
 
     // Check if user is already a member
@@ -164,10 +168,11 @@ export const addMemberToGroup = async (req: Request, res: Response) => {
     });
 
     if (existingMembership && existingMembership.isActive) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'User is already a member of this group'
       });
+      return;
     }
 
     // Check group member limit
@@ -178,10 +183,11 @@ export const addMemberToGroup = async (req: Request, res: Response) => {
     });
 
     if (memberCount >= chatGroup!.maxMembers) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Group has reached maximum member limit'
       });
+      return;
     }
 
     // Add or reactivate member
@@ -212,7 +218,7 @@ export const addMemberToGroup = async (req: Request, res: Response) => {
   }
 };
 
-export const removeMemberFromGroup = async (req: Request, res: Response) => {
+export const removeMemberFromGroup = async (req: Request, res: Response): Promise<void> => {
   try {
     const { groupId, memberId } = req.params;
     const currentUserId = (req as any).user.id;
@@ -225,10 +231,11 @@ export const removeMemberFromGroup = async (req: Request, res: Response) => {
     });
 
     if (!currentMembership || !['admin', 'moderator'].includes(currentMembership.role)) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: 'You do not have permission to remove members'
       });
+      return;
     }
 
     // Find the member to remove
@@ -239,18 +246,20 @@ export const removeMemberFromGroup = async (req: Request, res: Response) => {
     });
 
     if (!memberToRemove) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Member not found in this group'
       });
+      return;
     }
 
     // Prevent moderators from removing admins
     if (currentMembership.role === 'moderator' && memberToRemove.role === 'admin') {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: 'Moderators cannot remove administrators'
       });
+      return;
     }
 
     // Deactivate membership
@@ -270,7 +279,7 @@ export const removeMemberFromGroup = async (req: Request, res: Response) => {
   }
 };
 
-export const updateMemberRole = async (req: Request, res: Response) => {
+export const updateMemberRole = async (req: Request, res: Response): Promise<void> => {
   try {
     const { groupId, memberId } = req.params;
     const { role } = req.body;
@@ -284,10 +293,11 @@ export const updateMemberRole = async (req: Request, res: Response) => {
     });
 
     if (!currentMembership || currentMembership.role !== 'admin') {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: 'Only administrators can update member roles'
       });
+      return;
     }
 
     // Find the member to update
@@ -298,18 +308,20 @@ export const updateMemberRole = async (req: Request, res: Response) => {
     });
 
     if (!memberToUpdate) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Member not found in this group'
       });
+      return;
     }
 
     // Validate role
     if (!['admin', 'moderator', 'member'].includes(role)) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Invalid role specified'
       });
+      return;
     }
 
     // Update the role
@@ -329,7 +341,7 @@ export const updateMemberRole = async (req: Request, res: Response) => {
   }
 };
 
-export const leaveGroup = async (req: Request, res: Response) => {
+export const leaveGroup = async (req: Request, res: Response): Promise<void> => {
   try {
     const { groupId } = req.params;
     const userId = (req as any).user.id;
@@ -342,10 +354,11 @@ export const leaveGroup = async (req: Request, res: Response) => {
     });
 
     if (!membership) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'You are not a member of this group'
       });
+      return;
     }
 
     // Check if user is the only admin
@@ -357,10 +370,11 @@ export const leaveGroup = async (req: Request, res: Response) => {
       });
 
       if (adminCount === 1) {
-        return res.status(400).json({
+        res.status(400).json({
           success: false,
           message: 'Cannot leave group as the only administrator. Please assign another admin first.'
         });
+        return;
       }
     }
 
@@ -381,7 +395,7 @@ export const leaveGroup = async (req: Request, res: Response) => {
   }
 };
 
-export const joinGroup = async (req: Request, res: Response) => {
+export const joinGroup = async (req: Request, res: Response): Promise<void> => {
   try {
     const { groupId } = req.params;
     const userId = (req as any).user.id;
@@ -389,18 +403,20 @@ export const joinGroup = async (req: Request, res: Response) => {
     // Check if group exists
     const chatGroup = await ChatGroup.findById(groupId);
     if (!chatGroup) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Group not found'
       });
+      return;
     }
 
     // Check if group is private
     if (chatGroup.isPrivate) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: 'Cannot join private group without invitation'
       });
+      return;
     }
 
     // Check if user is already a member
@@ -410,10 +426,11 @@ export const joinGroup = async (req: Request, res: Response) => {
     });
 
     if (existingMembership && existingMembership.isActive) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'You are already a member of this group'
       });
+      return;
     }
 
     // Check member limit
@@ -423,10 +440,11 @@ export const joinGroup = async (req: Request, res: Response) => {
     });
 
     if (memberCount >= chatGroup.maxMembers) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Group has reached maximum member limit'
       });
+      return;
     }
 
     // Add or reactivate membership
@@ -456,16 +474,17 @@ export const joinGroup = async (req: Request, res: Response) => {
   }
 };
 
-export const searchPublicGroups = async (req: Request, res: Response) => {
+export const searchPublicGroups = async (req: Request, res: Response): Promise<void> => {
   try {
     const { query } = req.query;
     const userId = (req as any).user.id;
 
     if (!query || typeof query !== 'string') {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Search query is required'
       });
+      return;
     }
 
     // Search public groups by name

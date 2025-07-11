@@ -2,17 +2,18 @@ import { Request, Response } from 'express';
 import { User } from '../models/UserModel';
 
 // Get current user profile
-export const getCurrentUser = async (req: Request, res: Response) => {
+export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user.id;
     
     const user = await User.findById(userId);
     
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'User not found'
       });
+      return;
     }
 
     res.json({
@@ -42,31 +43,34 @@ export const getCurrentUser = async (req: Request, res: Response) => {
 };
 
 // Update user profile
-export const updateProfile = async (req: Request, res: Response) => {
+export const updateProfile = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user.id;
     const { fullName, avatar, jobTitle, biography } = req.body;
 
     // Validation
     if (fullName && fullName.length > 50) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Full name cannot exceed 50 characters'
       });
+      return;
     }
 
     if (jobTitle && jobTitle.length > 100) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Job title cannot exceed 100 characters'
       });
+      return;
     }
 
     if (biography && biography.length > 500) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Biography cannot exceed 500 characters'
       });
+      return;
     }
 
     // Build update object with only provided fields
@@ -84,10 +88,11 @@ export const updateProfile = async (req: Request, res: Response) => {
     );
 
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'User not found'
       });
+      return;
     }
 
     res.json({
@@ -116,16 +121,17 @@ export const updateProfile = async (req: Request, res: Response) => {
 };
 
 // Search users
-export const searchUsers = async (req: Request, res: Response) => {
+export const searchUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     const { query } = req.query;
     const currentUserId = (req as any).user.id;
 
     if (!query || typeof query !== 'string') {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Search query is required'
       });
+      return;
     }
 
     // Search users by username or full name (case-insensitive)
@@ -153,7 +159,7 @@ export const searchUsers = async (req: Request, res: Response) => {
 };
 
 // Get user by ID
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId } = req.params;
 
@@ -161,10 +167,11 @@ export const getUserById = async (req: Request, res: Response) => {
       .select('username fullName avatar status isOnline lastSeen jobTitle biography');
 
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'User not found'
       });
+      return;
     }
 
     res.json({
@@ -181,16 +188,17 @@ export const getUserById = async (req: Request, res: Response) => {
 };
 
 // Update user status
-export const updateStatus = async (req: Request, res: Response) => {
+export const updateStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user.id;
     const { status } = req.body;
 
     if (!['online', 'offline', 'idle'].includes(status)) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Invalid status'
       });
+      return;
     }
 
     const user = await User.findByIdAndUpdate(
@@ -204,10 +212,11 @@ export const updateStatus = async (req: Request, res: Response) => {
     );
 
     if (!user) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'User not found'
       });
+      return;
     }
 
     res.json({

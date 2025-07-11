@@ -3,17 +3,18 @@ import { Message } from '../models/MessageModel';
 import { User } from '../models/UserModel';
 import { ChatGroup, ChatGroupMember } from '../models/ChatGroupModel';
 
-export const sendDirectMessage = async (req: Request, res: Response) => {
+export const sendDirectMessage = async (req: Request, res: Response): Promise<void> => {
   try {
     const { recipientId, content, type = 'text' } = req.body;
     const senderId = (req as any).user.id;
 
     const recipient = await User.findById(recipientId);
     if (!recipient) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Recipient not found'
       });
+      return;
     }
 
     const message = new Message({
@@ -41,7 +42,7 @@ export const sendDirectMessage = async (req: Request, res: Response) => {
   }
 };
 
-export const sendGroupMessage = async (req: Request, res: Response) => {
+export const sendGroupMessage = async (req: Request, res: Response): Promise<void> => {
   try {
     const { chatGroupId, content, type = 'text' } = req.body;
     const senderId = (req as any).user.id;
@@ -54,10 +55,11 @@ export const sendGroupMessage = async (req: Request, res: Response) => {
     });
 
     if (!membership) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: 'You are not a member of this group'
       });
+      return;
     }
 
     const message = new Message({
@@ -86,7 +88,7 @@ export const sendGroupMessage = async (req: Request, res: Response) => {
   }
 };
 
-export const getDirectMessages = async (req: Request, res: Response) => {
+export const getDirectMessages = async (req: Request, res: Response): Promise<void> => {
   try {
     const { userId } = req.params;
     const currentUserId = (req as any).user.id;
@@ -144,7 +146,7 @@ export const getDirectMessages = async (req: Request, res: Response) => {
   }
 };
 
-export const getGroupMessages = async (req: Request, res: Response) => {
+export const getGroupMessages = async (req: Request, res: Response): Promise<void> => {
   try {
     const { groupId } = req.params;
     const currentUserId = (req as any).user.id;
@@ -160,10 +162,11 @@ export const getGroupMessages = async (req: Request, res: Response) => {
     });
 
     if (!membership) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: 'You are not a member of this group'
       });
+      return;
     }
 
     // Get group messages
@@ -196,7 +199,7 @@ export const getGroupMessages = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteMessage = async (req: Request, res: Response) => {
+export const deleteMessage = async (req: Request, res: Response): Promise<void> => {
   try {
     const { messageId } = req.params;
     const currentUserId = (req as any).user.id;
@@ -204,18 +207,20 @@ export const deleteMessage = async (req: Request, res: Response) => {
     const message = await Message.findById(messageId);
     
     if (!message) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Message not found'
       });
+      return;
     }
 
     // Check if user is the sender
     if (message.senderId.toString() !== currentUserId) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
         message: 'You can only delete your own messages'
       });
+      return;
     }
 
     // Mark message as deleted
