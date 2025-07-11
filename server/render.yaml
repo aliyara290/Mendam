@@ -30,6 +30,6 @@ services:
       - key: RATE_LIMIT_MAX_REQUESTS
         value: 1000
       - key: CORS_ORIGIN
-        value: https://www.vercel.app
+        value: https://mendam.vercel.app
       - key: SOCKET_CORS_ORIGIN
-        value: https://www.vercel.app
+        value: https://mendam.vercel.app

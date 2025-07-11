@@ -29,11 +29,11 @@ const httpServer = createServer(app);
 // Parse CORS origins from environment variable
 const corsOrigins = process.env.CORS_ORIGIN 
   ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-  : ["http://localhost:5173", "http://localhost:3000"];
+  : ["https://mendam.vercel.app", "http://localhost:3000"];
 
 const socketCorsOrigins = process.env.SOCKET_CORS_ORIGIN 
   ? process.env.SOCKET_CORS_ORIGIN.split(',').map(origin => origin.trim())
-  : ["http://localhost:5173", "http://localhost:3000"];
+  : ["https://mendam.vercel.app", "http://localhost:3000"];
 
 const io = new Server(httpServer, {
   cors: {
