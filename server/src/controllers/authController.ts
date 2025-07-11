@@ -1,13 +1,20 @@
-// src/controllers/authController.ts
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { User } from "../models/UserModel";
 
 // Generate JWT token
-const generateToken = (userId: string) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRES_IN || "7d",
-  });
+const generateToken = (userId: string): string => {
+  if (!process.env.JWT_SECRET) {
+    throw new Error('JWT_SECRET is not defined');
+  }
+  
+  return jwt.sign(
+    { userId }, 
+    process.env.JWT_SECRET,
+    {
+      expiresIn: process.env.JWT_EXPIRES_IN || "7d"
+    } as jwt.SignOptions
+  );
 };
 
 export const register = async (req: Request, res: Response): Promise<void> => {

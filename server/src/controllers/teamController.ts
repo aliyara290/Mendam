@@ -84,11 +84,14 @@ export const getUserTeams = async (req: Request, res: Response) => {
       }
     });
 
-    const teams = memberships.map(membership => ({
-      ...membership.teamId.toObject(),
-      userRole: membership.role,
-      userPermissions: membership.permissions
-    }));
+    const teams = memberships.map(membership => {
+      const teamObj = (membership.teamId as any).toObject();
+      return {
+        ...teamObj,
+        userRole: membership.role,
+        userPermissions: membership.permissions
+      };
+    });
 
     res.json({
       success: true,

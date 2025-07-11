@@ -3,26 +3,28 @@ import { Friend } from '../models/FriendsModel';
 import { User } from '../models/UserModel';
 
 // Send friend request
-export const sendFriendRequest = async (req: Request, res: Response) => {
+export const sendFriendRequest = async (req: Request, res: Response): Promise<void> => {
   try {
     const { friendId } = req.body;
     const userId = (req as any).user.id;
 
     // Check if trying to add themselves
     if (userId === friendId) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'You cannot add yourself as a friend'
       });
+      return;
     }
 
     // Check if friend exists
     const friendUser = await User.findById(friendId);
     if (!friendUser) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'User not found'
       });
+      return;
     }
 
     // Check if friendship already exists
@@ -34,10 +36,11 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
     });
 
     if (existingFriendship) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: 'Friend request already exists or users are already friends'
       });
+      return;
     }
 
     // Create friend request
@@ -64,7 +67,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
 };
 
 // Accept friend request
-export const acceptFriendRequest = async (req: Request, res: Response) => {
+export const acceptFriendRequest = async (req: Request, res: Response): Promise<void> => {
   try {
     const { requestId } = req.params;
     const userId = (req as any).user.id;
@@ -77,10 +80,11 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
     });
 
     if (!friendRequest) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Friend request not found'
       });
+      return;
     }
 
     // Update the request status
@@ -113,7 +117,7 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
 };
 
 // Decline friend request
-export const declineFriendRequest = async (req: Request, res: Response) => {
+export const declineFriendRequest = async (req: Request, res: Response): Promise<void> => {
   try {
     const { requestId } = req.params;
     const userId = (req as any).user.id;
@@ -130,10 +134,11 @@ export const declineFriendRequest = async (req: Request, res: Response) => {
     );
 
     if (!friendRequest) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         message: 'Friend request not found'
       });
+      return;
     }
 
     res.json({
@@ -150,7 +155,7 @@ export const declineFriendRequest = async (req: Request, res: Response) => {
 };
 
 // Get friend requests (received)
-export const getFriendRequests = async (req: Request, res: Response) => {
+export const getFriendRequests = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user.id;
 
@@ -175,7 +180,7 @@ export const getFriendRequests = async (req: Request, res: Response) => {
 };
 
 // Get friends list
-export const getFriends = async (req: Request, res: Response) => {
+export const getFriends = async (req: Request, res: Response): Promise<void> => {
   try {
     const userId = (req as any).user.id;
 
@@ -200,7 +205,7 @@ export const getFriends = async (req: Request, res: Response) => {
 };
 
 // Remove friend
-export const removeFriend = async (req: Request, res: Response) => {
+export const removeFriend = async (req: Request, res: Response): Promise<void> => {
   try {
     const { friendId } = req.params;
     const userId = (req as any).user.id;
@@ -227,7 +232,7 @@ export const removeFriend = async (req: Request, res: Response) => {
 };
 
 // Block user
-export const blockUser = async (req: Request, res: Response) => {
+export const blockUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { friendId } = req.body;
     const userId = (req as any).user.id;
