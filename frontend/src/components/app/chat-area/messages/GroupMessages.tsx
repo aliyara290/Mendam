@@ -30,7 +30,7 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
 
   const loadMoreMessages = async () => {
     if (!conversation?.hasMore || conversation?.loading) return;
-    
+
     try {
       const currentLength = conversation.messages.length;
       const page = Math.floor(currentLength / 50) + 1;
@@ -41,26 +41,26 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
   };
 
   const formatTime = (date: Date) => {
-    return new Date(date).toLocaleTimeString([], { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return new Date(date).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
   const formatDate = (date: Date) => {
     const today = new Date();
     const messageDate = new Date(date);
-    
+
     if (messageDate.toDateString() === today.toDateString()) {
       return "Today";
     }
-    
+
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
     if (messageDate.toDateString() === yesterday.toDateString()) {
       return "Yesterday";
     }
-    
+
     return messageDate.toLocaleDateString();
   };
 
@@ -92,7 +92,7 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
     <StyledGroupMessages>
       {conversation.hasMore && (
         <StyledLoadMoreContainer>
-          <StyledLoadMoreButton 
+          <StyledLoadMoreButton
             onClick={loadMoreMessages}
             disabled={conversation.loading}
           >
@@ -120,7 +120,7 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
                   <StyledDateText>{messageDate}</StyledDateText>
                 </StyledDateSeparator>
               )}
-              
+
               <StyledMessageItem isOwn={isOwn} showAvatar={showAvatar}>
                 {!isOwn && showAvatar && (
                   <StyledMessageAvatar>
@@ -131,14 +131,14 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
                     />
                   </StyledMessageAvatar>
                 )}
-                
+
                 <StyledMessageContent isOwn={isOwn}>
                   {!isOwn && showAvatar && (
                     <StyledSenderName>{message.senderId.fullName}</StyledSenderName>
                   )}
-                  
-                  <StyledMessageBubble 
-                    isOwn={isOwn} 
+
+                  <StyledMessageBubble
+                    isOwn={isOwn}
                     hasAvatar={!isOwn && showAvatar}
                     isLastInGroup={isLastInGroup}
                   >
@@ -156,7 +156,7 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
           );
         })}
       </StyledMessagesList>
-      
+
       <div ref={messagesEndRef} />
     </StyledGroupMessages>
   );
@@ -227,14 +227,14 @@ const StyledSenderName = styled.div`
   margin-bottom: 0.2rem;
 `;
 
-const StyledMessageBubble = styled.div<{ 
-  isOwn: boolean; 
+const StyledMessageBubble = styled.div<{
+  isOwn: boolean;
   hasAvatar: boolean;
   isLastInGroup: boolean;
 }>`
-  background-color: ${({ isOwn, theme }) => 
+  background-color: ${({ isOwn, theme }) =>
     isOwn ? 'var(--blue)' : theme.background.thirdly};
-  color: ${({ isOwn, theme }) => 
+  color: ${({ isOwn, theme }) =>
     isOwn ? 'white' : theme.text.primary};
   padding: 0.8rem 1rem;
   border-radius: 1.2rem;
