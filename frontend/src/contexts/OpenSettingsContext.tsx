@@ -22,6 +22,7 @@ export const OpenSettingProvider: React.FC<{ children: React.ReactNode }> = ({ c
 }
 
 
+
 export const useSettings = (): OpenSettingProps => {
   const context = useContext(OpenSettingsContext)
   if (!context) {
