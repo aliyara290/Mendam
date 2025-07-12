@@ -75,18 +75,20 @@ const getChatGroupDetails = async (req, res) => {
             isActive: true
         });
         if (!membership) {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: 'You are not a member of this group'
             });
+            return;
         }
         const chatGroup = await ChatGroupModel_1.ChatGroup.findById(groupId)
             .populate('createdBy', 'username fullName avatar');
         if (!chatGroup) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Chat group not found'
             });
+            return;
         }
         const members = await ChatGroupModel_1.ChatGroupMember.find({
             chatGroupId: groupId,
@@ -121,27 +123,30 @@ const addMemberToGroup = async (req, res) => {
             isActive: true
         });
         if (!currentMembership || !['admin', 'moderator'].includes(currentMembership.role)) {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: 'You do not have permission to add members'
             });
+            return;
         }
         const user = await UserModel_1.User.findById(userId);
         if (!user) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
+            return;
         }
         const existingMembership = await ChatGroupModel_1.ChatGroupMember.findOne({
             userId,
             chatGroupId: groupId
         });
         if (existingMembership && existingMembership.isActive) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'User is already a member of this group'
             });
+            return;
         }
         const chatGroup = await ChatGroupModel_1.ChatGroup.findById(groupId);
         const memberCount = await ChatGroupModel_1.ChatGroupMember.countDocuments({
@@ -149,10 +154,11 @@ const addMemberToGroup = async (req, res) => {
             isActive: true
         });
         if (memberCount >= chatGroup.maxMembers) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Group has reached maximum member limit'
             });
+            return;
         }
         if (existingMembership) {
             existingMembership.isActive = true;
@@ -192,10 +198,11 @@ const removeMemberFromGroup = async (req, res) => {
             isActive: true
         });
         if (!currentMembership || !['admin', 'moderator'].includes(currentMembership.role)) {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: 'You do not have permission to remove members'
             });
+            return;
         }
         const memberToRemove = await ChatGroupModel_1.ChatGroupMember.findOne({
             userId: memberId,
@@ -203,16 +210,18 @@ const removeMemberFromGroup = async (req, res) => {
             isActive: true
         });
         if (!memberToRemove) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Member not found in this group'
             });
+            return;
         }
         if (currentMembership.role === 'moderator' && memberToRemove.role === 'admin') {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: 'Moderators cannot remove administrators'
             });
+            return;
         }
         memberToRemove.isActive = false;
         await memberToRemove.save();
@@ -241,10 +250,11 @@ const updateMemberRole = async (req, res) => {
             isActive: true
         });
         if (!currentMembership || currentMembership.role !== 'admin') {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: 'Only administrators can update member roles'
             });
+            return;
         }
         const memberToUpdate = await ChatGroupModel_1.ChatGroupMember.findOne({
             userId: memberId,
@@ -252,16 +262,18 @@ const updateMemberRole = async (req, res) => {
             isActive: true
         });
         if (!memberToUpdate) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Member not found in this group'
             });
+            return;
         }
         if (!['admin', 'moderator', 'member'].includes(role)) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Invalid role specified'
             });
+            return;
         }
         memberToUpdate.role = role;
         await memberToUpdate.save();
@@ -289,10 +301,11 @@ const leaveGroup = async (req, res) => {
             isActive: true
         });
         if (!membership) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'You are not a member of this group'
             });
+            return;
         }
         if (membership.role === 'admin') {
             const adminCount = await ChatGroupModel_1.ChatGroupMember.countDocuments({
@@ -301,10 +314,11 @@ const leaveGroup = async (req, res) => {
                 isActive: true
             });
             if (adminCount === 1) {
-                return res.status(400).json({
+                res.status(400).json({
                     success: false,
                     message: 'Cannot leave group as the only administrator. Please assign another admin first.'
                 });
+                return;
             }
         }
         membership.isActive = false;
@@ -329,36 +343,40 @@ const joinGroup = async (req, res) => {
         const userId = req.user.id;
         const chatGroup = await ChatGroupModel_1.ChatGroup.findById(groupId);
         if (!chatGroup) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Group not found'
             });
+            return;
         }
         if (chatGroup.isPrivate) {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: 'Cannot join private group without invitation'
             });
+            return;
         }
         const existingMembership = await ChatGroupModel_1.ChatGroupMember.findOne({
             userId,
             chatGroupId: groupId
         });
         if (existingMembership && existingMembership.isActive) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'You are already a member of this group'
             });
+            return;
         }
         const memberCount = await ChatGroupModel_1.ChatGroupMember.countDocuments({
             chatGroupId: groupId,
             isActive: true
         });
         if (memberCount >= chatGroup.maxMembers) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Group has reached maximum member limit'
             });
+            return;
         }
         if (existingMembership) {
             existingMembership.isActive = true;
@@ -392,10 +410,11 @@ const searchPublicGroups = async (req, res) => {
         const { query } = req.query;
         const userId = req.user.id;
         if (!query || typeof query !== 'string') {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Search query is required'
             });
+            return;
         }
         const groups = await ChatGroupModel_1.ChatGroup.find({
             isPrivate: false,
@@ -423,4 +442,3 @@ const searchPublicGroups = async (req, res) => {
     }
 };
 exports.searchPublicGroups = searchPublicGroups;
-//# sourceMappingURL=chatGroupController.js.map

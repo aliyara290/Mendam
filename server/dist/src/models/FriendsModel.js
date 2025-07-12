@@ -81,4 +81,3 @@ friendSchema.index({ userId: 1, friendId: 1 }, { unique: true });
 friendSchema.index({ userId: 1, status: 1 });
 friendSchema.index({ friendId: 1, status: 1 });
 exports.Friend = mongoose_1.default.model('Friend', friendSchema);
-//# sourceMappingURL=FriendsModel.js.map

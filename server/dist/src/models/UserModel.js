@@ -140,4 +140,3 @@ userSchema.pre("findOneAndUpdate", function (next) {
     next();
 });
 exports.User = mongoose_1.default.model("User", userSchema);
-//# sourceMappingURL=UserModel.js.map

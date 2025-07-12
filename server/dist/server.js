@@ -30,10 +30,10 @@ exports.app = app;
 const httpServer = (0, http_1.createServer)(app);
 const corsOrigins = process.env.CORS_ORIGIN
     ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-    : ["http://localhost:5173", "http://localhost:3000"];
+    : ["https://mendam.vercel.app", "http://localhost:3000"];
 const socketCorsOrigins = process.env.SOCKET_CORS_ORIGIN
     ? process.env.SOCKET_CORS_ORIGIN.split(',').map(origin => origin.trim())
-    : ["http://localhost:5173", "http://localhost:3000"];
+    : ["https://mendam.vercel.app", "http://localhost:3000"];
 const io = new socket_io_1.Server(httpServer, {
     cors: {
         origin: socketCorsOrigins,
@@ -113,4 +113,3 @@ process.on("SIGINT", () => {
     });
 });
 startServer();
-//# sourceMappingURL=server.js.map

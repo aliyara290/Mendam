@@ -65,4 +65,3 @@ const socketSessionSchema = new mongoose_1.Schema({
 socketSessionSchema.index({ userId: 1 });
 socketSessionSchema.index({ socketId: 1 }, { unique: true });
 exports.SocketSession = mongoose_1.default.model('SocketSession', socketSessionSchema);
-//# sourceMappingURL=SocketSessionModel.js.map

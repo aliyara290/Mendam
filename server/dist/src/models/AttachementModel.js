@@ -70,4 +70,3 @@ const attachmentSchema = new mongoose_1.Schema({
 });
 attachmentSchema.index({ messageId: 1 });
 exports.Attachment = mongoose_1.default.model('Attachment', attachmentSchema);
-//# sourceMappingURL=AttachementModel.js.map

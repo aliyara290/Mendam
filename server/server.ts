@@ -26,14 +26,63 @@ import { SocketService } from "./src/socket/socketService";
 const app = express();
 const httpServer = createServer(app);
 
-// Parse CORS origins from environment variable
+// Parse CORS origins from environment variable with fallbacks
 const corsOrigins = process.env.CORS_ORIGIN 
   ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-  : ["https://mendam.vercel.app", "http://localhost:3000"];
+  : [
+      "https://mendam.vercel.app",
+      "https://mendam-git-main-aliyarafrs-projects.vercel.app", // Vercel preview URLs
+      "https://mendam-*.vercel.app", // Vercel branch deployments
+      "http://localhost:3000",
+      "http://localhost:5173",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:5173"
+    ];
 
 const socketCorsOrigins = process.env.SOCKET_CORS_ORIGIN 
   ? process.env.SOCKET_CORS_ORIGIN.split(',').map(origin => origin.trim())
-  : ["https://mendam.vercel.app", "http://localhost:3000"];
+  : corsOrigins;
+
+// More permissive CORS for production debugging
+const corsOptions = {
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin matches our allowed origins or patterns
+    const isAllowed = corsOrigins.some(allowedOrigin => {
+      if (allowedOrigin.includes('*')) {
+        // Handle wildcard patterns
+        const pattern = allowedOrigin.replace('*', '.*');
+        return new RegExp(`^${pattern}$`).test(origin);
+      }
+      return allowedOrigin === origin;
+    });
+    
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.log(`❌ CORS blocked origin: ${origin}`);
+      console.log(`✅ Allowed origins: ${corsOrigins.join(', ')}`);
+      callback(new Error('Not allowed by CORS'), false);
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: [
+    'Content-Type', 
+    'Authorization', 
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'Access-Control-Request-Method',
+    'Access-Control-Request-Headers'
+  ],
+  exposedHeaders: ['Authorization'],
+  optionsSuccessStatus: 200,
+  preflightContinue: false,
+  maxAge: 86400 // 24 hours
+};
 
 const io = new Server(httpServer, {
   cors: {
@@ -57,40 +106,49 @@ const limiter = rateLimit({
     if (process.env.NODE_ENV === 'development') {
       return req.path.includes('/health') || req.path.includes('/auth');
     }
-    return false;
+    return req.path.includes('/health');
   }
 });
 
-app.use(helmet());
-app.use(compression());
-app.use(morgan("combined"));
+// Middleware order is important
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginEmbedderPolicy: false
+}));
 
-app.use(
-  cors({
-    origin: corsOrigins,
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    optionsSuccessStatus: 200,
-    preflightContinue: false,
-  })
-);
+app.use(compression());
+
+// CORS must be before other middleware
+app.use(cors(corsOptions));
+
+// Handle preflight requests explicitly
+app.options('*', cors(corsOptions));
+
+app.use(morgan("combined"));
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-app.use(limiter);
-
+// Health check route (before rate limiting)
 app.get("/health", (req, res) => {
-  res.status(200).json({ status: "OK", timestamp: new Date().toISOString() });
+  res.status(200).json({ 
+    status: "OK", 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV,
+    corsOrigins: corsOrigins
+  });
 });
 
+// Apply rate limiting after health check
+app.use(limiter);
+
+// Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/users', limiter, authMiddleware, userRoutes);
-app.use('/api/chat-groups', limiter, authMiddleware, chatGroupRoutes);
-app.use('/api/messages', limiter, authMiddleware, messageRoutes);
-app.use('/api/friends', limiter, authMiddleware, friendRoutes);
-app.use('/api/notifications', limiter, authMiddleware, notificationRoutes);
+app.use('/api/users', authMiddleware, userRoutes);
+app.use('/api/chat-groups', authMiddleware, chatGroupRoutes);
+app.use('/api/messages', authMiddleware, messageRoutes);
+app.use('/api/friends', authMiddleware, friendRoutes);
+app.use('/api/notifications', authMiddleware, notificationRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
@@ -109,6 +167,7 @@ const startServer = async () => {
       console.log(`🔌 Socket.IO server ready`);
       console.log(`🏥 Health check: http://localhost:${PORT}/health`);
       console.log(`🔗 CORS origins: ${corsOrigins.join(', ')}`);
+      console.log(`📡 Socket CORS origins: ${socketCorsOrigins.join(', ')}`);
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error);

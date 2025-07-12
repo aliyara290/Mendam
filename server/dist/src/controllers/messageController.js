@@ -10,10 +10,11 @@ const sendDirectMessage = async (req, res) => {
         const senderId = req.user.id;
         const recipient = await UserModel_1.User.findById(recipientId);
         if (!recipient) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Recipient not found'
             });
+            return;
         }
         const message = new MessageModel_1.Message({
             senderId,
@@ -48,10 +49,11 @@ const sendGroupMessage = async (req, res) => {
             isActive: true
         });
         if (!membership) {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: 'You are not a member of this group'
             });
+            return;
         }
         const message = new MessageModel_1.Message({
             senderId,
@@ -140,10 +142,11 @@ const getGroupMessages = async (req, res) => {
             isActive: true
         });
         if (!membership) {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: 'You are not a member of this group'
             });
+            return;
         }
         const messages = await MessageModel_1.Message.find({
             chatGroupId: groupId,
@@ -180,16 +183,18 @@ const deleteMessage = async (req, res) => {
         const currentUserId = req.user.id;
         const message = await MessageModel_1.Message.findById(messageId);
         if (!message) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Message not found'
             });
+            return;
         }
         if (message.senderId.toString() !== currentUserId) {
-            return res.status(403).json({
+            res.status(403).json({
                 success: false,
                 message: 'You can only delete your own messages'
             });
+            return;
         }
         message.isDeleted = true;
         message.deletedAt = new Date();
@@ -208,4 +213,3 @@ const deleteMessage = async (req, res) => {
     }
 };
 exports.deleteMessage = deleteMessage;
-//# sourceMappingURL=messageController.js.map

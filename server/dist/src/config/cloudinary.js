@@ -11,4 +11,3 @@ const initCloudinary = () => {
     });
 };
 exports.default = initCloudinary;
-//# sourceMappingURL=cloudinary.js.map

@@ -123,4 +123,3 @@ messageSchema.pre('findOneAndUpdate', function (next) {
     next();
 });
 exports.Message = mongoose_1.default.model('Message', messageSchema);
-//# sourceMappingURL=MessageModel.js.map
