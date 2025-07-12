@@ -18,7 +18,6 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    console.log(
       `🌐 API Request: ${config.method?.toUpperCase()} ${config.url}`
     );
     return config;
@@ -31,7 +30,6 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => {
-    console.log(`✅ API Response: ${response.status} ${response.config.url}`);
     return response;
   },
   (error) => {
@@ -41,7 +39,6 @@ api.interceptors.response.use(
     );
 
     if (error.response?.status === 401) {
-      console.log("🔑 Token expired or invalid, redirecting to login");
       localStorage.removeItem("token");
       window.location.href = "/auth/login";
     }
@@ -170,7 +167,6 @@ export interface GroupMessage {
 export const authAPI = {
   register: async (data: RegisterData) => {
     try {
-      console.log("🔐 Registering user:", { ...data, password: "[HIDDEN]" });
       const response = await api.post("/auth/register", data);
       return response.data;
     } catch (error: any) {
@@ -181,7 +177,6 @@ export const authAPI = {
 
   login: async (data: LoginData) => {
     try {
-      console.log("🔐 Logging in user:", { ...data, password: "[HIDDEN]" });
       const response = await api.post("/auth/login", data);
       return response.data;
     } catch (error: any) {
@@ -212,7 +207,6 @@ export const authAPI = {
 
   updateProfile: async (data: UpdateProfileData) => {
     try {
-      console.log("🔄 Updating profile:", data);
       const response = await api.put("/users/profile", data);
       return response.data;
     } catch (error: any) {
@@ -227,9 +221,7 @@ export const authAPI = {
 export const friendsAPI = {
   getFriends: async () => {
     try {
-      console.log("👥 Loading friends...");
       const response = await api.get("/friends");
-      console.log("✅ Friends loaded:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Get friends failed:", error.response?.data);
@@ -240,9 +232,7 @@ export const friendsAPI = {
   // Get friend requests (received)
   getFriendRequests: async () => {
     try {
-      console.log("📬 Loading friend requests...");
       const response = await api.get("/friends/requests");
-      console.log("✅ Friend requests loaded:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Get friend requests failed:", error.response?.data);
@@ -255,9 +245,7 @@ export const friendsAPI = {
   // Send friend request
   sendFriendRequest: async (friendId: string) => {
     try {
-      console.log("📤 Sending friend request to:", friendId);
       const response = await api.post("/friends/request", { friendId });
-      console.log("✅ Friend request sent:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Send friend request failed:", error.response?.data);
@@ -270,9 +258,7 @@ export const friendsAPI = {
   // Accept friend request
   acceptFriendRequest: async (requestId: string) => {
     try {
-      console.log("✅ Accepting friend request:", requestId);
       const response = await api.put(`/friends/request/${requestId}/accept`);
-      console.log("✅ Friend request accepted:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Accept friend request failed:", error.response?.data);
@@ -285,9 +271,7 @@ export const friendsAPI = {
   // Decline friend request
   declineFriendRequest: async (requestId: string) => {
     try {
-      console.log("❌ Declining friend request:", requestId);
       const response = await api.put(`/friends/request/${requestId}/decline`);
-      console.log("✅ Friend request declined:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Decline friend request failed:", error.response?.data);
@@ -300,9 +284,7 @@ export const friendsAPI = {
   // Remove friend
   removeFriend: async (friendId: string) => {
     try {
-      console.log("🗑️ Removing friend:", friendId);
       const response = await api.delete(`/friends/${friendId}`);
-      console.log("✅ Friend removed:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Remove friend failed:", error.response?.data);
@@ -315,9 +297,7 @@ export const friendsAPI = {
   // Block user
   blockUser: async (friendId: string) => {
     try {
-      console.log("🚫 Blocking user:", friendId);
       const response = await api.post("/friends/block", { friendId });
-      console.log("✅ User blocked:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Block user failed:", error.response?.data);
@@ -328,11 +308,9 @@ export const friendsAPI = {
   // Search users
   searchUsers: async (query: string) => {
     try {
-      console.log("🔍 Searching users:", query);
       const response = await api.get(
         `/users/search?query=${encodeURIComponent(query)}`
       );
-      console.log("✅ Users found:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Search users failed:", error.response?.data);
@@ -351,13 +329,11 @@ export const messagesAPI = {
     type: string = "text"
   ) => {
     try {
-      console.log("💬 Sending message to:", recipientId);
       const response = await api.post("/messages/direct", {
         recipientId,
         content,
         type,
       });
-      console.log("✅ Message sent:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Send message failed:", error.response?.data);
@@ -374,11 +350,9 @@ export const messagesAPI = {
     limit: number = 50
   ) => {
     try {
-      console.log("📩 Loading messages with user:", userId);
       const response = await api.get(
         `/messages/direct/${userId}?page=${page}&limit=${limit}`
       );
-      console.log("✅ Messages loaded:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Get messages failed:", error.response?.data);
@@ -391,9 +365,7 @@ export const messagesAPI = {
   // Delete message
   deleteMessage: async (messageId: string) => {
     try {
-      console.log("🗑️ Deleting message:", messageId);
       const response = await api.delete(`/messages/${messageId}`);
-      console.log("✅ Message deleted:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Delete message failed:", error.response?.data);
@@ -408,9 +380,7 @@ export const groupsAPI = {
   // Get user's groups
   getUserGroups: async () => {
     try {
-      console.log("📁 Loading user groups...");
       const response = await api.get("/chat-groups");
-      console.log("✅ Groups loaded:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Get groups failed:", error.response?.data);
@@ -421,9 +391,7 @@ export const groupsAPI = {
   // Get group details with members
   getGroupDetails: async (groupId: string) => {
     try {
-      console.log("📋 Loading group details:", groupId);
       const response = await api.get(`/chat-groups/${groupId}`);
-      console.log("✅ Group details loaded:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Get group details failed:", error.response?.data);
@@ -440,14 +408,12 @@ export const groupsAPI = {
     maxMembers: number = 100
   ) => {
     try {
-      console.log("🆕 Creating group:", name);
       const response = await api.post("/chat-groups", {
         name,
         description,
         isPrivate,
         maxMembers,
       });
-      console.log("✅ Group created:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Create group failed:", error.response?.data);
@@ -463,13 +429,11 @@ export const groupsAPI = {
     type: string = "text"
   ) => {
     try {
-      console.log("💬 Sending group message to:", chatGroupId);
       const response = await api.post("/messages/group", {
         chatGroupId,
         content,
         type,
       });
-      console.log("✅ Group message sent:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Send group message failed:", error.response?.data);
@@ -485,11 +449,9 @@ export const groupsAPI = {
     limit: number = 50
   ) => {
     try {
-      console.log("📩 Loading group messages:", groupId);
       const response = await api.get(
         `/messages/group/${groupId}?page=${page}&limit=${limit}`
       );
-      console.log("✅ Group messages loaded:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Get group messages failed:", error.response?.data);
@@ -501,9 +463,7 @@ export const groupsAPI = {
 
   joinGroup: async (groupId: string) => {
     try {
-      console.log("🚪 Joining group:", groupId);
       const response = await api.post(`/chat-groups/${groupId}/join`);
-      console.log("✅ Joined group:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Join group failed:", error.response?.data);
@@ -513,9 +473,7 @@ export const groupsAPI = {
 
   leaveGroup: async (groupId: string) => {
     try {
-      console.log("🚶 Leaving group:", groupId);
       const response = await api.delete(`/chat-groups/${groupId}/leave`);
-      console.log("✅ Left group:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Leave group failed:", error.response?.data);
@@ -525,11 +483,9 @@ export const groupsAPI = {
 
   addMember: async (groupId: string, userId: string) => {
     try {
-      console.log("➕ Adding member to group:", groupId, userId);
       const response = await api.post(`/chat-groups/${groupId}/members`, {
         userId,
       });
-      console.log("✅ Member added:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Add member failed:", error.response?.data);
@@ -539,11 +495,9 @@ export const groupsAPI = {
 
   removeMember: async (groupId: string, userId: string) => {
     try {
-      console.log("➖ Removing member from group:", groupId, userId);
       const response = await api.delete(
         `/chat-groups/${groupId}/members/${userId}`
       );
-      console.log("✅ Member removed:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Remove member failed:", error.response?.data);
@@ -559,12 +513,10 @@ export const groupsAPI = {
     role: "admin" | "moderator" | "member"
   ) => {
     try {
-      console.log("🔄 Updating member role:", groupId, userId, role);
       const response = await api.put(
         `/chat-groups/${groupId}/members/${userId}/role`,
         { role }
       );
-      console.log("✅ Member role updated:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Update member role failed:", error.response?.data);
@@ -576,11 +528,9 @@ export const groupsAPI = {
 
   searchPublicGroups: async (query: string) => {
     try {
-      console.log("🔍 Searching public groups:", query);
       const response = await api.get(
         `/chat-groups/search?query=${encodeURIComponent(query)}`
       );
-      console.log("✅ Groups found:", response.data);
       return response.data;
     } catch (error: any) {
       console.error("❌ Search groups failed:", error.response?.data);

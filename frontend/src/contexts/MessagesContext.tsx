@@ -47,7 +47,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
       timestamp: Date;
       messageId: string;
     }) => {
-      console.log('📩 New direct message received:', data);
       
       const newMessage: Message = {
         _id: data.messageId || `temp_${Date.now()}`,
@@ -92,7 +91,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
 
   const loadMessages = useCallback(async (userId: string, page: number = 1) => {
     try {
-      console.log(`📩 Loading messages with user: ${userId}, page: ${page}`);
       
       // Set loading state
       setConversations(prev => ({
@@ -111,8 +109,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         const messages = response.data.messages || [];
         const hasMore = response.data.pagination?.hasMore || false;
 
-        console.log(`✅ Messages loaded: ${messages.length}, hasMore: ${hasMore}`);
-
         setConversations(prev => ({
           ...prev,
           [userId]: {
@@ -124,7 +120,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         }));
       }
     } catch (error) {
-      console.error('❌ Failed to load messages:', error);
       setConversations(prev => ({
         ...prev,
         [userId]: {
@@ -139,7 +134,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
 
   const sendMessage = useCallback(async (recipientId: string, content: string, type: string = 'text') => {
     try {
-      console.log('📤 Sending message to:', recipientId);
       
       // Create optimistic message
       const optimisticMessage: Message = {
@@ -178,7 +172,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
       
       if (response.success) {
         const message = response.data.message;
-        console.log('✅ Message sent successfully');
         
         // Replace optimistic message with real message
         setConversations(prev => ({
@@ -195,7 +188,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         }));
       }
     } catch (error) {
-      console.error('❌ Failed to send message:', error);
       
       // Remove optimistic message on error
       setConversations(prev => ({
@@ -227,7 +219,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
         });
       }
     } catch (error) {
-      console.error('❌ Failed to delete message:', error);
       throw error;
     }
   }, []);
@@ -262,7 +253,6 @@ export const MessagesProvider: React.FC<MessagesProviderProps> = ({ children }) 
 
   // Set current conversation with logging
   const setCurrentConversationWithLogging = useCallback((userId: string | null) => {
-    console.log('🔄 Setting current conversation to:', userId);
     setCurrentConversation(userId);
   }, []);
 

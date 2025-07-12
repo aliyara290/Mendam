@@ -53,13 +53,10 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
     try {
       setLoading(true);
       setError(null);
-      console.log('🔄 Loading groups...');
       const response = await groupsAPI.getUserGroups();
       if (response.success) {
-        console.log('✅ Groups loaded:', response.data.chatGroups?.length || 0);
         setGroups(response.data.chatGroups || []);
         
-        // Join socket rooms for all groups
         response.data.chatGroups?.forEach((group: ChatGroup) => {
           if (socketJoinGroup) {
             socketJoinGroup(group._id);
@@ -67,14 +64,12 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
         });
       }
     } catch (error: any) {
-      console.error('❌ Failed to load groups:', error);
       setError(error.message);
     } finally {
       setLoading(false);
     }
   }, [socketJoinGroup]);
 
-  // Load groups only once when authenticated
   useEffect(() => {
     if (isAuthenticated && groups.length === 0 && !loading) {
       loadGroups();
@@ -96,7 +91,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
       timestamp: Date;
       messageId: string;
     }) => {
-      console.log('📨 New group message received:', data);
       
       const newMessage: GroupMessage = {
         _id: data.messageId || `temp_${Date.now()}`,
@@ -129,7 +123,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
     };
 
     const handleGroupMemberJoined = (data: { groupId: string; member: GroupMember }) => {
-      console.log('👋 Member joined group:', data);
       setGroupMembers(prev => ({
         ...prev,
         [data.groupId]: [...(prev[data.groupId] || []), data.member],
@@ -137,7 +130,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
     };
 
     const handleGroupMemberLeft = (data: { groupId: string; userId: string }) => {
-      console.log('👋 Member left group:', data);
       setGroupMembers(prev => ({
         ...prev,
         [data.groupId]: (prev[data.groupId] || []).filter(member => member.userId._id !== data.userId),
@@ -158,24 +150,20 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
   const loadGroupMembers = useCallback(async (groupId: string) => {
     try {
       setError(null);
-      console.log('👥 Loading group members for:', groupId);
       const response = await groupsAPI.getGroupDetails(groupId);
       if (response.success) {
-        console.log('✅ Group members loaded:', response.data.members?.length || 0);
         setGroupMembers(prev => ({
           ...prev,
           [groupId]: response.data.members || []
         }));
       }
     } catch (error: any) {
-      console.error('❌ Failed to load group members:', error);
       setError(error.message);
     }
   }, []);
 
   const loadGroupMessages = useCallback(async (groupId: string, page: number = 1) => {
     try {
-      console.log('💬 Loading group messages for:', groupId, 'page:', page);
       
       setGroupConversations(prev => ({
         ...prev,
@@ -193,8 +181,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
         const messages = response.data.messages || [];
         const hasMore = response.data.pagination?.hasMore || false;
 
-        console.log('✅ Group messages loaded:', messages.length, 'hasMore:', hasMore);
-
         setGroupConversations(prev => ({
           ...prev,
           [groupId]: {
@@ -206,7 +192,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
         }));
       }
     } catch (error) {
-      console.error('❌ Failed to load group messages:', error);
       setGroupConversations(prev => ({
         ...prev,
         [groupId]: {
@@ -221,7 +206,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
 
   const sendGroupMessage = useCallback(async (groupId: string, content: string, type: string = 'text') => {
     try {
-      console.log('📤 Sending group message to:', groupId);
       
       // Create optimistic message
       const optimisticMessage: GroupMessage = {
@@ -266,7 +250,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
       
       if (response.success) {
         const message = response.data.message;
-        console.log('✅ Group message sent successfully');
         
         // Replace optimistic message with real message
         setGroupConversations(prev => ({
@@ -284,7 +267,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
         }));
       }
     } catch (error) {
-      console.error('❌ Failed to send group message:', error);
       
       // Remove optimistic message on error
       setGroupConversations(prev => ({
@@ -302,15 +284,12 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
   const createGroup = useCallback(async (name: string, description?: string, isPrivate: boolean = false) => {
     try {
       setError(null);
-      console.log('🆕 Creating group:', name);
       const response = await groupsAPI.createGroup(name, description, isPrivate);
       if (response.success) {
-        console.log('✅ Group created successfully');
         await loadGroups(); // Reload groups list
         return response.data.chatGroup;
       }
     } catch (error: any) {
-      console.error('❌ Failed to create group:', error);
       setError(error.message);
       throw error;
     }
@@ -319,17 +298,14 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
   const joinGroup = useCallback(async (groupId: string) => {
     try {
       setError(null);
-      console.log('🚪 Joining group:', groupId);
       const response = await groupsAPI.joinGroup(groupId);
       if (response.success) {
-        console.log('✅ Joined group successfully');
         if (socketJoinGroup) {
           socketJoinGroup(groupId);
         }
         await loadGroups(); // Reload groups list
       }
     } catch (error: any) {
-      console.error('❌ Failed to join group:', error);
       setError(error.message);
       throw error;
     }
@@ -338,10 +314,8 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
   const leaveGroup = useCallback(async (groupId: string) => {
     try {
       setError(null);
-      console.log('🚶 Leaving group:', groupId);
       const response = await groupsAPI.leaveGroup(groupId);
       if (response.success) {
-        console.log('✅ Left group successfully');
         if (socketLeaveGroup) {
           socketLeaveGroup(groupId);
         }
@@ -350,7 +324,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
         setCurrentGroup(null);
       }
     } catch (error: any) {
-      console.error('❌ Failed to leave group:', error);
       setError(error.message);
       throw error;
     }
@@ -359,15 +332,12 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
   const addMember = useCallback(async (groupId: string, userId: string) => {
     try {
       setError(null);
-      console.log('➕ Adding member to group:', groupId, userId);
       const response = await groupsAPI.addMember(groupId, userId);
       if (response.success) {
-        console.log('✅ Member added successfully');
         // Reload group members
         await loadGroupMembers(groupId);
       }
     } catch (error: any) {
-      console.error('❌ Failed to add member:', error);
       setError(error.message);
       throw error;
     }
@@ -376,14 +346,11 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
   const removeMember = useCallback(async (groupId: string, userId: string) => {
     try {
       setError(null);
-      console.log('➖ Removing member from group:', groupId, userId);
       const response = await groupsAPI.removeMember(groupId, userId);
       if (response.success) {
-        console.log('✅ Member removed successfully');
         await loadGroupMembers(groupId);
       }
     } catch (error: any) {
-      console.error('❌ Failed to remove member:', error);
       setError(error.message);
       throw error;
     }
@@ -392,14 +359,11 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
   const updateMemberRole = useCallback(async (groupId: string, userId: string, role: string) => {
     try {
       setError(null);
-      console.log('🔄 Updating member role:', groupId, userId, role);
       const response = await groupsAPI.updateMemberRole(groupId, userId, role);
       if (response.success) {
-        console.log('✅ Member role updated successfully');
         await loadGroupMembers(groupId);
       }
     } catch (error: any) {
-      console.error('❌ Failed to update member role:', error);
       setError(error.message);
       throw error;
     }

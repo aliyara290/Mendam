@@ -38,7 +38,6 @@ export const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) =>
   // Load friends and requests on mount if authenticated
   useEffect(() => {
     if (isAuthenticated && user) {
-      console.log('🔄 Loading friends and friend requests...');
       loadFriends();
       loadFriendRequests();
     }
@@ -49,14 +48,12 @@ export const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) =>
     if (!socket || !isAuthenticated) return;
 
     const handleNewFriendRequest = (data: any) => {
-      console.log('📨 New friend request received:', data);
-      loadFriendRequests(); // Reload friend requests
+      loadFriendRequests();
     };
 
     const handleFriendRequestAccepted = (data: any) => {
-      console.log('✅ Friend request accepted:', data);
-      loadFriends(); // Reload friends list
-      loadFriendRequests(); // Reload friend requests
+      loadFriends();
+      loadFriendRequests();
     };
 
     socket.on('new_friend_request', handleNewFriendRequest);
@@ -70,28 +67,22 @@ export const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) =>
 
   const loadFriends = async () => {
     try {
-      console.log('👥 Loading friends...');
       const response = await friendsAPI.getFriends();
       if (response.success) {
-        console.log('✅ Friends loaded:', response.data.friends?.length || 0);
         setFriends(response.data.friends || []);
       }
     } catch (error: any) {
-      console.error('❌ Failed to load friends:', error);
       setError(error.message);
     }
   };
 
   const loadFriendRequests = async () => {
     try {
-      console.log('📬 Loading friend requests...');
       const response = await friendsAPI.getFriendRequests();
       if (response.success) {
-        console.log('✅ Friend requests loaded:', response.data.friendRequests?.length || 0);
         setFriendRequests(response.data.friendRequests || []);
       }
     } catch (error: any) {
-      console.error('❌ Failed to load friend requests:', error);
       setError(error.message);
     }
   };
@@ -101,7 +92,6 @@ export const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) =>
       setError(null);
       const response = await friendsAPI.sendFriendRequest(friendId);
       if (response.success) {
-        console.log('📤 Friend request sent successfully');
       }
     } catch (error: any) {
       setError(error.message);
@@ -112,16 +102,12 @@ export const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) =>
   const acceptFriendRequest = async (requestId: string) => {
     try {
       setError(null);
-      console.log('✅ Accepting friend request:', requestId);
       const response = await friendsAPI.acceptFriendRequest(requestId);
       if (response.success) {
-        // Remove from friend requests and reload friends
         setFriendRequests(prev => prev.filter(req => req._id !== requestId));
         await loadFriends();
-        console.log('✅ Friend request accepted successfully');
       }
     } catch (error: any) {
-      console.error('❌ Failed to accept friend request:', error);
       setError(error.message);
       throw error;
     }
@@ -130,15 +116,12 @@ export const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) =>
   const declineFriendRequest = async (requestId: string) => {
     try {
       setError(null);
-      console.log('❌ Declining friend request:', requestId);
       const response = await friendsAPI.declineFriendRequest(requestId);
       if (response.success) {
         // Remove from friend requests
         setFriendRequests(prev => prev.filter(req => req._id !== requestId));
-        console.log('✅ Friend request declined successfully');
       }
     } catch (error: any) {
-      console.error('❌ Failed to decline friend request:', error);
       setError(error.message);
       throw error;
     }
@@ -149,7 +132,6 @@ export const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) =>
       setError(null);
       const response = await friendsAPI.removeFriend(friendId);
       if (response.success) {
-        // Remove from friends list
         setFriends(prev => prev.filter(friend => friend.friendId._id !== friendId));
       }
     } catch (error: any) {
@@ -182,7 +164,6 @@ export const FriendsProvider: React.FC<FriendsProviderProps> = ({ children }) =>
       return [];
     } catch (error: any) {
       setError(error.message);
-      console.error('Failed to search users:', error);
       return [];
     }
   };

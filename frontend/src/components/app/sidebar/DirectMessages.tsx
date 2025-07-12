@@ -101,7 +101,6 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
   };
 
   const handleChatClick = async (chatId: string) => {
-    console.log('🔄 Selecting chat with:', chatId);
     
     try {
       // Set the current conversation immediately
@@ -110,7 +109,6 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
       // Load messages for this conversation if not already loaded
       const conversation = conversations[chatId];
       if (!conversation || conversation.messages.length === 0) {
-        console.log('📩 Loading messages for:', chatId);
         await loadMessages(chatId, 1);
       }
     } catch (error) {

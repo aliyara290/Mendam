@@ -36,7 +36,6 @@ const ChatArea = () => {
 
   useEffect(() => {
     if (groupId && groupId !== currentGroup) {
-      console.log('Setting current group:', groupId);
       setCurrentGroup(groupId);
     } else if (!groupId) {
       setCurrentGroup(null);
@@ -45,7 +44,6 @@ const ChatArea = () => {
 
   useEffect(() => {
     if (groupId && !loadedGroupMembers.current.has(groupId)) {
-      console.log('Loading group members for:', groupId);
       loadedGroupMembers.current.add(groupId);
       loadGroupMembers(groupId);
     }
@@ -55,7 +53,6 @@ const ChatArea = () => {
     if (groupId && !loadedGroupMessages.current.has(groupId)) {
       const conversation = groupConversations[groupId];
       if (!conversation || conversation.messages.length === 0) {
-        console.log('Loading group messages for:', groupId);
         loadedGroupMessages.current.add(groupId);
         loadGroupMessages(groupId);
       }

@@ -23,7 +23,6 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
 
   useEffect(() => {
     if (recipientId && !hasLoadedInitial.has(recipientId)) {
-      console.log(`🔄 Loading initial messages for ${recipientId}`);
       loadMessages(recipientId, 1);
       setHasLoadedInitial(prev => new Set([...prev, recipientId]));
     }
