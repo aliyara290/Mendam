@@ -18,8 +18,7 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-      `🌐 API Request: ${config.method?.toUpperCase()} ${config.url}`
-    );
+    
     return config;
   },
   (error) => {
