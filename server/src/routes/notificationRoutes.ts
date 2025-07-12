@@ -5,7 +5,6 @@ import {
   markAllAsRead,
   deleteNotification
 } from '../controllers/notificationController';
-import { validateObjectId } from '../middleware/validation';
 
 const router = express.Router();
 
@@ -13,10 +12,10 @@ const router = express.Router();
 router.get('/', getNotifications);
 
 // Mark notifications as read
-router.put('/:notificationId/read', validateObjectId('notificationId'), markAsRead);
+router.put('/:notificationId/read', markAsRead);
 router.put('/read-all', markAllAsRead);
 
 // Delete notification
-router.delete('/:notificationId', validateObjectId('notificationId'), deleteNotification);
+router.delete('/:notificationId', deleteNotification);
 
 export default router;

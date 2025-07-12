@@ -141,38 +141,19 @@ export const validateChatGroup = (req: Request, res: Response, next: NextFunctio
   next();
 };
 
-// Fixed ObjectId validation
 export const validateObjectId = (paramName: string) => {
   return (req: Request, res: Response, next: NextFunction): void => {
-    try {
-      const id = req.params[paramName];
-      
-      if (!id) {
-        res.status(400).json({
-          success: false,
-          message: `${paramName} parameter is required`
-        });
-        return;
-      }
+    const id = req.params[paramName];
+    const objectIdRegex = /^[0-9a-fA-F]{24}$/;
 
-      // MongoDB ObjectId regex pattern
-      const objectIdRegex = /^[0-9a-fA-F]{24}$/;
-
-      if (!objectIdRegex.test(id)) {
-        res.status(400).json({
-          success: false,
-          message: `Invalid ${paramName} format. Must be a valid MongoDB ObjectId`
-        });
-        return;
-      }
-
-      next();
-    } catch (error) {
-      console.error(`Error validating ${paramName}:`, error);
-      res.status(500).json({
+    if (!objectIdRegex.test(id)) {
+      res.status(400).json({
         success: false,
-        message: `Error validating ${paramName}`
+        message: `Invalid ${paramName} format`
       });
+      return;
     }
+
+    next();
   };
 };

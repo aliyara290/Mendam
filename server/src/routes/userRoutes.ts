@@ -6,7 +6,6 @@ import {
   getUserById,
   updateStatus
 } from '../controllers/userController';
-import { validateObjectId } from '../middleware/validation';
 
 const router = express.Router();
 
@@ -16,7 +15,7 @@ router.put('/profile', updateProfile);
 
 // User search and discovery
 router.get('/search', searchUsers);
-router.get('/:userId', validateObjectId('userId'), getUserById);
+router.get('/:userId', getUserById);
 
 // Status management
 router.put('/status', updateStatus);
