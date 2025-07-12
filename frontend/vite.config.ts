@@ -8,6 +8,23 @@ export default defineConfig({
   base: "./",
   server: {
     port: 3000,
+    host: true,
+  },
+  preview: {
+    port: 4173,
+    host: true,
+  },
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom']
+        }
+      }
+    }
   },
   resolve: {
     alias: {
