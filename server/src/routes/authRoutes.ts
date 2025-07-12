@@ -5,17 +5,11 @@ import { validateRegistration, validateLogin } from '../middleware/validation';
 
 const router = express.Router();
 
-router.get('/test', (req, res) => {
-  res.json({
-    success: true,
-    message: 'Auth API is working',
-    timestamp: new Date().toISOString()
-  });
-});
-
+// Public routes
 router.post('/register', validateRegistration, register);
 router.post('/login', validateLogin, login);
 
+// Protected routes
 router.post('/logout', authMiddleware, logout);
 router.get('/profile', authMiddleware, getProfile);
 

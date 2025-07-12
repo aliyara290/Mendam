@@ -8,19 +8,18 @@ import {
   removeFriend,
   blockUser
 } from '../controllers/friendController';
-import { validateObjectId } from '../middleware/validation';
 
 const router = express.Router();
 
 // Friend request management
 router.post('/request', sendFriendRequest);
-router.put('/request/:requestId/accept', validateObjectId('requestId'), acceptFriendRequest);
-router.put('/request/:requestId/decline', validateObjectId('requestId'), declineFriendRequest);
+router.put('/request/:requestId/accept', acceptFriendRequest);
+router.put('/request/:requestId/decline', declineFriendRequest);
 router.get('/requests', getFriendRequests);
 
 // Friends management
 router.get('/', getFriends);
-router.delete('/:friendId', validateObjectId('friendId'), removeFriend);
+router.delete('/:friendId', removeFriend);
 router.post('/block', blockUser);
 
 export default router;
