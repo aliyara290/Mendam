@@ -73,4 +73,3 @@ const notificationSchema = new mongoose_1.Schema({
 notificationSchema.index({ userId: 1, isRead: 1 });
 notificationSchema.index({ userId: 1, createdAt: -1 });
 exports.Notification = mongoose_1.default.model('Notification', notificationSchema);
-//# sourceMappingURL=NotificationsModel.js.map

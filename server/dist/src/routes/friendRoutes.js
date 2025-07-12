@@ -14,4 +14,3 @@ router.get('/', friendController_1.getFriends);
 router.delete('/:friendId', friendController_1.removeFriend);
 router.post('/block', friendController_1.blockUser);
 exports.default = router;
-//# sourceMappingURL=friendRoutes.js.map

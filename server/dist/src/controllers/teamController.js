@@ -69,11 +69,14 @@ const getUserTeams = async (req, res) => {
                 select: 'username fullName avatar'
             }
         });
-        const teams = memberships.map(membership => ({
-            ...membership.teamId.toObject(),
-            userRole: membership.role,
-            userPermissions: membership.permissions
-        }));
+        const teams = memberships.map(membership => {
+            const teamObj = membership.teamId.toObject();
+            return {
+                ...teamObj,
+                userRole: membership.role,
+                userPermissions: membership.permissions
+            };
+        });
         res.json({
             success: true,
             data: { teams }
@@ -397,4 +400,3 @@ const deleteTeam = async (req, res) => {
     }
 };
 exports.deleteTeam = deleteTeam;
-//# sourceMappingURL=teamController.js.map

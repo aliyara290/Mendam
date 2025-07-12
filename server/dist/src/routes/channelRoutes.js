@@ -15,4 +15,3 @@ router.delete('/:channelId', (0, validation_1.validateObjectId)('channelId'), ch
 router.post('/:channelId/messages', (0, validation_1.validateObjectId)('channelId'), validation_1.validateMessage, channelController_1.sendChannelMessage);
 router.get('/:channelId/messages', (0, validation_1.validateObjectId)('channelId'), channelController_1.getChannelMessages);
 exports.default = router;
-//# sourceMappingURL=channelRoutes.js.map

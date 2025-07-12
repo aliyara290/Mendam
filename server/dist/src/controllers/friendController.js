@@ -8,17 +8,19 @@ const sendFriendRequest = async (req, res) => {
         const { friendId } = req.body;
         const userId = req.user.id;
         if (userId === friendId) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'You cannot add yourself as a friend'
             });
+            return;
         }
         const friendUser = await UserModel_1.User.findById(friendId);
         if (!friendUser) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
+            return;
         }
         const existingFriendship = await FriendsModel_1.Friend.findOne({
             $or: [
@@ -27,10 +29,11 @@ const sendFriendRequest = async (req, res) => {
             ]
         });
         if (existingFriendship) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Friend request already exists or users are already friends'
             });
+            return;
         }
         const friendRequest = new FriendsModel_1.Friend({
             userId: friendId,
@@ -63,10 +66,11 @@ const acceptFriendRequest = async (req, res) => {
             status: 'pending'
         });
         if (!friendRequest) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Friend request not found'
             });
+            return;
         }
         friendRequest.status = 'accepted';
         friendRequest.acceptedAt = new Date();
@@ -103,10 +107,11 @@ const declineFriendRequest = async (req, res) => {
             status: 'pending'
         }, { status: 'declined' }, { new: true });
         if (!friendRequest) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Friend request not found'
             });
+            return;
         }
         res.json({
             success: true,
@@ -227,4 +232,3 @@ const blockUser = async (req, res) => {
     }
 };
 exports.blockUser = blockUser;
-//# sourceMappingURL=friendController.js.map

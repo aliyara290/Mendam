@@ -13,4 +13,3 @@ router.get('/direct/:userId', (0, validation_1.validateObjectId)('userId'), mess
 router.get('/group/:groupId', (0, validation_1.validateObjectId)('groupId'), messageController_1.getGroupMessages);
 router.delete('/:messageId', (0, validation_1.validateObjectId)('messageId'), messageController_1.deleteMessage);
 exports.default = router;
-//# sourceMappingURL=messageRoutes.js.map

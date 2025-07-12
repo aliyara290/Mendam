@@ -44,10 +44,11 @@ const markAsRead = async (req, res) => {
         const userId = req.user.id;
         const notification = await NotificationsModel_1.Notification.findOneAndUpdate({ _id: notificationId, userId }, { isRead: true }, { new: true });
         if (!notification) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Notification not found'
             });
+            return;
         }
         res.json({
             success: true,
@@ -90,10 +91,11 @@ const deleteNotification = async (req, res) => {
             userId
         });
         if (!notification) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'Notification not found'
             });
+            return;
         }
         res.json({
             success: true,
@@ -127,4 +129,3 @@ const createNotification = async (userId, type, title, message, data) => {
     }
 };
 exports.createNotification = createNotification;
-//# sourceMappingURL=notificationController.js.map

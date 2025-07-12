@@ -69,4 +69,3 @@ const userPreferenceSchema = new mongoose_1.Schema({
 });
 userPreferenceSchema.index({ userId: 1 }, { unique: true });
 exports.UserPreference = mongoose_1.default.model('UserPreference', userPreferenceSchema);
-//# sourceMappingURL=UserPreferenceModel.js.map

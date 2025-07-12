@@ -220,4 +220,3 @@ exports.Channel = mongoose_1.default.model("Channel", channelSchema);
 exports.TeamMember = mongoose_1.default.model("TeamMember", teamMemberSchema);
 exports.workspace = mongoose_1.default.model("Team", workspaceSchema);
 exports.worksapceMember = mongoose_1.default.model("Team", workspaceMemberSchema);
-//# sourceMappingURL=ChannelModel.js.map

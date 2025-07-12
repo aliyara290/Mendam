@@ -117,4 +117,3 @@ chatGroupSchema.set('toJSON', { virtuals: true });
 chatGroupSchema.set('toObject', { virtuals: true });
 exports.ChatGroup = mongoose_1.default.model('ChatGroup', chatGroupSchema);
 exports.ChatGroupMember = mongoose_1.default.model('ChatGroupMember', chatGroupMemberSchema);
-//# sourceMappingURL=ChatGroupModel.js.map

@@ -7,8 +7,11 @@ exports.getProfile = exports.logout = exports.login = exports.register = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const UserModel_1 = require("../models/UserModel");
 const generateToken = (userId) => {
+    if (!process.env.JWT_SECRET) {
+        throw new Error('JWT_SECRET is not defined');
+    }
     return jsonwebtoken_1.default.sign({ userId }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN || "7d",
+        expiresIn: process.env.JWT_EXPIRES_IN || "7d"
     });
 };
 const register = async (req, res) => {
@@ -178,4 +181,3 @@ const getProfile = async (req, res) => {
     }
 };
 exports.getProfile = getProfile;
-//# sourceMappingURL=authController.js.map

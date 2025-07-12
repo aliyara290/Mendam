@@ -12,4 +12,3 @@ router.get('/search', userController_1.searchUsers);
 router.get('/:userId', userController_1.getUserById);
 router.put('/status', userController_1.updateStatus);
 exports.default = router;
-//# sourceMappingURL=userRoutes.js.map

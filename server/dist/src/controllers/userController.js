@@ -7,10 +7,11 @@ const getCurrentUser = async (req, res) => {
         const userId = req.user.id;
         const user = await UserModel_1.User.findById(userId);
         if (!user) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
+            return;
         }
         res.json({
             success: true,
@@ -44,22 +45,25 @@ const updateProfile = async (req, res) => {
         const userId = req.user.id;
         const { fullName, avatar, jobTitle, biography } = req.body;
         if (fullName && fullName.length > 50) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Full name cannot exceed 50 characters'
             });
+            return;
         }
         if (jobTitle && jobTitle.length > 100) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Job title cannot exceed 100 characters'
             });
+            return;
         }
         if (biography && biography.length > 500) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Biography cannot exceed 500 characters'
             });
+            return;
         }
         const updateData = {};
         if (fullName !== undefined)
@@ -72,10 +76,11 @@ const updateProfile = async (req, res) => {
             updateData.biography = biography;
         const user = await UserModel_1.User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true });
         if (!user) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
+            return;
         }
         res.json({
             success: true,
@@ -108,10 +113,11 @@ const searchUsers = async (req, res) => {
         const { query } = req.query;
         const currentUserId = req.user.id;
         if (!query || typeof query !== 'string') {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Search query is required'
             });
+            return;
         }
         const users = await UserModel_1.User.find({
             _id: { $ne: currentUserId },
@@ -142,10 +148,11 @@ const getUserById = async (req, res) => {
         const user = await UserModel_1.User.findById(userId)
             .select('username fullName avatar status isOnline lastSeen jobTitle biography');
         if (!user) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
+            return;
         }
         res.json({
             success: true,
@@ -166,10 +173,11 @@ const updateStatus = async (req, res) => {
         const userId = req.user.id;
         const { status } = req.body;
         if (!['online', 'offline', 'idle'].includes(status)) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 message: 'Invalid status'
             });
+            return;
         }
         const user = await UserModel_1.User.findByIdAndUpdate(userId, {
             status,
@@ -177,10 +185,11 @@ const updateStatus = async (req, res) => {
             lastSeen: new Date()
         }, { new: true });
         if (!user) {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
+            return;
         }
         res.json({
             success: true,
@@ -200,4 +209,3 @@ const updateStatus = async (req, res) => {
     }
 };
 exports.updateStatus = updateStatus;
-//# sourceMappingURL=userController.js.map

@@ -17,4 +17,3 @@ router.post('/:groupId/members', (0, validation_1.validateObjectId)('groupId'), 
 router.delete('/:groupId/members/:memberId', (0, validation_1.validateObjectId)('groupId'), (0, validation_1.validateObjectId)('memberId'), chatGroupController_1.removeMemberFromGroup);
 router.put('/:groupId/members/:memberId/role', (0, validation_1.validateObjectId)('groupId'), (0, validation_1.validateObjectId)('memberId'), chatGroupController_1.updateMemberRole);
 exports.default = router;
-//# sourceMappingURL=chatGroupRoutes.js.map
