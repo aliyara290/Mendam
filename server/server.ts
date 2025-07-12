@@ -7,6 +7,8 @@ import compression from "compression";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
+
+// Load environment variables first
 dotenv.config();
 
 import { connectDB } from "./src/config/database";
@@ -14,6 +16,7 @@ import { errorHandler } from "./src/middleware/errorHandler";
 import { notFoundHandler } from "./src/middleware/notFoundHandler";
 import { authMiddleware } from "./src/middleware/authMiddleware";
 
+// Import routes
 import authRoutes from "./src/routes/authRoutes";
 import userRoutes from "./src/routes/userRoutes";
 import chatGroupRoutes from "./src/routes/chatGroupRoutes";
@@ -26,34 +29,31 @@ import { SocketService } from "./src/socket/socketService";
 const app = express();
 const httpServer = createServer(app);
 
-// Parse CORS origins from environment variable with fallbacks
-const corsOrigins = process.env.CORS_ORIGIN 
-  ? process.env.CORS_ORIGIN.split(',').map(origin => origin.trim())
-  : [
-      "https://mendam.vercel.app",
-      "https://mendam-git-main-aliyarafrs-projects.vercel.app", // Vercel preview URLs
-      "https://mendam-*.vercel.app", // Vercel branch deployments
-      "http://localhost:3000",
-      "http://localhost:5173",
-      "http://127.0.0.1:3000",
-      "http://127.0.0.1:5173"
-    ];
+// Simple CORS configuration for debugging
+const allowedOrigins = [
+  "https://mendam.vercel.app",
+  "https://mendam-git-main-aliyarafrs-projects.vercel.app",
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:5173"
+];
 
-const socketCorsOrigins = process.env.SOCKET_CORS_ORIGIN 
-  ? process.env.SOCKET_CORS_ORIGIN.split(',').map(origin => origin.trim())
-  : corsOrigins;
+// Add any Vercel preview URLs that match the pattern
+if (process.env.CORS_ORIGIN) {
+  const envOrigins = process.env.CORS_ORIGIN.split(',').map(origin => origin.trim());
+  allowedOrigins.push(...envOrigins);
+}
 
-// More permissive CORS for production debugging
 const corsOptions = {
   origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
-    // Allow requests with no origin (like mobile apps or curl requests)
+    // Allow requests with no origin (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
     
-    // Check if origin matches our allowed origins or patterns
-    const isAllowed = corsOrigins.some(allowedOrigin => {
+    // Check if origin is in allowed list or matches pattern
+    const isAllowed = allowedOrigins.some(allowedOrigin => {
       if (allowedOrigin.includes('*')) {
-        // Handle wildcard patterns
-        const pattern = allowedOrigin.replace('*', '.*');
+        const pattern = allowedOrigin.replace(/\*/g, '.*');
         return new RegExp(`^${pattern}$`).test(origin);
       }
       return allowedOrigin === origin;
@@ -63,8 +63,8 @@ const corsOptions = {
       callback(null, true);
     } else {
       console.log(`❌ CORS blocked origin: ${origin}`);
-      console.log(`✅ Allowed origins: ${corsOrigins.join(', ')}`);
-      callback(new Error('Not allowed by CORS'), false);
+      console.log(`✅ Allowed origins: ${allowedOrigins.join(', ')}`);
+      callback(null, false); // Don't throw error, just deny
     }
   },
   credentials: true,
@@ -74,25 +74,21 @@ const corsOptions = {
     'Authorization', 
     'X-Requested-With',
     'Accept',
-    'Origin',
-    'Access-Control-Request-Method',
-    'Access-Control-Request-Headers'
+    'Origin'
   ],
-  exposedHeaders: ['Authorization'],
-  optionsSuccessStatus: 200,
-  preflightContinue: false,
-  maxAge: 86400 // 24 hours
+  optionsSuccessStatus: 200
 };
 
+// Socket.IO configuration
 const io = new Server(httpServer, {
   cors: {
-    origin: socketCorsOrigins,
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-// Rate limiter
+// Rate limiter configuration
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || "60000"),
   max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || "1000"),
@@ -103,56 +99,71 @@ const limiter = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
-    if (process.env.NODE_ENV === 'development') {
-      return req.path.includes('/health') || req.path.includes('/auth');
-    }
     return req.path.includes('/health');
   }
 });
 
-// Middleware order is important
+// Apply middleware in correct order
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" },
-  crossOriginEmbedderPolicy: false
+  crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
 app.use(compression());
-
-// CORS must be before other middleware
 app.use(cors(corsOptions));
 
-// Handle preflight requests explicitly
+// Handle preflight requests
 app.options('*', cors(corsOptions));
 
-app.use(morgan("combined"));
+// Logging
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan("combined"));
+} else {
+  app.use(morgan("dev"));
+}
 
+// Body parsing
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Health check route (before rate limiting)
+// Health check (before rate limiting)
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Mendam Server is running",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 app.get("/health", (req, res) => {
   res.status(200).json({ 
     status: "OK", 
     timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV,
-    corsOrigins: corsOrigins
+    environment: process.env.NODE_ENV || 'development',
+    corsOrigins: allowedOrigins.slice(0, 3) // Show first 3 origins for security
   });
 });
 
-// Apply rate limiting after health check
+// Apply rate limiting after health checks
 app.use(limiter);
 
-// Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/users', authMiddleware, userRoutes);
-app.use('/api/chat-groups', authMiddleware, chatGroupRoutes);
-app.use('/api/messages', authMiddleware, messageRoutes);
-app.use('/api/friends', authMiddleware, friendRoutes);
-app.use('/api/notifications', authMiddleware, notificationRoutes);
+// API Routes with error handling
+try {
+  app.use('/api/auth', authRoutes);
+  app.use('/api/users', authMiddleware, userRoutes);
+  app.use('/api/chat-groups', authMiddleware, chatGroupRoutes);
+  app.use('/api/messages', authMiddleware, messageRoutes);
+  app.use('/api/friends', authMiddleware, friendRoutes);
+  app.use('/api/notifications', authMiddleware, notificationRoutes);
+} catch (error) {
+  console.error('Error setting up routes:', error);
+}
 
+// Error handling middleware
 app.use(notFoundHandler);
 app.use(errorHandler);
 
+// Initialize Socket.IO
 const socketService = new SocketService(io);
 socketService.initialize();
 
@@ -160,14 +171,20 @@ const PORT = process.env.PORT || 5000;
 
 const startServer = async () => {
   try {
+    console.log('🔧 Starting server initialization...');
+    
+    // Connect to database
     await connectDB();
+    console.log('✅ Database connected');
+    
+    // Start HTTP server
     httpServer.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
-      console.log(`🌍 Environment: ${process.env.NODE_ENV}`);
+      console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
       console.log(`🔌 Socket.IO server ready`);
       console.log(`🏥 Health check: http://localhost:${PORT}/health`);
-      console.log(`🔗 CORS origins: ${corsOrigins.join(', ')}`);
-      console.log(`📡 Socket CORS origins: ${socketCorsOrigins.join(', ')}`);
+      console.log(`🔗 CORS origins configured: ${allowedOrigins.length} origins`);
+      console.log(`📡 API Base: http://localhost:${PORT}/api`);
     });
   } catch (error) {
     console.error("❌ Failed to start server:", error);
@@ -175,16 +192,30 @@ const startServer = async () => {
   }
 };
 
+// Graceful shutdown
 process.on("SIGTERM", () => {
+  console.log('SIGTERM received, shutting down gracefully');
   httpServer.close(() => {
     console.log("Process terminated");
   });
 });
 
 process.on("SIGINT", () => {
+  console.log('SIGINT received, shutting down gracefully');
   httpServer.close(() => {
     console.log("Process terminated");
   });
+});
+
+// Handle uncaught exceptions
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  process.exit(1);
 });
 
 startServer();
