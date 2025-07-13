@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
 import { groupsAPI, type ChatGroup, type GroupMember, type GroupMessage } from '../services/Api';
 import { useAuth } from './AuthContext';
 import { useSocket } from './SocketContext';
@@ -47,34 +47,49 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
   
   const { user, isAuthenticated } = useAuth();
   const { socket, joinGroup: socketJoinGroup, leaveGroup: socketLeaveGroup } = useSocket();
+  
+  // Use ref to track if groups have been loaded to prevent infinite loops
+  const hasLoadedGroups = useRef(false);
+  // Track pending messages to avoid duplicates
+  const pendingMessages = useRef<Set<string>>(new Set());
 
-  // Load groups when authenticated
+  // Load groups when authenticated - FIXED: Removed loadGroups from dependencies
   const loadGroups = useCallback(async () => {
+    if (loading) return; // Prevent multiple simultaneous requests
+    
     try {
       setLoading(true);
       setError(null);
+      console.log('🔄 Loading groups...');
+      
       const response = await groupsAPI.getUserGroups();
       if (response.success) {
         setGroups(response.data.chatGroups || []);
+        hasLoadedGroups.current = true;
         
+        // Join socket rooms for each group
         response.data.chatGroups?.forEach((group: ChatGroup) => {
           if (socketJoinGroup) {
             socketJoinGroup(group._id);
           }
         });
+        
+        console.log('✅ Groups loaded successfully:', response.data.chatGroups?.length || 0);
       }
     } catch (error: any) {
+      console.error('❌ Load groups error:', error);
       setError(error.message);
     } finally {
       setLoading(false);
     }
-  }, [socketJoinGroup]);
+  }, [socketJoinGroup, loading]);
 
+  // Load groups on authentication - FIXED: Simplified dependencies
   useEffect(() => {
-    if (isAuthenticated && groups.length === 0 && !loading) {
+    if (isAuthenticated && !hasLoadedGroups.current && !loading) {
       loadGroups();
     }
-  }, [isAuthenticated, groups.length, loading, loadGroups]);
+  }, [isAuthenticated]); // Only depend on isAuthenticated
 
   // Socket event handlers
   useEffect(() => {
@@ -91,6 +106,14 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
       timestamp: Date;
       messageId: string;
     }) => {
+      console.log('📨 New group message received:', data);
+      
+      // FIXED: Don't add messages from socket if it's our own message that's pending
+      if (data.senderId === user?.id && pendingMessages.current.has(data.content)) {
+        console.log('🚫 Skipping own message from socket (already added optimistically)');
+        pendingMessages.current.delete(data.content);
+        return;
+      }
       
       const newMessage: GroupMessage = {
         _id: data.messageId || `temp_${Date.now()}`,
@@ -110,11 +133,26 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
 
       setGroupConversations(prev => {
         const existingConv = prev[data.groupId];
+        const existingMessages = existingConv?.messages || [];
+        
+        // Check if message already exists (additional safety check)
+        const messageExists = existingMessages.some(msg => 
+          msg._id === newMessage._id || 
+          (msg.senderId._id === newMessage.senderId._id && 
+           msg.content === newMessage.content && 
+           Math.abs(new Date(msg.createdAt).getTime() - new Date(newMessage.createdAt).getTime()) < 5000)
+        );
+        
+        if (messageExists) {
+          console.log('🚫 Message already exists, skipping');
+          return prev;
+        }
+        
         return {
           ...prev,
           [data.groupId]: {
             groupId: data.groupId,
-            messages: [...(existingConv?.messages || []), newMessage],
+            messages: [...existingMessages, newMessage],
             hasMore: existingConv?.hasMore || false,
             loading: false,
           },
@@ -145,7 +183,7 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
       socket.off('group_member_joined', handleGroupMemberJoined);
       socket.off('group_member_left', handleGroupMemberLeft);
     };
-  }, [socket, isAuthenticated]);
+  }, [socket, isAuthenticated, user?.id]);
 
   const loadGroupMembers = useCallback(async (groupId: string) => {
     try {
@@ -164,6 +202,7 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
 
   const loadGroupMessages = useCallback(async (groupId: string, page: number = 1) => {
     try {
+      console.log(`🔄 Loading messages for group ${groupId}, page ${page}`);
       
       setGroupConversations(prev => ({
         ...prev,
@@ -190,8 +229,11 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
             loading: false,
           },
         }));
+        
+        console.log(`✅ Loaded ${messages.length} messages for group ${groupId}`);
       }
     } catch (error) {
+      console.error(`❌ Failed to load messages for group ${groupId}:`, error);
       setGroupConversations(prev => ({
         ...prev,
         [groupId]: {
@@ -206,10 +248,15 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
 
   const sendGroupMessage = useCallback(async (groupId: string, content: string, type: string = 'text') => {
     try {
+      console.log(`📤 Sending message to group ${groupId}:`, content);
       
-      // Create optimistic message
+      // FIXED: Track this message to avoid duplicates from socket
+      pendingMessages.current.add(content);
+      
+      // Create optimistic message with unique temp ID
+      const tempId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
       const optimisticMessage: GroupMessage = {
-        _id: `temp_${Date.now()}`,
+        _id: tempId,
         senderId: {
           _id: user?.id || '',
           username: user?.username || '',
@@ -236,20 +283,11 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
         },
       }));
 
-      // Send via socket for real-time
-      if (socket) {
-        socket.emit('send_group_message', {
-          groupId,
-          content,
-          type
-        });
-      }
-
-      // Send via API for persistence
+      // Send via API for persistence (prioritize API over socket for reliability)
       const response = await groupsAPI.sendGroupMessage(groupId, content, type);
       
       if (response.success) {
-        const message = response.data.message;
+        const realMessage = response.data.message;
         
         // Replace optimistic message with real message
         setGroupConversations(prev => ({
@@ -258,22 +296,35 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
             ...prev[groupId],
             groupId,
             messages: [
-              ...(prev[groupId]?.messages.filter(m => m._id !== optimisticMessage._id) || []),
-              message
+              ...(prev[groupId]?.messages.filter(m => m._id !== tempId) || []),
+              realMessage
             ],
             hasMore: prev[groupId]?.hasMore || false,
             loading: false,
           },
         }));
+        
+        // Send via socket for real-time to other users (after API success)
+        if (socket) {
+          socket.emit('send_group_message', {
+            groupId,
+            content,
+            type
+          });
+        }
+        
+        console.log('✅ Group message sent successfully');
       }
     } catch (error) {
+      console.error('❌ Failed to send group message:', error);
       
-      // Remove optimistic message on error
+      // Remove optimistic message on error and clean up pending tracker
+      pendingMessages.current.delete(content);
       setGroupConversations(prev => ({
         ...prev,
         [groupId]: {
           ...prev[groupId],
-          messages: prev[groupId]?.messages.filter(m => m._id !== `temp_${Date.now()}`) || [],
+          messages: prev[groupId]?.messages.filter(m => !m._id.startsWith('temp_')) || [],
         },
       }));
       
@@ -286,7 +337,9 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
       setError(null);
       const response = await groupsAPI.createGroup(name, description, isPrivate);
       if (response.success) {
-        await loadGroups(); // Reload groups list
+        // Refresh groups list
+        hasLoadedGroups.current = false; // Reset to allow reload
+        await loadGroups();
         return response.data.chatGroup;
       }
     } catch (error: any) {
@@ -303,7 +356,9 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
         if (socketJoinGroup) {
           socketJoinGroup(groupId);
         }
-        await loadGroups(); // Reload groups list
+        // Refresh groups list
+        hasLoadedGroups.current = false;
+        await loadGroups();
       }
     } catch (error: any) {
       setError(error.message);
@@ -334,7 +389,6 @@ export const GroupsProvider: React.FC<GroupsProviderProps> = ({ children }) => {
       setError(null);
       const response = await groupsAPI.addMember(groupId, userId);
       if (response.success) {
-        // Reload group members
         await loadGroupMembers(groupId);
       }
     } catch (error: any) {

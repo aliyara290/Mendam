@@ -36,7 +36,7 @@ const Appearance: React.FC = () => {
 
   const handleOpenContent = () => {
     if (setOpenSettings) {
-      setOpenSettings(true);
+      setOpenSettings(false);
     }
   };
 

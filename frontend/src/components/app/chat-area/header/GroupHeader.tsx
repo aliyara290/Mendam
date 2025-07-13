@@ -8,12 +8,14 @@ import {
   ArrowLeftOnRectangleIcon,
   UserPlusIcon,
   InformationCircleIcon,
+  ChevronLeftIcon,
 } from "@heroicons/react/24/outline";
 import { HashtagIcon } from "@heroicons/react/24/solid";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import GroupInfoModal from "../modals/GroupInfoModal";
 import AddMemberModal from "../modals/AddMemberModal";
 import { useGroups } from "@/contexts/GroupsContext";
+import { useMobileChat } from "@/contexts/MobileChatContext";
 import type { ChatGroup } from "@/services/Api";
 
 interface GroupHeaderProps {
@@ -34,6 +36,13 @@ const GroupHeader: React.FC<GroupHeaderProps> = ({
   const [showAddMember, setShowAddMember] = useState(false);
   
   const { leaveGroup } = useGroups();
+  const { closeChat } = useMobileChat();
+
+  const handleBackClick = () => {
+    if (closeChat) {
+      closeChat();
+    }
+  };
 
   const handleLeaveGroup = async () => {
     try {
@@ -83,6 +92,10 @@ const GroupHeader: React.FC<GroupHeaderProps> = ({
   return (
     <>
       <StyledGroupHeader>
+        <StyledMobileBackButton onClick={handleBackClick}>
+          <ChevronLeftIcon />
+        </StyledMobileBackButton>
+        
         <StyledLeftPart onClick={() => setShowGroupInfo(true)}>
           <StyledGroupIcon>
             {group.avatar ? (
@@ -165,6 +178,33 @@ const StyledGroupHeader = styled.header`
   }
 `;
 
+const StyledMobileBackButton = styled.button`
+  display: none;
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.text.primary};
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+  margin-right: 0.5rem;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.background.primary};
+  }
+  
+  svg {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+  
+  @media (max-width: 700px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
 const StyledLeftPart = styled.div`
   display: flex;
   align-items: center;
@@ -173,9 +213,15 @@ const StyledLeftPart = styled.div`
   padding: 0.5rem;
   border-radius: 0.8rem;
   transition: background-color 0.2s ease;
+  flex: 1;
+  min-width: 0;
   
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
+  }
+  
+  @media (max-width: 700px) {
+    padding: 0.5rem 0.5rem 0.5rem 0;
   }
 `;
 
@@ -204,6 +250,7 @@ const StyledGroupInfo = styled.div`
   flex-direction: column;
   gap: 0.3rem;
   min-width: 0;
+  flex: 1;
 `;
 
 const StyledGroupName = styled.h3`

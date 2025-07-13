@@ -7,11 +7,13 @@ import {
   TrashIcon,
   UserIcon,
   XMarkIcon,
+  ChevronLeftIcon,
 } from "@heroicons/react/24/outline";
 import Profile from "@app/chat-area/profile/Profile";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { useFriends } from "@/contexts/FriendsContext";
 import { useMessages } from "@/contexts/MessagesContext";
+import { useMobileChat } from "@/contexts/MobileChatContext";
 
 interface Recipient {
   _id: string;
@@ -33,6 +35,7 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
   
   const { removeFriend, blockUser } = useFriends();
   const { setCurrentConversation } = useMessages();
+  const { closeChat } = useMobileChat();
 
   const handleCloseProfile = () => {
     setOpenProfile(false);
@@ -40,6 +43,12 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
 
   const handleOpenMenu = () => {
     setIsMenuOpen(true);
+  };
+
+  const handleBackClick = () => {
+    if (closeChat) {
+      closeChat();
+    }
   };
 
   const handleRemoveFriend = async () => {
@@ -119,6 +128,10 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
   return (
     <>
       <StyledP2PHeader>
+        <StyledMobileBackButton onClick={handleBackClick}>
+          <ChevronLeftIcon />
+        </StyledMobileBackButton>
+        
         <StyledLeftPart onClick={() => setOpenProfile(true)}>
           <Avatar
             image={recipient.avatar}
@@ -128,11 +141,6 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
             userName={recipient.fullName}
             status={getStatusColor()}
           />
-          {/* <StyledUserStatus>
-            <StyledStatusText>
-              {formatLastSeen(recipient.lastSeen)}
-            </StyledStatusText>
-          </StyledUserStatus> */}
         </StyledLeftPart>
         
         <StyledRightPart>
@@ -176,6 +184,32 @@ const StyledP2PHeader = styled.header`
   }
 `;
 
+const StyledMobileBackButton = styled.button`
+  display: none;
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.text.primary};
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.background.primary};
+  }
+  
+  svg {
+    width: 2.4rem;
+    height: 2.4rem;
+  }
+  
+  @media (max-width: 700px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
 const StyledLeftPart = styled.div`
   width: max-content;
   border-radius: 3rem;
@@ -185,26 +219,15 @@ const StyledLeftPart = styled.div`
   align-items: center;
   gap: 1rem;
   transition: background-color 0.2s ease;
+  flex: 1;
   
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
   }
-`;
-
-const StyledUserStatus = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
   
-  @media (max-width: 600px) {
-    display: none;
+  @media (max-width: 700px) {
+    padding: 0.7em 1rem 0.7em 0.7em;
   }
-`;
-
-const StyledStatusText = styled.span`
-  font-size: var(--text-sm);
-  color: ${({ theme }) => theme.text.placeholder};
-  line-height: 1;
 `;
 
 const StyledRightPart = styled.div`

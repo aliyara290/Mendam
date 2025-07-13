@@ -4,15 +4,14 @@ import styled from "styled-components";
 import StatusBar from "@app/status-bar/StatusBar";
 import { Outlet } from "react-router-dom";
 import ChatArea from "@app/chat-area";
-
-// interface LayoutProps {
-//   children: ReactNode;
-// }
+import { useMobileChat } from "@/contexts/MobileChatContext";
 
 const Layout: React.FC = () => {
+  const { isChatOpen } = useMobileChat();
+
   return (
     <StyledLayout>
-      <StyledNavPart>
+      <StyledNavPart isChatOpen={isChatOpen}>
         <StyledTopPart>
           <Navigation />
           <StyledFr>
@@ -21,7 +20,7 @@ const Layout: React.FC = () => {
         </StyledTopPart>
         <StatusBar />
       </StyledNavPart>
-      <StyledChatPart>
+      <StyledChatPart isChatOpen={isChatOpen}>
         <ChatArea />
       </StyledChatPart>
     </StyledLayout>
@@ -35,12 +34,14 @@ const StyledLayout = styled.div`
   display: flex;
 `;
 
-const StyledNavPart = styled.div`
-width: 100%;
-    max-width: 47rem;
+interface StyledNavPartProps {
+  isChatOpen?: boolean;
+}
+
+const StyledNavPart = styled.div<StyledNavPartProps>`
+  width: 100%;
+  max-width: 47rem;
   height: 100svh;
-  /* position: sticky; */
-  /* left: 0; */
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -57,6 +58,10 @@ width: 100%;
   }
   @media (max-width: 700px) {
     max-width: unset;
+    position: ${({ isChatOpen }) => isChatOpen ? 'fixed' : 'relative'};
+    left: ${({ isChatOpen }) => isChatOpen ? '-100%' : '0'};
+    transition: left 0.3s ease;
+    z-index: ${({ isChatOpen }) => isChatOpen ? 1 : 10};
   }
 `;
 
@@ -84,24 +89,23 @@ const StyledFr = styled.div`
   border-bottom-left-radius: 8px;
 `;
 
-const StyledChatPart = styled.div`
+interface StyledChatPartProps {
+  isChatOpen?: boolean;
+}
+
+const StyledChatPart = styled.div<StyledChatPartProps>`
   width: 100%;
   height: 100svh;
   background-color: ${({ theme }) => theme.background.secondary};
   border-left: 1px solid ${({ theme }) => theme.border.primary};
-  /* display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 2rem;
-  svg {
-    fill: ${({ theme }) => theme.background.thirdly};
-  }
-  span {
-    color: ${({ theme }) => theme.text.placeholder};
-    font-size: var(--text-md);
-  } */
-   @media (max-width: 700px) {
-    display: none;
+  
+  @media (max-width: 700px) {
+    position: fixed;
+    top: 0;
+    right: ${({ isChatOpen }) => isChatOpen ? '0' : '-100%'};
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    transition: right 0.3s ease;
   }
 `;

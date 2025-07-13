@@ -15,6 +15,7 @@ import { HashtagIcon } from "@heroicons/react/24/solid";
 import CreateGroupModal from "./modals/CreateGroupModal";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { useGroups } from "@/contexts/GroupsContext";
+import { useMobileChat } from "@/contexts/MobileChatContext";
 
 interface GroupsProps {}
 
@@ -35,6 +36,8 @@ const Groups: React.FC<GroupsProps> = ({}) => {
     setCurrentGroup,
     currentGroup 
   } = useGroups();
+  
+  const { openChat } = useMobileChat();
 
   // Load groups on component mount
   useEffect(() => {
@@ -54,6 +57,12 @@ const Groups: React.FC<GroupsProps> = ({}) => {
 
   const handleGroupClick = (clickedGroupId: string) => {
     setCurrentGroup(clickedGroupId);
+    
+    // Open chat area on mobile
+    if (window.innerWidth <= 700 && openChat) {
+      openChat();
+    }
+    
     // Navigate to group chat using the same layout
     navigate(`/app/groups/${clickedGroupId}`);
   };

@@ -13,6 +13,7 @@ import { XMarkIcon } from "@heroicons/react/24/solid";
 import { useFriends } from "@/contexts/FriendsContext";
 import { useMessages } from "@/contexts/MessagesContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { useMobileChat } from "@/contexts/MobileChatContext";
 
 interface DirectMessagesProps {}
 
@@ -29,6 +30,7 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
     loadMessages 
   } = useMessages();
   const { user } = useAuth();
+  const { openChat } = useMobileChat();
 
   const handleToggleMenu = (chatId: string) => {
     setOpenMenuChatId(openMenuChatId === chatId ? null : chatId);
@@ -101,10 +103,14 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
   };
 
   const handleChatClick = async (chatId: string) => {
-    
     try {
       // Set the current conversation immediately
       setCurrentConversation(chatId);
+      
+      // Open chat area on mobile
+      if (window.innerWidth <= 700 && openChat) {
+        openChat();
+      }
       
       // Load messages for this conversation if not already loaded
       const conversation = conversations[chatId];
@@ -112,7 +118,7 @@ const DirectMessages: React.FC<DirectMessagesProps> = ({}) => {
         await loadMessages(chatId, 1);
       }
     } catch (error) {
-      console.error('❌ Failed to load conversation:', error);
+      console.error('Failed to load conversation:', error);
     }
   };
 
