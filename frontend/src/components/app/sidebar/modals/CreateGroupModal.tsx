@@ -250,9 +250,12 @@ export default CreateGroupModal;
 
 const StyledCreateGroupContent = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+  }
 `;
 
 const StyledError = styled.div`
@@ -484,8 +487,7 @@ const StyledButtons = styled.div`
   display: flex;
   align-items: center;
   justify-content: end;
-  padding-top: 1rem;
-  border-top: 1px solid ${({ theme }) => theme.border.secondary};
+  /* border-top: 1px solid ${({ theme }) => theme.border.secondary}; */
 `;
 
 const StyledButtonsList = styled.div`

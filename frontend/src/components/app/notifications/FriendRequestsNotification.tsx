@@ -6,8 +6,15 @@ import { useMessages } from "@/contexts/MessagesContext";
 import Avatar from "@app/avatar/Avatar";
 import { useNavigate } from "react-router-dom";
 
-const FriendRequestsNotification: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface FriendRequestsNotificationProps {
+  isNotificationsOpen: boolean;
+  onClose?: () => void;
+}
+
+const FriendRequestsNotification: React.FC<FriendRequestsNotificationProps> = ({
+  isNotificationsOpen = false,
+  onClose
+}) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const {
     friendRequests,
@@ -31,18 +38,18 @@ const FriendRequestsNotification: React.FC = () => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
+        onClose?.();
       }
     };
 
-    if (isOpen) {
+    if (isNotificationsOpen) {
       document.addEventListener('mousedown', handleClickOutside);
     }
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [isOpen]);
+  }, [isNotificationsOpen, onClose]);
 
   const handleAccept = async (requestId: string) => {
     try {
@@ -53,12 +60,11 @@ const FriendRequestsNotification: React.FC = () => {
     }
   };
 
-
   const handleAcceptAndChat = async (requestId: string, friendId: string) => {
     try {
       await acceptFriendRequest(requestId);
 
-      setIsOpen(false);
+      onClose?.();
 
       setCurrentConversation(friendId);
 
@@ -81,19 +87,11 @@ const FriendRequestsNotification: React.FC = () => {
 
   return (
     <StyledNotificationContainer ref={dropdownRef}>
-      <StyledNotificationButton onClick={() => setIsOpen(!isOpen)}>
-        <BellIcon />
-        {friendRequests.length > 0 && (
-          <StyledNotificationBadge>
-            {friendRequests.length}
-          </StyledNotificationBadge>
-        )}
-      </StyledNotificationButton>
-      {isOpen && (
+      {isNotificationsOpen && (
         <StyledNotificationDropdown>
           <StyledNotificationHeader>
             <h4>Friend Requests</h4>
-            <StyledCloseButton onClick={() => setIsOpen(false)}>
+            <StyledCloseButton onClick={onClose}>
               <XMarkIcon />
             </StyledCloseButton>
           </StyledNotificationHeader>
@@ -158,6 +156,7 @@ export default FriendRequestsNotification;
 
 const StyledNotificationContainer = styled.div`
   position: relative;
+  width: 94%;
 `;
 
 const RingBallAnim = keyframes`
@@ -172,32 +171,7 @@ const RingBallAnim = keyframes`
 }
 `
 
-const StyledNotificationButton = styled.button`
-  position: relative;
-  background: none;
-  border: none;
-  color: ${({ theme }) => theme.text.primary};
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-  &:hover {
-    background-color: ${({ theme }) => theme.background.primary};
-    color: var(--blue);
-    svg {
-      animation: ${RingBallAnim} .3s ease-in;
-    }
-  }
-  
-  svg {
-    width: 2.4rem;
-    height: 2.4rem;
-  }
-`;
+
 
 const StyledNotificationBadge = styled.div`
   position: absolute;
@@ -234,9 +208,9 @@ const StyledNotificationBadge = styled.div`
 
 const StyledNotificationDropdown = styled.div`
   position: absolute;
-  bottom: 7rem;
-  right: -2rem;
-  width: 36rem;
+  bottom: 11rem;
+  left: 3%;
+  width: 100%;
   max-height: 50rem;
   background-color: ${({ theme }) => theme.background.secondary};
   border: 1px solid ${({ theme }) => theme.border.primary};
@@ -244,10 +218,9 @@ const StyledNotificationDropdown = styled.div`
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   z-index: 10000;
-  
-  @media (max-width: 600px) {
-    width: 90vw;
-    right: -5rem;
+
+  @media (max-width: 700px) {
+    bottom: 8rem;
   }
 `;
 

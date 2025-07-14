@@ -14,6 +14,7 @@ import { useMessages } from "@/contexts/MessagesContext";
 import { useNavigate } from "react-router-dom";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { NoSymbolIcon, XMarkIcon } from "@heroicons/react/24/solid";
+import { useMobileChat } from "@/contexts/MobileChatContext";
 
 interface FriendsProps { }
 
@@ -24,6 +25,7 @@ const Friends: React.FC<FriendsProps> = ({ }) => {
 
   const { friends, loading, error, loadFriends, removeFriend, blockUser } = useFriends();
   const { setCurrentConversation } = useMessages();
+  const { openChat } = useMobileChat();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,6 +39,10 @@ const Friends: React.FC<FriendsProps> = ({ }) => {
   const handleStartChat = (friendId: string) => {
     setCurrentConversation(friendId);
     navigate('/app/@me');
+
+    if (window.innerWidth <= 700 && openChat) {
+        openChat();
+      }
   };
 
   const handleRemoveFriend = async (friendId: string) => {

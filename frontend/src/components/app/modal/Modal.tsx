@@ -65,13 +65,16 @@ const ModalBackdrop = styled.div`
   background-color: #00000039;
   z-index: 10034567890987650;
   padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ModalContent = styled.div`
-  position: absolute;
+  /* position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%); */
   width: 100%;
   max-width: 60rem;
   max-height: 70vh;

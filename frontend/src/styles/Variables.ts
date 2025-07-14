@@ -37,8 +37,8 @@ const Variables = css`
     --text-xs: 1rem; /* 10px */
     --text-sm: 1.2rem; /* 12px */
     --text-base: 1.4rem; /* 14px */
-    --text-md: 1.5rem; /* 16px */
-    --text-lg: 1.6rem; /* 20px - h4/subheaders */
+    --text-md: 1.6rem; /* 16px */
+    --text-lg: 1.7rem;
     --text-xl: 2rem; /* 24px - h3 */
     --text-xxl: 3rem; /* 30px - h2 */
     --text-xxxl: 4rem; /* 38px - h1 */

@@ -140,6 +140,7 @@ const StyledProfile = styled.div`
   justify-content: center;
   background-color: #00000039;
   z-index: 234567890876543;
+  padding: 1.5rem;
 `;
 
 const StyledProfileContent = styled.div`
@@ -181,7 +182,7 @@ const StyledProfileCover = styled.div`
   width: 100%;
   height: 13rem;
   background: var(--blue);
-  margin-bottom: 16rem;
+  margin-bottom: 18rem;
   position: relative;
 `;
 

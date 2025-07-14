@@ -180,7 +180,7 @@ const StyledOfflineIndicator = styled.div`
 const StyledUserName = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 6px;
 
   h5 {
     font-size: var(--text-md);

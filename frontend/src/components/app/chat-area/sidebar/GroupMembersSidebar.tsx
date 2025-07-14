@@ -6,7 +6,7 @@ import {
   // CrownIcon,
   ShieldCheckIcon,
   EllipsisHorizontalIcon,
-  UserMinusIcon,
+  CheckBadgeIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
 import { CheckIcon } from "@heroicons/react/24/solid";
@@ -77,7 +77,7 @@ const GroupMembersSidebar: React.FC<GroupMembersSidebarProps> = ({
       if (member.role !== 'admin') {
         items.push({
           label: "Make Admin",
-          icon: <UserMinusIcon />,
+          icon: <CheckBadgeIcon />,
           onClick: () => handleUpdateRole(member.userId._id, 'admin'),
         });
       }
@@ -93,7 +93,7 @@ const GroupMembersSidebar: React.FC<GroupMembersSidebarProps> = ({
       if (member.role === 'moderator' || member.role === 'admin') {
         items.push({
           label: "Remove Role",
-          icon: <UserMinusIcon />,
+          icon: <CheckBadgeIcon />,
           onClick: () => handleUpdateRole(member.userId._id, 'member'),
         });
       }
@@ -114,7 +114,7 @@ const GroupMembersSidebar: React.FC<GroupMembersSidebarProps> = ({
   const getRoleIcon = (role: string) => {
     switch (role) {
       case 'admin':
-        return <UserMinusIcon />;
+        return <CheckBadgeIcon />;
       case 'moderator':
         return <ShieldCheckIcon />;
       default:
@@ -286,8 +286,7 @@ const StyledGroupMembersSidebar = styled.div`
 `;
 
 const StyledSidebarHeader = styled.div`
-  padding: 2rem;
-  border-bottom: 1px solid ${({ theme }) => theme.border.secondary};
+  padding: 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -340,7 +339,7 @@ const StyledCloseButton = styled.button`
 `;
 
 const StyledSearchContainer = styled.div`
-  padding: 0 2rem 2rem;
+  padding: 0 1.5rem 2rem;
 `;
 
 const StyledSearchBar = styled.div`
@@ -382,7 +381,7 @@ const StyledSearchBar = styled.div`
 const StyledMembersContainer = styled.div`
   flex: 1;
   overflow-y: auto;
-  padding: 0 2rem 2rem;
+  padding: 0 1.5rem 2rem;
 `;
 
 const StyledMemberSection = styled.div`

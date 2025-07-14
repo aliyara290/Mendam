@@ -107,7 +107,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
           <Avatar
             image={recipient.avatar}
             userName={recipient.fullName}
-            size={60}
+            size={80}
           />
           <StyledEmptyTitle>Start a conversation with {recipient.fullName}</StyledEmptyTitle>
           <StyledEmptyText>Send a message to get the conversation started!</StyledEmptyText>
@@ -135,7 +135,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
           <Avatar
             image={recipient.avatar}
             userName={recipient.fullName}
-            size={70}
+            size={80}
           />
           <StyledEmptyTitle>Start a conversation with {recipient.fullName}</StyledEmptyTitle>
           <StyledEmptyText>Send a message to get the conversation started!</StyledEmptyText>
@@ -357,7 +357,7 @@ const StyledEmptyState = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 2rem;
   padding: 2rem;
 `;
 

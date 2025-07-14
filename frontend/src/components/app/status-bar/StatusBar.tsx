@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import Avatar from "@app/avatar/Avatar";
-import { Cog8ToothIcon, HomeIcon, ArrowRightStartOnRectangleIcon } from "@heroicons/react/24/outline";
+import { BellAlertIcon, Cog8ToothIcon, HomeIcon } from "@heroicons/react/24/outline";
 import QuickProfile from "./QuickProfile";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -12,8 +12,13 @@ interface StatusBarProps { }
 const StatusBar: React.FC<StatusBarProps> = ({ }) => {
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const [shouldAnimate, setShouldAnimate] = useState<boolean>(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
   const location = useLocation();
   const { user, logout } = useAuth();
+
+  const handleCloseNotifications = () => {
+    setIsNotificationOpen(false)
+  }
 
   const handleToggleProfile = () => {
     if (!isProfileOpen) {
@@ -54,21 +59,27 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
                       </StyledItemLabel>
                     </Link>
                   </StyledItems>
-                  <StyledItems isActive={location.pathname === "/app/friends"}>
-                    <Link to={"/app/friends"}>
-                      <StyledItemProfile isActive={location.pathname === "/app/friends"}>
-                        {user.avatar ? (
-                          <img src={user.avatar} alt={user.fullName} />
-                        ) : (
-                          <div className="placeholder">
-                            {user.fullName.charAt(0).toUpperCase()}
-                          </div>
-                        )}
-                      </StyledItemProfile>
-                      <StyledItemLabel>
-                        <span>Profile</span>
-                      </StyledItemLabel>
-                    </Link>
+                  <StyledItems isActive={isProfileOpen} onClick={handleToggleProfile}>
+                    <StyledItemProfile isActive={location.pathname === "/app/friends"}>
+                      {user.avatar ? (
+                        <img src={user.avatar} alt={user.fullName} />
+                      ) : (
+                        <div className="placeholder">
+                          {user.fullName.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </StyledItemProfile>
+                    <StyledItemLabel>
+                      <span>Profile</span>
+                    </StyledItemLabel>
+                  </StyledItems>
+                  <StyledItems isActive={isNotificationOpen} onClick={() => setIsNotificationOpen(true)}>
+                    <StyledItemIcon>
+                      <BellAlertIcon />
+                    </StyledItemIcon>
+                    <StyledItemLabel>
+                      <span>Notifications</span>
+                    </StyledItemLabel>
                   </StyledItems>
                   <StyledItems isActive={location.pathname.startsWith("/app/settings")}>
                     <Link to={"/app/settings/profile"}>
@@ -95,7 +106,9 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
                   />
                 </StyledUserAvatar>
                 <StyledActions>
-                  <FriendRequestsNotification />
+                  <StyledNotificationButton onClick={() => setIsNotificationOpen(true)}>
+                    <BellAlertIcon />
+                  </StyledNotificationButton>
                   <StyledSettingIcon>
                     <Link to={"/app/settings/profile"}>
                       <Cog8ToothIcon />
@@ -113,6 +126,7 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
           onLogout={handleLogout}
           onClose={() => setIsProfileOpen(false)}
         />
+        <FriendRequestsNotification onClose={handleCloseNotifications} isNotificationsOpen={isNotificationOpen} />
       </StyledStatusBar>
     </>
   );
@@ -230,7 +244,7 @@ const StyledLogoutIcon = styled.div`
 const StyledItemsList = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: center;
   padding: 0.6rem 0;
 `;
@@ -240,6 +254,9 @@ const StyledItems = styled.div<StyledItemsProps>`
   display: flex;
   align-items: center;
   justify-content: center;
+    flex-direction: column;
+    color: ${({ isActive }) => (isActive ? ({ theme }) => theme.text.primary : ({ theme }) => theme.text.placeholder)};
+
   a {
     color: ${({ isActive }) => (isActive ? ({ theme }) => theme.text.primary : ({ theme }) => theme.text.placeholder)};
     display: flex;
@@ -277,7 +294,7 @@ const StyledItemProfile = styled.div<StyledItemsProps>`
   .placeholder {
     color: inherit;
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: 500;
   }
 `;
 
@@ -286,5 +303,44 @@ const StyledItemLabel = styled.div`
   span {
     font-size: var(--text-xxs);
     line-height: 1;
+  }
+`;
+
+const RingBallAnim = keyframes`
+0% {
+  transform: rotate(-10deg);
+}
+50% {
+  transform: rotate(10deg);
+}
+100% {
+  transform: rotate(0);
+}
+`
+
+const StyledNotificationButton = styled.button`
+  position: relative;
+  background: none;
+  border: none;
+  color: ${({ theme }) => theme.text.primary};
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: ${({ theme }) => theme.background.primary};
+    color: var(--blue);
+    svg {
+      animation: ${RingBallAnim} .3s ease-in;
+    }
+  }
+  
+  svg {
+    width: 2.4rem;
+    height: 2.4rem;
   }
 `;
