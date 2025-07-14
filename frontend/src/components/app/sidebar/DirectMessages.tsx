@@ -345,6 +345,7 @@ const StyledUserName = styled.div<{ hasUnread?: boolean }>`
   @media (max-width: 1000px) {
     font-size: var(--text-sm);
   }
+  text-transform: capitalize;
 `;
 
 const StyledLastMessage = styled.div`

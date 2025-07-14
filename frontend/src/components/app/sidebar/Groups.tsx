@@ -9,9 +9,12 @@ import {
   EllipsisHorizontalIcon,
   ArrowLeftOnRectangleIcon,
   Cog6ToothIcon,
-  UserGroupIcon
+  UsersIcon
 } from "@heroicons/react/24/outline";
-import { HashtagIcon } from "@heroicons/react/24/solid";
+import { 
+  LockClosedIcon,
+  UserGroupIcon,
+} from "@heroicons/react/24/solid";
 import CreateGroupModal from "./modals/CreateGroupModal";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { useGroups } from "@/contexts/GroupsContext";
@@ -197,7 +200,7 @@ const Groups: React.FC<GroupsProps> = ({}) => {
                     />
                   ) : (
                     <StyledDefaultGroupIcon>
-                      <HashtagIcon />
+                      <UserGroupIcon />
                     </StyledDefaultGroupIcon>
                   )}
                 </StyledGroupIcon>
@@ -205,8 +208,8 @@ const Groups: React.FC<GroupsProps> = ({}) => {
                 <StyledGroupInfo>
                   <StyledGroupName>{group.name}</StyledGroupName>
                   <StyledGroupDetails>
-                    {group.memberCount || 0} member{(group.memberCount || 0) !== 1 ? 's' : ''}
-                    {group.isPrivate && <StyledPrivateBadge>Private</StyledPrivateBadge>}
+                    {/* {group.memberCount || 0} member{(group.memberCount || 0) !== 1 ? 's' : ''} */}
+                    {group.isPrivate && <StyledPrivateBadge><LockClosedIcon /></StyledPrivateBadge>}
                   </StyledGroupDetails>
                 </StyledGroupInfo>
                 
@@ -348,23 +351,22 @@ const StyledDefaultGroupIcon = styled.div`
   svg {
     width: 2rem;
     height: 2rem;
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme }) => theme.text.placeholder};
   }
 `;
 
 const StyledGroupInfo = styled.div`
   flex: 1;
   display: flex;
-  flex-direction: column;
   gap: 0.4rem;
   margin-left: 1rem;
   min-width: 0;
 `;
 
 const StyledGroupName = styled.h4`
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   color: ${({ theme }) => theme.text.primary};
-  font-weight: 500;
+  font-weight: 400;
   margin: 0;
   line-height: 1.2;
   overflow: hidden;
@@ -381,12 +383,14 @@ const StyledGroupDetails = styled.div`
 `;
 
 const StyledPrivateBadge = styled.span`
-  background-color: var(--blue);
-  color: white;
-  padding: 0.2rem 0.6rem;
-  border-radius: 1rem;
-  font-size: var(--text-xs);
-  font-weight: 500;
+  color: ${({ theme }) => theme.text.placeholder};
+display: flex;
+align-items: center;
+justify-content: center;
+padding-top: 2px;
+  svg {
+    width: 1.3rem;
+  }
 `;
 
 const StyledGroupActions = styled.div`

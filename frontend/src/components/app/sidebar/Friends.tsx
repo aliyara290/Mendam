@@ -41,8 +41,8 @@ const Friends: React.FC<FriendsProps> = ({ }) => {
     navigate('/app/@me');
 
     if (window.innerWidth <= 700 && openChat) {
-        openChat();
-      }
+      openChat();
+    }
   };
 
   const handleRemoveFriend = async (friendId: string) => {
@@ -163,14 +163,19 @@ const Friends: React.FC<FriendsProps> = ({ }) => {
           {filteredFriends.map((friend) => (
             <StyledChatItem key={friend._id}>
               <StyledChatItemContainer>
-                <Avatar
-                  image={friend.friendId.avatar}
-                  status={friend.friendId.isOnline ? "online" : "offline"}
-                  userName={friend.friendId.fullName}
-                  showStatusCircle
-                  showUserName
-                  size={35}
-                />
+                <StyledLeftPart>
+                  <Avatar
+                    image={friend.friendId.avatar}
+                    status={friend.friendId.isOnline ? "online" : "offline"}
+                    // userName={friend.friendId.fullName}
+                    showStatusCircle
+                    size={35}
+                  />
+                  <StyledUserName >
+                    {friend.friendId.fullName}
+
+                  </StyledUserName>
+                </StyledLeftPart>
                 <StyledOptions>
                   <StyledOptionsItem onClick={() => handleStartChat(friend.friendId._id)}>
                     <ChatBubbleOvalLeftEllipsisIcon />
@@ -366,3 +371,19 @@ const StyledEmptyText = styled.div`
   font-size: var(--text-md);
   text-align: center;
 `;
+
+const StyledLeftPart = styled.div`
+display: flex;
+align-items: center;
+gap: 1rem;
+`
+
+const StyledUserName = styled.div`
+  font-weight: 400;
+  font-size: var(--text-base);
+  color: ${({ theme }) => theme.text.thirdly};
+  @media (max-width: 1000px) {
+    font-size: var(--text-sm);
+  }
+  text-transform: capitalize;
+`;  

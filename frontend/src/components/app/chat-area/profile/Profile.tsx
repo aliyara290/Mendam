@@ -68,7 +68,7 @@ const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
                 <StyledBar />
               </StyledAvatarPic>
               <StyledAvatarName>
-                <h4>{user.fullName}</h4>
+                <h4>{user.fullName.substring(0, 10)}</h4>
                 <span>@{user.username}</span>
                 <StyledStatusIndicator>
                   <StyledStatusDot color={getStatusColor()} />
@@ -256,13 +256,16 @@ const StyledAvatarName = styled.div`
   gap: 0.7rem;
   
   h4 {
+    width: max-content;
     font-size: var(--text-xxl);
     line-height: 1;
     color: ${({ theme }) => theme.text.primary};
     font-weight: 500;
+    text-align: center;
   }
   
   span {
+    width: max-content;
     font-size: var(--text-md);
     line-height: 1;
     color: ${({ theme }) => theme.text.secondary};
