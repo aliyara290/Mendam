@@ -5,7 +5,7 @@ const GlobalStyle = createGlobalStyle`
 ${Fonts}
 
 * {
-    font-family: "Roboto";
+    font-family: var(--font-family);
     box-sizing: border-box;
     padding: 0;
     margin: 0;

@@ -174,7 +174,7 @@ const Hero: React.FC = () => {
 export default Hero;
 
 const StyledHero = styled.section`
-  min-height: 100vh;
+  min-height: 100svh;
   padding: 8rem 3rem 4rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
