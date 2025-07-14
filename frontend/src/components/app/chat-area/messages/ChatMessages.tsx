@@ -256,7 +256,7 @@ const StyledMessageContent = styled.div<{ isOwn: boolean }>`
 
 const StyledMessageAvatar = styled.div`
   flex-shrink: 0;
-  align-self: flex-end;
+  align-self: flex-start;
 `;
 
 const StyledMessageGroup = styled.div<{ isOwn: boolean }>`

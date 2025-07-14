@@ -149,15 +149,15 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
                   )}
 
                   <StyledMessageGroup isOwn={isOwn}>
-                    {!isOwn && showAvatar && (
-                      <StyledSenderName>{message.senderId.fullName}</StyledSenderName>
-                    )}
 
+                    {!isOwn && showAvatar && (
+                      <StyledSenderName>@{message.senderId.fullName}</StyledSenderName>
+                    )}
                     <StyledMessageBubble
                       isOwn={isOwn}
                       hasAvatar={!isOwn && showAvatar}
                       isLastInGroup={isLastInGroup}
-                    >
+                      >
                       <StyledMessageText>{message.content}</StyledMessageText>
                       <StyledMessageTime isOwn={isOwn}>
                         {formatTime(message.createdAt)}
@@ -216,14 +216,14 @@ const StyledMessageContent = styled.div<{ isOwn: boolean }>`
 
 const StyledMessageAvatar = styled.div`
   flex-shrink: 0;
-  align-self: flex-end;
+  align-self: flex-start;
 `;
 
 const StyledMessageGroup = styled.div<{ isOwn: boolean }>`
   display: flex;
   flex-direction: column;
   align-items: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
-  gap: 0.2rem;
+  gap: 0.9rem;
   min-width: 0;
 `;
 
@@ -273,7 +273,7 @@ const StyledMessageTime = styled.div<{ isOwn: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  justify-content: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
+  justify-content: ${({ isOwn }) => isOwn ? 'flex-start' : 'flex-end'};
 `;
 
 const StyledReadIndicator = styled.span`

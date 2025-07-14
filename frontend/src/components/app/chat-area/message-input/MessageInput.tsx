@@ -192,7 +192,6 @@ const MessageInput: React.FC<MessageInputProps> = ({ recipientId }) => {
           onChange={handleInputChange}
           onKeyPress={handleKeyPress}
           disabled={isSending}
-          autoFocus
         />
       </StyledInputContainer>
 

@@ -215,7 +215,7 @@ const StyledNotificationDropdown = styled.div`
   background-color: ${({ theme }) => theme.background.secondary};
   border: 1px solid ${({ theme }) => theme.border.primary};
   border-radius: 1rem;
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
   z-index: 10000;
 
