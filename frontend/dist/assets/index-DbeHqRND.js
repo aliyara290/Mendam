@@ -4960,6 +4960,7 @@ gap: 1rem;
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
+  gap:2px;
   @media (max-width: 1000px) {
     padding: 0;
   }

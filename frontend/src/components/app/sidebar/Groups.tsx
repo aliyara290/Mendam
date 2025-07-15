@@ -5,13 +5,13 @@ import SearchBar from "@app/search-bar/SearchBar";
 import Heading from "@app/heading/Heading";
 import Avatar from "@app/avatar/Avatar";
 import SquareBtn from "@app/ui/button/SquareBtn";
-import { 
+import {
   EllipsisHorizontalIcon,
   ArrowLeftOnRectangleIcon,
   Cog6ToothIcon,
   UsersIcon
 } from "@heroicons/react/24/outline";
-import { 
+import {
   LockClosedIcon,
   UserGroupIcon,
 } from "@heroicons/react/24/solid";
@@ -20,26 +20,26 @@ import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import { useGroups } from "@/contexts/GroupsContext";
 import { useMobileChat } from "@/contexts/MobileChatContext";
 
-interface GroupsProps {}
+interface GroupsProps { }
 
-const Groups: React.FC<GroupsProps> = ({}) => {
+const Groups: React.FC<GroupsProps> = ({ }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [openMenuGroupId, setOpenMenuGroupId] = useState<string | null>(null);
-  
+
   const { groupId } = useParams<{ groupId: string }>();
   const navigate = useNavigate();
-  
-  const { 
-    groups, 
-    loading, 
-    error, 
-    loadGroups, 
+
+  const {
+    groups,
+    loading,
+    error,
+    loadGroups,
     leaveGroup,
     setCurrentGroup,
-    currentGroup 
+    currentGroup
   } = useGroups();
-  
+
   const { openChat } = useMobileChat();
 
   // Load groups on component mount
@@ -60,12 +60,12 @@ const Groups: React.FC<GroupsProps> = ({}) => {
 
   const handleGroupClick = (clickedGroupId: string) => {
     setCurrentGroup(clickedGroupId);
-    
+
     // Open chat area on mobile
     if (window.innerWidth <= 700 && openChat) {
       openChat();
     }
-    
+
     // Navigate to group chat using the same layout
     navigate(`/app/groups/${clickedGroupId}`);
   };
@@ -156,7 +156,7 @@ const Groups: React.FC<GroupsProps> = ({}) => {
       <StyledTopHeader>
         <Heading title="Groups" heading="h3" />
         <StyledSBarRow>
-          <SearchBar 
+          <SearchBar
             placeholder="Search for groups"
             value={searchQuery}
             onInputChange={(value) => setSearchQuery(value)}
@@ -171,7 +171,7 @@ const Groups: React.FC<GroupsProps> = ({}) => {
             <UserGroupIcon />
           </StyledEmptyIcon>
           <StyledEmptyText>
-            {searchQuery 
+            {searchQuery
               ? `No groups found matching "${searchQuery}"`
               : "No groups yet. Create a group to start collaborating!"
             }
@@ -186,7 +186,7 @@ const Groups: React.FC<GroupsProps> = ({}) => {
         <StyledGroupsList>
           {filteredGroups.map((group) => (
             <StyledGroupItem key={group._id}>
-              <StyledGroupItemContainer 
+              <StyledGroupItemContainer
                 onClick={() => handleGroupClick(group._id)}
                 isActive={currentGroup === group._id || groupId === group._id}
               >
@@ -204,7 +204,7 @@ const Groups: React.FC<GroupsProps> = ({}) => {
                     </StyledDefaultGroupIcon>
                   )}
                 </StyledGroupIcon>
-                
+
                 <StyledGroupInfo>
                   <StyledGroupName>{group.name}</StyledGroupName>
                   <StyledGroupDetails>
@@ -212,9 +212,9 @@ const Groups: React.FC<GroupsProps> = ({}) => {
                     {group.isPrivate && <StyledPrivateBadge><LockClosedIcon /></StyledPrivateBadge>}
                   </StyledGroupDetails>
                 </StyledGroupInfo>
-                
+
                 <StyledGroupActions onClick={(e) => e.stopPropagation()}>
-                  <StyledOptionsItem 
+                  <StyledOptionsItem
                     onClick={() => setOpenMenuGroupId(
                       openMenuGroupId === group._id ? null : group._id
                     )}
@@ -223,7 +223,7 @@ const Groups: React.FC<GroupsProps> = ({}) => {
                   </StyledOptionsItem>
                 </StyledGroupActions>
               </StyledGroupItemContainer>
-              
+
               {/* Menu for each group */}
               <div onClick={(e) => e.stopPropagation()}>
                 <Menu
@@ -292,6 +292,7 @@ const StyledGroupsList = styled.div`
   padding: 0 0.5rem;
   display: flex;
   flex-direction: column;
+  gap:2px;
   @media (max-width: 1000px) {
     padding: 0;
   }
@@ -315,7 +316,7 @@ const StyledGroupItemContainer = styled.div<StyledGroupItemContainerProps>`
   border-radius: 8px;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  background-color: ${({ isActive, theme }) => 
+  background-color: ${({ isActive, theme }) =>
     isActive ? theme.background.secondary : 'transparent'};
   
   @media (max-width: 1000px) {
