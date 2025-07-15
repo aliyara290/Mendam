@@ -10,7 +10,7 @@ import {
   InformationCircleIcon,
   ChevronLeftIcon,
 } from "@heroicons/react/24/outline";
-import { HashtagIcon } from "@heroicons/react/24/solid";
+import { UserGroupIcon } from "@heroicons/react/24/solid";
 import Menu, { type MenuItemProps } from "@app/menu/Menu";
 import GroupInfoModal from "../modals/GroupInfoModal";
 import AddMemberModal from "../modals/AddMemberModal";
@@ -107,7 +107,7 @@ const GroupHeader: React.FC<GroupHeaderProps> = ({
               />
             ) : (
               <StyledDefaultGroupIcon>
-                <HashtagIcon />
+                <UserGroupIcon />
               </StyledDefaultGroupIcon>
             )}
           </StyledGroupIcon>
@@ -116,7 +116,7 @@ const GroupHeader: React.FC<GroupHeaderProps> = ({
             <StyledGroupName>{group.name}</StyledGroupName>
             <StyledGroupDetails>
               {memberCount} member{memberCount !== 1 ? 's' : ''}
-              {group.isPrivate && <StyledPrivateBadge>Private</StyledPrivateBadge>}
+              {/* {group.isPrivate && <Styl edPrivateBadge>Private</Styl>} */}
             </StyledGroupDetails>
           </StyledGroupInfo>
         </StyledLeftPart>
@@ -241,7 +241,7 @@ const StyledDefaultGroupIcon = styled.div`
   svg {
     width: 2rem;
     height: 2rem;
-    color: ${({ theme }) => theme.text.primary};
+    color: ${({ theme }) => theme.text.thirdly};
   }
 `;
 
