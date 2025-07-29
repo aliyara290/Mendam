@@ -288,10 +288,10 @@ const StyledDateSeparator = styled.div`
 `;
 
 const StyledDateText = styled.div`
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.primary};
   color: ${({ theme }) => theme.text.secondary};
-  padding: 0.4rem 1.2rem;
-  border-radius: 1.5rem;
+  padding: 0.7rem 2rem;
+  border-radius: 0.5rem;
   font-size: var(--text-sm);
   font-weight: 500;
 `;

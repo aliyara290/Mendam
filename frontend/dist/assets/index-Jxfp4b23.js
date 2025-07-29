@@ -3191,7 +3191,7 @@ width: max-content;
   gap: 1rem;
   cursor: pointer;
   padding: 0.5rem;
-  padding-right: 1rem;
+  padding-right: 2rem;
   border-radius: 3rem;
   transition: background-color 0.2s ease;
   &:hover {
@@ -3587,10 +3587,10 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   justify-content: center;
   margin: 1.5rem 0 1rem;
 `,yN=h.div`
-  background-color: ${({theme:e})=>e.background.thirdly};
+  background-color: ${({theme:e})=>e.background.primary};
   color: ${({theme:e})=>e.text.secondary};
-  padding: 0.4rem 1.2rem;
-  border-radius: 1.5rem;
+  padding: 0.7rem 2rem;
+  border-radius: 0.5rem;
   font-size: var(--text-sm);
   font-weight: 500;
 `,bN=h.div`
@@ -3710,10 +3710,10 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   justify-content: center;
   margin: 1.5rem 0 1rem;
 `,zN=h.div`
-  background-color: ${({theme:e})=>e.background.thirdly};
+  background-color: ${({theme:e})=>e.background.primary};
   color: ${({theme:e})=>e.text.secondary};
-  padding: 0.4rem 1.2rem;
-  border-radius: 1.5rem;
+  padding: 0.7rem 2rem;
+  border-radius: 0.5rem;
   font-size: var(--text-sm);
   font-weight: 500;
 `,RN=h.div`
