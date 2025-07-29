@@ -61,8 +61,8 @@ const Hero: React.FC = () => {
               <Button
               bg="light"
               hoverBg="blue"
-              color="light"
-              hoverColor="blue"
+              color="blue"
+              hoverColor="light"
                 isLink
                 href="/auth/register"
                 title="Get Started"
