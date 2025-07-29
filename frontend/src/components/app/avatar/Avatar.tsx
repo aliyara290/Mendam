@@ -28,7 +28,7 @@ const Avatar: React.FC<AvatarProps> = ({
   showUserName = false,
   size = 40,
   isGroup = false,
-  bg
+  bg = false
 }) => {
   const avatarContent = (
     <StyledAvatar>

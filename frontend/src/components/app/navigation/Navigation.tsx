@@ -57,7 +57,7 @@ const Navigation: React.FC<NavigationProps> = ({ }) => {
               </StyledLink>
             </Link>
           </StyledPagesLinks>
-          <StyledLine />
+          {/* <StyledLine />
           <StyledGroupsContainer>
             <StyledGroupsList>
               <Link to={"/app/channel/345678"}>
@@ -91,7 +91,7 @@ const Navigation: React.FC<NavigationProps> = ({ }) => {
                 <PlusCircleIcon />
               </StyledLinkIcon>
             </StyledAddBtn>
-          </StyledGroupsContainer>
+          </StyledGroupsContainer> */}
         </StyledTopLinks>
 
         {/* <StyledBottomLinks>

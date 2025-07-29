@@ -23,7 +23,7 @@ const MyAccount: React.FC = ({ }) => {
               <h5>Password</h5>
             </StyledItemHeading>
             <StyledItemContent>
-              <Button variant="primary" title="Change password" type="button" />
+              <Button  onClick={() => alert("Comming soon!!")} variant="primary" title="Change password" type="button" />
             </StyledItemContent>
           </StyledOptionItem>
           <StyledOptionItem>
@@ -35,8 +35,8 @@ const MyAccount: React.FC = ({ }) => {
               </p>
             </StyledItemHeading>
             <StyledItemContent>
-              <Button variant="danger" title="Disable Account" type="button" />
-              <Button variant="danger" title="Delete Account" type="button" />
+              <Button  onClick={() => alert("Comming soon!!")} variant="danger" title="Disable Account" type="button" />
+              <Button  onClick={() => alert("Comming soon!!")} variant="danger" title="Delete Account" type="button" />
             </StyledItemContent>
           </StyledOptionItem>
         </StyledMyAccountContent>

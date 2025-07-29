@@ -36,49 +36,50 @@ const glow = keyframes`
 
 const Features: React.FC = () => {
     const features = [
-        {
-            icon: "💬",
-            title: "Real-time Messaging",
-            description: "Lightning-fast messaging with typing indicators, read receipts, and instant delivery across all devices.",
-            stats: "99.9% uptime",
-            color: "#667eea"
-        },
-        {
-            icon: "🤖",
-            title: "AI-Powered Assistant",
-            description: "Smart suggestions, automated summaries, and intelligent task management to boost your team's productivity.",
-            stats: "40% faster workflows",
-            color: "#764ba2"
-        },
-        {
-            icon: "🔒",
-            title: "Enterprise Security",
-            description: "End-to-end encryption, SSO integration, and compliance with GDPR, HIPAA, and SOC 2 standards.",
-            stats: "Bank-level security",
-            color: "#f093fb"
-        },
-        {
-            icon: "📊",
-            title: "Advanced Analytics",
-            description: "Deep insights into team performance, communication patterns, and productivity metrics.",
-            stats: "Real-time insights",
-            color: "#f5576c"
-        },
-        {
-            icon: "🔗",
-            title: "Seamless Integrations",
-            description: "Connect with 200+ tools including Slack, Microsoft Teams, Google Workspace, and custom APIs.",
-            stats: "200+ integrations",
-            color: "#4facfe"
-        },
-        {
-            icon: "📱",
-            title: "Cross-Platform",
-            description: "Native apps for iOS, Android, Windows, macOS, and web. Your conversations sync everywhere.",
-            stats: "All platforms",
-            color: "#43e97b"
-        }
-    ];
+    {
+        icon: "💬",
+        title: "Real-time Messaging",
+        description: "Instant messaging with smooth delivery and real-time updates across all chats.",
+        stats: "99.9% uptime",
+        color: "#667eea"
+    },
+    {
+        icon: "👥",
+        title: "Group & Private Chats",
+        description: "Create private 1-on-1 chats or public/private group conversations with multiple participants.",
+        stats: "Unlimited rooms",
+        color: "#f093fb"
+    },
+    {
+        icon: "🎨",
+        title: "Multiple Themes",
+        description: "Switch between light, dark, and custom themes to personalize your chat experience.",
+        stats: "6+ themes available",
+        color: "#764ba2"
+    },
+    {
+        icon: "🔔",
+        title: "Smart Notifications",
+        description: "Get notified for new messages, mentions, or custom keywords in real-time.",
+        stats: "Instant alerts",
+        color: "#f5576c"
+    },
+    {
+        icon: "🔒",
+        title: "Privacy & Security",
+        description: "Messages are securely stored and transmitted with user privacy in mind.",
+        stats: "Secure by design",
+        color: "#4facfe"
+    },
+    {
+        icon: "📱",
+        title: "Responsive Design",
+        description: "Fully responsive web app that works seamlessly on desktop, tablet, and mobile.",
+        stats: "Cross-device ready",
+        color: "#43e97b"
+    }
+];
+
 
     return (
         <StyledFeatures id="features">

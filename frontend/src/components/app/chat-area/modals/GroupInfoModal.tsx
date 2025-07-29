@@ -7,6 +7,7 @@ import {
   UserGroupIcon,
   GlobeAltIcon,
   LockClosedIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
 import { HashtagIcon } from "@heroicons/react/24/solid";
 import Avatar from "@app/avatar/Avatar";
@@ -77,7 +78,7 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
               />
             ) : (
               <StyledDefaultGroupIcon>
-                <HashtagIcon />
+                <UserGroupIcon />
               </StyledDefaultGroupIcon>
             )}
           </StyledGroupIconContainer>
@@ -171,7 +172,7 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
 
             <StyledStatItem>
               <StyledStatIcon>
-                {/* <CrownIcon /> */}
+                <UserIcon />
               </StyledStatIcon>
               <StyledStatContent>
                 <StyledStatLabel>Created by</StyledStatLabel>
@@ -181,14 +182,14 @@ const GroupInfoModal: React.FC<GroupInfoModalProps> = ({
           </StyledGroupStats>
         )}
 
-        {!isEditing && (
+        {/* {!isEditing && (
           <StyledAdditionalInfo>
             <StyledInfoSection>
               <h4>Group ID</h4>
               <StyledGroupId>{group._id}</StyledGroupId>
             </StyledInfoSection>
           </StyledAdditionalInfo>
-        )}
+        )} */}
       </StyledGroupInfoContent>
     </ModalComponent>
   );
@@ -218,7 +219,7 @@ const StyledDefaultGroupIcon = styled.div`
   width: 8rem;
   height: 8rem;
   border-radius: 50%;
-  background-color: ${({ theme }) => theme.background.thirdly};
+  background-color: ${({ theme }) => theme.background.secondary};
   display: flex;
   align-items: center;
   justify-content: center;
