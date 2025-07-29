@@ -184,7 +184,6 @@ const StyledHero = styled.section`
   
   @media (max-width: 768px) {
     padding: 3rem 2rem 2rem;
-    min-height: auto;
   }
 `;
 
