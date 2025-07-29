@@ -2531,7 +2531,7 @@ width: ${({full:e})=>e?"100%":"max-width"};
   width: 15rem;
   height: 15rem;
   border-radius: 100%;
-  background-color: var(--blue);
+ background-color: ${({theme:e})=>e.background.secondary};
   padding: 1rem;
   position: relative;
 `,e7=h.div`
@@ -2569,7 +2569,7 @@ width: ${({full:e})=>e?"100%":"max-width"};
   font-size: var(--text-big);
   font-weight: 600;
   color: var(--light);
-  background: ${({theme:e})=>e.background.thirdly};
+  background-color: var(--blue);
   text-transform: uppercase;
 `,a7=h.div`
   display: flex;

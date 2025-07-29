@@ -201,7 +201,7 @@ const StyledAvatarPic = styled.div`
   width: 15rem;
   height: 15rem;
   border-radius: 100%;
-  background-color: var(--blue);
+ background-color: ${({ theme }) => theme.background.secondary};
   padding: 1rem;
   position: relative;
 `;
@@ -245,7 +245,7 @@ const StyledAvatarPlaceholder = styled.div`
   font-size: var(--text-big);
   font-weight: 600;
   color: var(--light);
-  background: ${({ theme }) => theme.background.thirdly};
+  background-color: var(--blue);
   text-transform: uppercase;
 `;
 
