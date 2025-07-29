@@ -301,12 +301,12 @@ const StyledItemIcon = styled.div`
   position: relative;
   .friend-request-length {
      position: absolute;
-    top: 0;
-    right: 0;
+    top: -3px;
+    right: -3px;
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 3rem;
-    background-color: #fe040466;
+    background-color: #046cfe96;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -385,7 +385,7 @@ const StyledNotificationButton = styled.button`
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 3rem;
-    background-color: #fe040466;
+    background-color: #046cfe96;
     display: flex;
     align-items: center;
     justify-content: center;
