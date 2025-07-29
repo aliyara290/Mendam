@@ -306,7 +306,7 @@ const StyledItemIcon = styled.div`
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 3rem;
-    background-color: #046cfe96;
+    background-color: var(--blue);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -385,7 +385,7 @@ const StyledNotificationButton = styled.button`
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 3rem;
-    background-color: #046cfe96;
+    background-color: var(--blue);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -394,7 +394,7 @@ const StyledNotificationButton = styled.button`
     font-size: 9px;
   }
   &:hover {
-    background-color: ${({ theme }) => theme.background.primary};
+    /* background-color: ${({ theme }) => theme.background.primary}; */
     color: var(--blue);
     svg {
       animation: ${RingBallAnim} 0.3s ease-in;

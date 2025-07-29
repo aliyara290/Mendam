@@ -2378,7 +2378,7 @@ width: ${({full:e})=>e?"100%":"max-width"};
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 3rem;
-    background-color: #046cfe96;
+    background-color: var(--blue);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2449,7 +2449,7 @@ width: ${({full:e})=>e?"100%":"max-width"};
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 3rem;
-    background-color: #046cfe96;
+    background-color: var(--blue);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2458,7 +2458,7 @@ width: ${({full:e})=>e?"100%":"max-width"};
     font-size: 9px;
   }
   &:hover {
-    background-color: ${({theme:e})=>e.background.primary};
+    /* background-color: ${({theme:e})=>e.background.primary}; */
     color: var(--blue);
     svg {
       animation: ${JC} 0.3s ease-in;
