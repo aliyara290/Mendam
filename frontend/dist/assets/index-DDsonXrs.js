@@ -3588,13 +3588,12 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   justify-content: center;
   margin: 1.5rem 0 1rem;
 `,yN=h.div`
-  background-color: ${({theme:e})=>e.background.primary};
+  background-color: ${({theme:e})=>e.background.thirdly};
   color: ${({theme:e})=>e.text.secondary};
   padding: 0.7rem 2rem;
   border-radius: 0.5rem;
   font-size: var(--text-sm);
   font-weight: 500;
-  box-shadow: 0 0 12px 3px #00000005;
 `,bN=h.div`
   display: flex;
   justify-content: center;
@@ -3712,8 +3711,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   justify-content: center;
   margin: 1.5rem 0 1rem;
 `,zN=h.div`
-  background-color: #00000033;
-  color: var(--light);
+  background-color: ${({theme:e})=>e.background.thirdly};
+  color: ${({theme:e})=>e.text.secondary};
   padding: 0.7rem 2rem;
   border-radius: 0.5rem;
   font-size: var(--text-sm);
