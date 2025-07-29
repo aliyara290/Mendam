@@ -91,7 +91,7 @@ const LoginPage: React.FC = () => {
                         </StyledInputGroup>
 
                         <StyledForgotPassword>
-                            <Link to="/forgot-password">Forgot your password?</Link>
+                            <Link onClick={() => alert("coming soon!!")} to="/forgot-password">Forgot your password?</Link>
                         </StyledForgotPassword>
 
                         <StyledSubmitButton>

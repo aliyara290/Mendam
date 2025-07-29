@@ -183,7 +183,7 @@ const StyledHero = styled.section`
   align-items: center;
   
   @media (max-width: 768px) {
-    padding: 6rem 2rem 2rem;
+    padding: 8rem 2rem 2rem;
     min-height: auto;
   }
 `;

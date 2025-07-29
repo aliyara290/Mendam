@@ -120,11 +120,11 @@ const QuickProfile: React.FC<QuickProfileProps> = ({
                 </StyledOptionIcon>
                 <StyledOptionName>{getStatusText(user.status)}</StyledOptionName>
               </StyledLeftPart>
-              <StyledRightPart>
+              {/* <StyledRightPart>
                 <StyledIcon>
                   <ChevronRightIcon />
                 </StyledIcon>
-              </StyledRightPart>
+              </StyledRightPart> */}
             </StyledOptionItem>
             <StyledLine />
             <StyledOptionItem onClick={onLogout} isLogout>
@@ -222,7 +222,7 @@ const StyledAvatarPlaceholder = styled.div`
   font-size: var(--text-xxl);
   font-weight: 600;
   color: ${({ theme }) => theme.text.primary};
-  background: linear-gradient(135deg, var(--blue), #764ba2);
+   background: var(--blue);
   color: white;
 `;
 
@@ -273,8 +273,7 @@ const StyledOptionItem = styled.div<StyledOptionItemProps>`
   transition: all 0.2s ease;
   
   &:hover {
-    background-color: ${({ isLogout, theme }) => 
-      isLogout ? '#eedde3' : theme.background.secondary};
+    background-color: ${({ theme }) => theme.background.secondary};
     
     ${({ isLogout }) => isLogout && `
       ${StyledOptionName} {

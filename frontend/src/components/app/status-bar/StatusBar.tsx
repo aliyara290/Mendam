@@ -1,24 +1,30 @@
 import React, { useState } from "react";
 import styled, { keyframes } from "styled-components";
 import Avatar from "@app/avatar/Avatar";
-import { BellAlertIcon, Cog8ToothIcon, HomeIcon } from "@heroicons/react/24/outline";
+import {
+  BellAlertIcon,
+  Cog8ToothIcon,
+  HomeIcon,
+} from "@heroicons/react/24/outline";
 import QuickProfile from "./QuickProfile";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import FriendRequestsNotification from "../notifications/FriendRequestsNotification";
+import { useFriends } from "@/contexts/FriendsContext";
 
-interface StatusBarProps { }
+interface StatusBarProps {}
 
-const StatusBar: React.FC<StatusBarProps> = ({ }) => {
+const StatusBar: React.FC<StatusBarProps> = ({}) => {
   const [isProfileOpen, setIsProfileOpen] = useState<boolean>(false);
   const [shouldAnimate, setShouldAnimate] = useState<boolean>(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState<boolean>(false);
+  const { friendRequests } = useFriends();
   const location = useLocation();
   const { user, logout } = useAuth();
 
   const handleCloseNotifications = () => {
-    setIsNotificationOpen(false)
-  }
+    setIsNotificationOpen(false);
+  };
 
   const handleToggleProfile = () => {
     if (!isProfileOpen) {
@@ -33,7 +39,7 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
     try {
       await logout();
     } catch (error) {
-      console.error('Logout failed:', error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -59,8 +65,13 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
                       </StyledItemLabel>
                     </Link>
                   </StyledItems>
-                  <StyledItems isActive={isProfileOpen} onClick={handleToggleProfile}>
-                    <StyledItemProfile isActive={location.pathname === "/app/friends"}>
+                  <StyledItems
+                    isActive={isProfileOpen}
+                    onClick={handleToggleProfile}
+                  >
+                    <StyledItemProfile
+                      isActive={location.pathname === "/app/friends"}
+                    >
                       {user.avatar ? (
                         <img src={user.avatar} alt={user.fullName} />
                       ) : (
@@ -73,15 +84,23 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
                       <span>Profile</span>
                     </StyledItemLabel>
                   </StyledItems>
-                  <StyledItems isActive={isNotificationOpen} onClick={() => setIsNotificationOpen(true)}>
+                  <StyledItems
+                    isActive={isNotificationOpen}
+                    onClick={() => setIsNotificationOpen(true)}
+                  >
                     <StyledItemIcon>
                       <BellAlertIcon />
+                      <div className="friend-request-length">
+                        {friendRequests.length}
+                      </div>
                     </StyledItemIcon>
                     <StyledItemLabel>
                       <span>Notifications</span>
                     </StyledItemLabel>
                   </StyledItems>
-                  <StyledItems isActive={location.pathname.startsWith("/app/settings")}>
+                  <StyledItems
+                    isActive={location.pathname.startsWith("/app/settings")}
+                  >
                     <Link to={"/app/settings/profile"}>
                       <StyledItemIcon>
                         <Cog8ToothIcon />
@@ -106,8 +125,13 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
                   />
                 </StyledUserAvatar>
                 <StyledActions>
-                  <StyledNotificationButton onClick={() => setIsNotificationOpen(true)}>
+                  <StyledNotificationButton
+                    onClick={() => setIsNotificationOpen(true)}
+                  >
                     <BellAlertIcon />
+                    <div className="friend-request-length">
+                        {friendRequests.length}
+                      </div>
                   </StyledNotificationButton>
                   <StyledSettingIcon>
                     <Link to={"/app/settings/profile"}>
@@ -126,7 +150,10 @@ const StatusBar: React.FC<StatusBarProps> = ({ }) => {
           onLogout={handleLogout}
           onClose={() => setIsProfileOpen(false)}
         />
-        <FriendRequestsNotification onClose={handleCloseNotifications} isNotificationsOpen={isNotificationOpen} />
+        <FriendRequestsNotification
+          onClose={handleCloseNotifications}
+          isNotificationsOpen={isNotificationOpen}
+        />
       </StyledStatusBar>
     </>
   );
@@ -169,10 +196,10 @@ const StyledStatusBarContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   border: 1px solid ${({ theme }) => theme.border.primary};
-   @media (max-width: 1000px) {
+  @media (max-width: 1000px) {
     padding: 0.5rem 1rem 0.5rem 0.5rem;
   }
-   @media (max-width: 700px) {
+  @media (max-width: 700px) {
     border-radius: 0;
     border: none;
   }
@@ -199,25 +226,24 @@ const StyledActions = styled.div`
 const StyledSettingIcon = styled.div`
   a {
     color: ${({ theme }) => theme.text.primary};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s ease;
-  svg {
-    width: 2.4rem;
-  transition: transform 0.4s ease;
-
-  }
-  &:hover {
-    background-color: ${({ theme }) => theme.background.primary};
-    color: var(--blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
     svg {
-    transform: rotate(90deg);
+      width: 2.4rem;
+      transition: transform 0.4s ease;
     }
-  }
+    &:hover {
+      background-color: ${({ theme }) => theme.background.primary};
+      color: var(--blue);
+      svg {
+        transform: rotate(90deg);
+      }
+    }
   }
 `;
 
@@ -230,11 +256,11 @@ const StyledLogoutIcon = styled.div`
   padding: 0.5rem;
   border-radius: 0.5rem;
   transition: all 0.2s ease;
-  
+
   svg {
     width: 2.4rem;
   }
-  
+
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
     color: #ef4444;
@@ -254,11 +280,17 @@ const StyledItems = styled.div<StyledItemsProps>`
   display: flex;
   align-items: center;
   justify-content: center;
-    flex-direction: column;
-    color: ${({ isActive }) => (isActive ? ({ theme }) => theme.text.primary : ({ theme }) => theme.text.placeholder)};
+  flex-direction: column;
+  color: ${({ isActive }) =>
+    isActive
+      ? ({ theme }) => theme.text.primary
+      : ({ theme }) => theme.text.placeholder};
 
   a {
-    color: ${({ isActive }) => (isActive ? ({ theme }) => theme.text.primary : ({ theme }) => theme.text.placeholder)};
+    color: ${({ isActive }) =>
+      isActive
+        ? ({ theme }) => theme.text.primary
+        : ({ theme }) => theme.text.placeholder};
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -266,6 +298,21 @@ const StyledItems = styled.div<StyledItemsProps>`
 `;
 
 const StyledItemIcon = styled.div`
+  position: relative;
+  .friend-request-length {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 3rem;
+    background-color: #fe040466;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+  }
   svg {
     color: inherit;
     width: 2.4rem;
@@ -283,14 +330,14 @@ const StyledItemProfile = styled.div<StyledItemsProps>`
   justify-content: center;
   overflow: hidden;
   border: 0.7px solid ${({ theme }) => theme.text.placeholder};
-  
+
   img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     opacity: ${({ isActive }) => (isActive ? "1" : "0.7")};
   }
-  
+
   .placeholder {
     color: inherit;
     font-size: var(--text-sm);
@@ -316,7 +363,7 @@ const RingBallAnim = keyframes`
 100% {
   transform: rotate(0);
 }
-`
+`;
 
 const StyledNotificationButton = styled.button`
   position: relative;
@@ -330,15 +377,28 @@ const StyledNotificationButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+.friend-request-length {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 3rem;
+    background-color: #fe040466;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
+  }
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
     color: var(--blue);
     svg {
-      animation: ${RingBallAnim} .3s ease-in;
+      animation: ${RingBallAnim} 0.3s ease-in;
     }
   }
-  
+
   svg {
     width: 2.4rem;
     height: 2.4rem;
