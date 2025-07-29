@@ -201,7 +201,7 @@ const StyledAvatarPic = styled.div`
   width: 15rem;
   height: 15rem;
   border-radius: 100%;
-  background-color: ${({ theme }) => theme.background.secondary};
+  background-color: var(--blue);
   padding: 1rem;
   position: relative;
 `;
@@ -288,6 +288,7 @@ const StyledStatusDot = styled.div<{ color: string }>`
 const StyledStatusText = styled.span`
   font-size: var(--text-sm);
   color: ${({ theme }) => theme.text.secondary};
+  text-transform: lowercase;
 `;
 
 const StyledUserInfo = styled.div`

@@ -288,13 +288,12 @@ const StyledDateSeparator = styled.div`
 `;
 
 const StyledDateText = styled.div`
-  background-color: ${({ theme }) => theme.background.primary};
+  background-color: #0000004e;
   color: ${({ theme }) => theme.text.secondary};
   padding: 0.7rem 2rem;
   border-radius: 0.5rem;
   font-size: var(--text-sm);
   font-weight: 500;
-  box-shadow: 0 0 12px 3px #00000010;
 `;
 
 const StyledLoadMoreContainer = styled.div`

@@ -2531,7 +2531,7 @@ width: ${({full:e})=>e?"100%":"max-width"};
   width: 15rem;
   height: 15rem;
   border-radius: 100%;
-  background-color: ${({theme:e})=>e.background.secondary};
+  background-color: var(--blue);
   padding: 1rem;
   position: relative;
 `,e7=h.div`
@@ -2604,6 +2604,7 @@ width: ${({full:e})=>e?"100%":"max-width"};
 `,f7=h.span`
   font-size: var(--text-sm);
   color: ${({theme:e})=>e.text.secondary};
+  text-transform: lowercase;
 `,o7=h.div`
   width: 100%;
   max-height: 19rem;
@@ -3593,6 +3594,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   border-radius: 0.5rem;
   font-size: var(--text-sm);
   font-weight: 500;
+  box-shadow: 0 0 12px 3px #00000005;
 `,bN=h.div`
   display: flex;
   justify-content: center;
@@ -3710,7 +3712,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   justify-content: center;
   margin: 1.5rem 0 1rem;
 `,zN=h.div`
-  background-color: ${({theme:e})=>e.background.primary};
+  background-color: #0000004e;
   color: ${({theme:e})=>e.text.secondary};
   padding: 0.7rem 2rem;
   border-radius: 0.5rem;
