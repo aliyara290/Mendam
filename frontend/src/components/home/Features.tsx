@@ -137,7 +137,6 @@ export default Features;
 // Styled Components
 const StyledFeatures = styled.section`
   /* padding: 12rem 0; */
-  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
   position: relative;
   overflow: hidden;
   
