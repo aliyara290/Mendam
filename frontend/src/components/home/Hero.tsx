@@ -59,10 +59,10 @@ const Hero: React.FC = () => {
           <StyledCTAContainer>
             <StyledPrimaryButton>
               <Button
-              bg="white"
-              hoverBg="var(--blue)"
-              color="var(--blue)"
-              hoverColor="white"
+              bg="light"
+              hoverBg="blue"
+              color="light"
+              hoverColor="blue"
                 isLink
                 href="/auth/register"
                 title="Get Started"
