@@ -670,7 +670,7 @@ a {
   align-items: center;
   
   @media (max-width: 768px) {
-    padding: 8rem 2rem 2rem;
+    padding: 3rem 2rem 2rem;
     min-height: auto;
   }
 `,Zj=h.div`
@@ -687,6 +687,13 @@ a {
     grid-template-columns: 1fr;
     gap: 4rem;
     text-align: center;
+  }
+
+  @media (max-width: 750px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  height: 100%;
   }
 `,Jj=h.div`
   animation: ${by} 0.8s ease-out;
@@ -783,6 +790,9 @@ a {
 `;const Xj=h.div`
   animation: ${by} 0.8s ease-out 0.2s both;
   position: relative;
+  @media (max-width: 750px) {
+    display: none;
+  }
 `,Wj=h.div`
   position: relative;
   perspective: 1000px;

@@ -183,7 +183,7 @@ const StyledHero = styled.section`
   align-items: center;
   
   @media (max-width: 768px) {
-    padding: 8rem 2rem 2rem;
+    padding: 3rem 2rem 2rem;
     min-height: auto;
   }
 `;
@@ -202,6 +202,13 @@ const StyledHeroContent = styled.div`
     grid-template-columns: 1fr;
     gap: 4rem;
     text-align: center;
+  }
+
+  @media (max-width: 750px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  height: 100%;
   }
 `;
 
@@ -328,6 +335,9 @@ const StyledCompanyLogo = styled.div`
 const StyledHeroRight = styled.div`
   animation: ${fadeInUp} 0.8s ease-out 0.2s both;
   position: relative;
+  @media (max-width: 750px) {
+    display: none;
+  }
 `;
 
 const StyledMockupContainer = styled.div`
