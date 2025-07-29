@@ -2372,11 +2372,11 @@ width: ${({full:e})=>e?"100%":"max-width"};
 `,Ed=h.div`
   position: relative;
   .friend-request-length {
-    position: absolute;
+     position: absolute;
     top: 0;
-    left: 0;
-    width: 1rem;
-    height: 1rem;
+    right: 0;
+    width: 1.6rem;
+    height: 1.6rem;
     border-radius: 3rem;
     background-color: #fe040466;
     display: flex;
@@ -2384,6 +2384,7 @@ width: ${({full:e})=>e?"100%":"max-width"};
     justify-content: center;
     text-align: center;
     color: #fff;
+    font-size: 9px;
   }
   svg {
     color: inherit;
@@ -2444,9 +2445,9 @@ width: ${({full:e})=>e?"100%":"max-width"};
 .friend-request-length {
     position: absolute;
     top: 0;
-    left: 0;
-    width: 1rem;
-    height: 1rem;
+    right: 0;
+    width: 1.6rem;
+    height: 1.6rem;
     border-radius: 3rem;
     background-color: #fe040466;
     display: flex;
@@ -2454,6 +2455,7 @@ width: ${({full:e})=>e?"100%":"max-width"};
     justify-content: center;
     text-align: center;
     color: #fff;
+    font-size: 9px;
   }
   &:hover {
     background-color: ${({theme:e})=>e.background.primary};

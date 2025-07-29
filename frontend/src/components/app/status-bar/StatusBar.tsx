@@ -300,11 +300,11 @@ const StyledItems = styled.div<StyledItemsProps>`
 const StyledItemIcon = styled.div`
   position: relative;
   .friend-request-length {
-    position: absolute;
+     position: absolute;
     top: 0;
-    left: 0;
-    width: 1rem;
-    height: 1rem;
+    right: 0;
+    width: 1.6rem;
+    height: 1.6rem;
     border-radius: 3rem;
     background-color: #fe040466;
     display: flex;
@@ -312,6 +312,7 @@ const StyledItemIcon = styled.div`
     justify-content: center;
     text-align: center;
     color: #fff;
+    font-size: 9px;
   }
   svg {
     color: inherit;
@@ -380,9 +381,9 @@ const StyledNotificationButton = styled.button`
 .friend-request-length {
     position: absolute;
     top: 0;
-    left: 0;
-    width: 1rem;
-    height: 1rem;
+    right: 0;
+    width: 1.6rem;
+    height: 1.6rem;
     border-radius: 3rem;
     background-color: #fe040466;
     display: flex;
@@ -390,6 +391,7 @@ const StyledNotificationButton = styled.button`
     justify-content: center;
     text-align: center;
     color: #fff;
+    font-size: 9px;
   }
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
