@@ -212,12 +212,15 @@ width: max-content;
   gap: 1rem;
   cursor: pointer;
   padding: 0.5rem;
+  padding-right: 1rem;
   border-radius: 3rem;
   transition: background-color 0.2s ease;
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
   }
 `;
+
+
 
 const StyledGroupIcon = styled.div`
   flex-shrink: 0;
