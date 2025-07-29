@@ -3191,9 +3191,8 @@ width: max-content;
   gap: 1rem;
   cursor: pointer;
   padding: 0.5rem;
-  border-radius: 0.8rem;
+  border-radius: 3rem;
   transition: background-color 0.2s ease;
-  flex: 1;
   &:hover {
     background-color: ${({theme:e})=>e.background.primary};
   }
