@@ -140,15 +140,6 @@ const StyledFeatures = styled.section`
   position: relative;
   overflow: hidden;
   
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent 0%, #e2e8f0 50%, transparent 100%);
-  }
 `;
 
 const StyledContainer = styled.div`
