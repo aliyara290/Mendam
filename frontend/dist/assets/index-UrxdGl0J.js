@@ -3712,8 +3712,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   justify-content: center;
   margin: 1.5rem 0 1rem;
 `,zN=h.div`
-  background-color: #0000004e;
-  color: ${({theme:e})=>e.text.secondary};
+  background-color: #00000033;
+  color: var(--light);
   padding: 0.7rem 2rem;
   border-radius: 0.5rem;
   font-size: var(--text-sm);
