@@ -95,6 +95,7 @@ const StyledUserAvatar = styled.div`
   gap: 1rem;
   /* z-index: 1; */
   user-select: none;
+  width: max-content;
 `;
 
 const StyledAvatar = styled.div`

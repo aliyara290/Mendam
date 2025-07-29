@@ -450,7 +450,7 @@ const StyledAvatarPlaceholder = styled.div`
   font-size: var(--text-xxxl);
   font-weight: 600;
   color: white;
-  background: linear-gradient(135deg, var(--blue), #764ba2);
+  background-color: var(--blue);
 `;
 
 const StyledAvatarName = styled.div`

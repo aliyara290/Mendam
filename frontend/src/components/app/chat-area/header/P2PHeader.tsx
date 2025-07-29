@@ -219,7 +219,7 @@ const StyledLeftPart = styled.div`
   align-items: center;
   gap: 1rem;
   transition: background-color 0.2s ease;
-  flex: 1;
+  /* flex: 1; */
   
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};

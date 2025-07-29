@@ -206,6 +206,7 @@ const StyledMobileBackButton = styled.button`
 `;
 
 const StyledLeftPart = styled.div`
+width: max-content;
   display: flex;
   align-items: center;
   gap: 1rem;
@@ -214,14 +215,8 @@ const StyledLeftPart = styled.div`
   border-radius: 0.8rem;
   transition: background-color 0.2s ease;
   flex: 1;
-  min-width: 0;
-  
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
-  }
-  
-  @media (max-width: 700px) {
-    padding: 0.5rem 0.5rem 0.5rem 0;
   }
 `;
 
