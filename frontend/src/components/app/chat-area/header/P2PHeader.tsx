@@ -32,7 +32,7 @@ interface P2PHeaderProps {
 const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
   const [openProfile, setOpenProfile] = useState<boolean>(false);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-  
+
   const { removeFriend, blockUser } = useFriends();
   const { setCurrentConversation } = useMessages();
   const { closeChat } = useMobileChat();
@@ -57,7 +57,7 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
       setCurrentConversation(null);
       setIsMenuOpen(false);
     } catch (error) {
-      console.error('Failed to remove friend:', error);
+      console.error("Failed to remove friend:", error);
     }
   };
 
@@ -67,7 +67,7 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
       setCurrentConversation(null);
       setIsMenuOpen(false);
     } catch (error) {
-      console.error('Failed to block user:', error);
+      console.error("Failed to block user:", error);
     }
   };
 
@@ -110,7 +110,7 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
 
   const formatLastSeen = (lastSeen: Date) => {
     if (recipient.isOnline) return "Online";
-    
+
     const now = new Date();
     const diff = now.getTime() - new Date(lastSeen).getTime();
     const minutes = Math.floor(diff / (1000 * 60));
@@ -121,34 +121,36 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
     if (minutes < 60) return `${minutes}m ago`;
     if (hours < 24) return `${hours}h ago`;
     if (days < 7) return `${days}d ago`;
-    
+
     return new Date(lastSeen).toLocaleDateString();
   };
 
   return (
     <>
       <StyledP2PHeader>
-        <StyledMobileBackButton onClick={handleBackClick}>
-          <ChevronLeftIcon />
-        </StyledMobileBackButton>
-        
-        <StyledLeftPart onClick={() => setOpenProfile(true)}>
-          <Avatar
-            image={recipient.avatar}
-            showStatus
-            showStatusCircle
-            showUserName
-            userName={recipient.fullName}
-            status={getStatusColor()}
-          />
-        </StyledLeftPart>
-        
+        <StyledHeaderPart>
+          <StyledMobileBackButton onClick={handleBackClick}>
+            <ChevronLeftIcon />
+          </StyledMobileBackButton>
+
+          <StyledLeftPart onClick={() => setOpenProfile(true)}>
+            <Avatar
+              image={recipient.avatar}
+              showStatus
+              showStatusCircle
+              showUserName
+              userName={recipient.fullName}
+              status={getStatusColor()}
+            />
+          </StyledLeftPart>
+        </StyledHeaderPart>
+
         <StyledRightPart>
           <StyledHamburgerIcon onClick={handleOpenMenu}>
             <Bars3BottomRightIcon />
           </StyledHamburgerIcon>
         </StyledRightPart>
-        
+
         <Menu
           onClose={() => setIsMenuOpen(false)}
           isOpen={isMenuOpen}
@@ -157,9 +159,9 @@ const P2PHeader: React.FC<P2PHeaderProps> = ({ recipient }) => {
           items={menuItems}
         />
       </StyledP2PHeader>
-      
-      <Profile 
-        isOpen={openProfile} 
+
+      <Profile
+        isOpen={openProfile}
         onClick={handleCloseProfile}
         user={recipient}
       />
@@ -178,11 +180,17 @@ const StyledP2PHeader = styled.header`
   justify-content: space-between;
   position: relative;
   background-color: ${({ theme }) => theme.background.secondary};
-  
+
   @media (max-width: 1000px) {
     padding: 0.5rem 1rem;
   }
 `;
+
+const StyledHeaderPart = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+`
 
 const StyledMobileBackButton = styled.button`
   display: none;
@@ -193,16 +201,15 @@ const StyledMobileBackButton = styled.button`
   padding: 0.5rem;
   border-radius: 0.5rem;
   transition: background-color 0.2s ease;
-  
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
   }
-  
+
   svg {
     width: 2.4rem;
     height: 2.4rem;
   }
-  
+
   @media (max-width: 700px) {
     display: flex;
     align-items: center;
@@ -220,13 +227,13 @@ const StyledLeftPart = styled.div`
   gap: 1rem;
   transition: background-color 0.2s ease;
   /* flex: 1; */
-  
+
   &:hover {
     background-color: ${({ theme }) => theme.background.primary};
   }
-  
+
   @media (max-width: 700px) {
-    padding: 0.7em 1rem 0.7em 0.7em;
+    padding: 0.7em 2rem 0.7em 0.7em;
   }
 `;
 
@@ -246,11 +253,11 @@ const StyledHamburgerIcon = styled.div`
   padding: 0.5rem;
   border-radius: 0.5rem;
   transition: all 0.2s ease;
-  
+
   svg {
     width: 3rem;
   }
-  
+
   &:hover {
     color: ${({ theme }) => theme.text.primary};
     background-color: ${({ theme }) => theme.background.primary};

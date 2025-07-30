@@ -92,6 +92,8 @@ const GroupHeader: React.FC<GroupHeaderProps> = ({
   return (
     <>
       <StyledGroupHeader>
+        <StyledHeaderPart>
+
         <StyledMobileBackButton onClick={handleBackClick}>
           <ChevronLeftIcon />
         </StyledMobileBackButton>
@@ -120,6 +122,7 @@ const GroupHeader: React.FC<GroupHeaderProps> = ({
             </StyledGroupDetails>
           </StyledGroupInfo>
         </StyledLeftPart>
+        </StyledHeaderPart>
         
         <StyledRightPart>
           <StyledActionButton onClick={onToggleMembersSidebar} title="Show members">
@@ -177,6 +180,12 @@ const StyledGroupHeader = styled.header`
     padding: 0.5rem 1rem;
   }
 `;
+
+const StyledHeaderPart = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+`
 
 const StyledMobileBackButton = styled.button`
   display: none;

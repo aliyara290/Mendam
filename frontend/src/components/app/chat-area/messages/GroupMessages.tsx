@@ -14,7 +14,10 @@ interface GroupMessagesProps {
   };
 }
 
-const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) => {
+const GroupMessages: React.FC<GroupMessagesProps> = ({
+  groupId,
+  conversation,
+}) => {
   const { user } = useAuth();
   const { loadGroupMessages } = useGroups();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -30,7 +33,8 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
   };
 
   const loadMoreMessages = async () => {
-    if (!conversation?.hasMore || conversation?.loading || isLoadingMore) return;
+    if (!conversation?.hasMore || conversation?.loading || isLoadingMore)
+      return;
 
     setIsLoadingMore(true);
     try {
@@ -38,7 +42,7 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
       const page = Math.floor(currentLength / 50) + 1;
       await loadGroupMessages(groupId, page);
     } catch (error) {
-      console.error('Failed to load more messages:', error);
+      console.error("Failed to load more messages:", error);
     } finally {
       setIsLoadingMore(false);
     }
@@ -46,8 +50,8 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
 
   const formatTime = (date: Date) => {
     return new Date(date).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -94,7 +98,9 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
         <StyledEmptyState>
           <StyledEmptyIcon>💬</StyledEmptyIcon>
           <StyledEmptyTitle>Welcome to the group!</StyledEmptyTitle>
-          <StyledEmptyText>Be the first to send a message in this group.</StyledEmptyText>
+          <StyledEmptyText>
+            Be the first to send a message in this group.
+          </StyledEmptyText>
         </StyledEmptyState>
       </StyledGroupMessages>
     );
@@ -110,7 +116,9 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
             onClick={loadMoreMessages}
             disabled={isLoadingMore || conversation.loading}
           >
-            {isLoadingMore || conversation.loading ? "Loading..." : "Load older messages"}
+            {isLoadingMore || conversation.loading
+              ? "Loading..."
+              : "Load older messages"}
           </StyledLoadMoreButton>
         </StyledLoadMoreContainer>
       )}
@@ -122,11 +130,17 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
           const showDateSeparator = messageDate !== lastMessageDate;
           lastMessageDate = messageDate;
 
-          const prevMessage = index > 0 ? conversation.messages[index - 1] : null;
-          const nextMessage = index < conversation.messages.length - 1 ? conversation.messages[index + 1] : null;
-          
-          const showAvatar = !prevMessage || prevMessage.senderId._id !== message.senderId._id;
-          const isLastInGroup = !nextMessage || nextMessage.senderId._id !== message.senderId._id;
+          const prevMessage =
+            index > 0 ? conversation.messages[index - 1] : null;
+          const nextMessage =
+            index < conversation.messages.length - 1
+              ? conversation.messages[index + 1]
+              : null;
+
+          const showAvatar =
+            !prevMessage || prevMessage.senderId._id !== message.senderId._id;
+          const isLastInGroup =
+            !nextMessage || nextMessage.senderId._id !== message.senderId._id;
 
           return (
             <React.Fragment key={message._id}>
@@ -148,27 +162,29 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
                     </StyledMessageAvatar>
                   )}
 
-                  <StyledMessageGroup isOwn={isOwn}>
-
-                   
+                  <StyledMessageGroup
+                    isNotFirstMessage={!isOwn && !showAvatar}
+                    isOwn={isOwn}
+                  >
                     <StyledMessageBubble
                       isOwn={isOwn}
                       hasAvatar={!isOwn && showAvatar}
                       isLastInGroup={isLastInGroup}
-                      >
-                         {!isOwn && showAvatar && (
-                      <StyledSenderName>@{message.senderId.fullName}</StyledSenderName>
-                    )}
-                    <StyledMessageContentWrapper>
-
-                      <StyledMessageText>{message.content}</StyledMessageText>
-                      <StyledMessageTime isOwn={isOwn}>
-                        {formatTime(message.createdAt)}
-                        {/* {isOwn && message.readBy.length > 1 && (
+                    >
+                      {!isOwn && showAvatar && (
+                        <StyledSenderName>
+                          @{message.senderId.fullName}
+                        </StyledSenderName>
+                      )}
+                      <StyledMessageContentWrapper>
+                        <StyledMessageText>{message.content}</StyledMessageText>
+                        <StyledMessageTime isOwn={isOwn}>
+                          {formatTime(message.createdAt)}
+                          {/* {isOwn && message.readBy.length > 1 && (
                           <StyledReadIndicator>✓✓</StyledReadIndicator>
                         )} */}
-                      </StyledMessageTime>
-                    </StyledMessageContentWrapper>
+                        </StyledMessageTime>
+                      </StyledMessageContentWrapper>
                     </StyledMessageBubble>
                   </StyledMessageGroup>
                 </StyledMessageContent>
@@ -202,20 +218,20 @@ const StyledMessagesList = styled.div`
 
 const StyledMessageItem = styled.div<{ isOwn: boolean }>`
   display: flex;
-  justify-content: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
-  margin-bottom: 0.3rem;
+  justify-content: ${({ isOwn }) => (isOwn ? "flex-end" : "flex-start")};
+  margin-bottom: 0.6rem;
 `;
 
 const StyledMessageContent = styled.div<{ isOwn: boolean }>`
   display: flex;
   align-items: flex-end;
   gap: 0.8rem;
-  max-width: 70%;
-  flex-direction: ${({ isOwn }) => isOwn ? 'row-reverse' : 'row'};
-  
-  @media (max-width: 600px) {
-    max-width: 85%;
-  }
+  flex-direction: ${({ isOwn }) => (isOwn ? "row-reverse" : "row")};
+
+  /* @media (max-width: 600px) {
+    max-width: 70%;
+  } */
+  width: 100%;
 `;
 
 const StyledMessageAvatar = styled.div`
@@ -223,12 +239,18 @@ const StyledMessageAvatar = styled.div`
   align-self: flex-start;
 `;
 
-const StyledMessageGroup = styled.div<{ isOwn: boolean }>`
+const StyledMessageGroup = styled.div<{
+  isOwn: boolean;
+  isNotFirstMessage: boolean;
+}>`
   display: flex;
   flex-direction: column;
-  align-items: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
+  align-items: ${({ isOwn }) => (isOwn ? "flex-end" : "flex-start")};
   gap: 0.9rem;
-  min-width: 0;
+  /* min-width: 0; */
+  padding-left: ${({ isNotFirstMessage }) =>
+    isNotFirstMessage ? "4.4rem" : "0"};
+  width: 100%;
 `;
 
 const StyledSenderName = styled.div`
@@ -244,26 +266,40 @@ const StyledMessageBubble = styled.div<{
   hasAvatar: boolean;
   isLastInGroup: boolean;
 }>`
+  ::-moz-selection {
+    color: ${({ isOwn }) => (isOwn ? "var(--blue)" : "var(--light)")};
+    background: ${({ isOwn }) => (isOwn ? "var(--light)" : "var(--blue)")};
+  }
+
+  ::selection {
+    color: ${({ isOwn }) => (isOwn ? "var(--blue)" : "var(--light)")};
+    background: ${({ isOwn }) => (isOwn ? "var(--light)" : "var(--blue)")};
+  }
+
   background-color: ${({ isOwn, theme }) =>
-    isOwn ? 'var(--blue)' : theme.background.thirdly};
-  color: ${({ isOwn, theme }) =>
-    isOwn ? 'white' : theme.text.primary};
+    isOwn ? "var(--blue)" : theme.background.thirdly};
+  color: ${({ isOwn, theme }) => (isOwn ? "white" : theme.text.primary)};
   padding: 0.6rem 0.9rem;
   border-radius: 1.2rem;
   word-wrap: break-word;
   position: relative;
   max-width: 50rem;
-  min-width: 0;
-  
+
+  @media (max-width: 500px) {
+    max-width: 30rem;
+  }
+  /* min-width: 0; */
+
   ${({ isOwn, hasAvatar, isLastInGroup }) => {
     if (isOwn) {
-      return isLastInGroup ? 'border-bottom-right-radius: 0.3rem;' : '';
+      return isLastInGroup ? "border-bottom-right-radius: 0.3rem;" : "";
     } else {
-      return hasAvatar && isLastInGroup ? 'border-bottom-left-radius: 0.3rem;' : '';
+      return hasAvatar && isLastInGroup
+        ? "border-bottom-left-radius: 0.3rem;"
+        : "";
     }
   }}
 `;
-
 
 const StyledMessageContentWrapper = styled.div`
   display: flex;
@@ -271,12 +307,12 @@ const StyledMessageContentWrapper = styled.div`
   /* align-items: end; */
   justify-content: end;
   flex-wrap: wrap;
-`
+`;
 const StyledMessageText = styled.div`
-width: max-content;
+  /* width: max-content; */
   font-size: var(--text-base);
   line-height: 1.4;
-  word-break: break-word;
+  /* word-break: break-word; */
   margin-bottom: 0.3rem;
 `;
 
@@ -286,7 +322,7 @@ const StyledMessageTime = styled.div<{ isOwn: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  justify-content: ${({ isOwn }) => isOwn ? 'flex-start' : 'flex-end'};
+  justify-content: ${({ isOwn }) => (isOwn ? "flex-start" : "flex-end")};
 `;
 
 const StyledReadIndicator = styled.span`
@@ -324,11 +360,11 @@ const StyledLoadMoreButton = styled.button`
   cursor: pointer;
   font-size: var(--text-sm);
   transition: all 0.2s ease;
-  
+
   &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.background.primary};
   }
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;

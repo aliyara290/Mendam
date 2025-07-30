@@ -16,15 +16,19 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
   const { friends } = useFriends();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [hasLoadedInitial, setHasLoadedInitial] = useState<Set<string>>(new Set());
+  const [hasLoadedInitial, setHasLoadedInitial] = useState<Set<string>>(
+    new Set()
+  );
 
   const conversation = conversations[recipientId];
-  const recipient = friends.find(f => f.friendId._id === recipientId)?.friendId;
+  const recipient = friends.find(
+    (f) => f.friendId._id === recipientId
+  )?.friendId;
 
   useEffect(() => {
     if (recipientId && !hasLoadedInitial.has(recipientId)) {
       loadMessages(recipientId, 1);
-      setHasLoadedInitial(prev => new Set([...prev, recipientId]));
+      setHasLoadedInitial((prev) => new Set([...prev, recipientId]));
     }
   }, [recipientId, loadMessages, hasLoadedInitial]);
 
@@ -37,16 +41,16 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
   useEffect(() => {
     if (!conversation?.messages || !user || !recipientId) return;
 
-    const unreadMessages = conversation.messages.filter(msg =>
-      msg.senderId._id !== user.id &&
-      !msg.readBy.some(read => read.userId === user.id)
+    const unreadMessages = conversation.messages.filter(
+      (msg) =>
+        msg.senderId._id !== user.id &&
+        !msg.readBy.some((read) => read.userId === user.id)
     );
 
     if (unreadMessages.length > 0) {
       const latestUnread = unreadMessages[unreadMessages.length - 1];
       markAsRead(latestUnread.senderId._id, latestUnread._id);
     }
-    
   }, [conversation?.messages, user, recipientId, markAsRead]);
 
   const scrollToBottom = useCallback(() => {
@@ -64,12 +68,18 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
     } finally {
       setIsLoadingMore(false);
     }
-  }, [conversation?.hasMore, conversation?.messages?.length, isLoadingMore, loadMessages, recipientId]);
+  }, [
+    conversation?.hasMore,
+    conversation?.messages?.length,
+    isLoadingMore,
+    loadMessages,
+    recipientId,
+  ]);
 
   const formatTime = useCallback((date: Date) => {
     return new Date(date).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit'
+      hour: "2-digit",
+      minute: "2-digit",
     });
   }, []);
 
@@ -109,8 +119,12 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
             userName={recipient.fullName}
             size={80}
           />
-          <StyledEmptyTitle>Start a conversation with {recipient.fullName}</StyledEmptyTitle>
-          <StyledEmptyText>Send a message to get the conversation started!</StyledEmptyText>
+          <StyledEmptyTitle>
+            Start a conversation with {recipient.fullName}
+          </StyledEmptyTitle>
+          <StyledEmptyText>
+            Send a message to get the conversation started!
+          </StyledEmptyText>
         </StyledEmptyState>
       </StyledChatMessages>
     );
@@ -137,8 +151,12 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
             userName={recipient.fullName}
             size={80}
           />
-          <StyledEmptyTitle>Start a conversation with {recipient.fullName}</StyledEmptyTitle>
-          <StyledEmptyText>Send a message to get the conversation started!</StyledEmptyText>
+          <StyledEmptyTitle>
+            Start a conversation with {recipient.fullName}
+          </StyledEmptyTitle>
+          <StyledEmptyText>
+            Send a message to get the conversation started!
+          </StyledEmptyText>
         </StyledEmptyState>
       </StyledChatMessages>
     );
@@ -165,12 +183,18 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
           const messageDate = formatDate(message.createdAt);
           const showDateSeparator = messageDate !== lastMessageDate;
           lastMessageDate = messageDate;
-          
-          const prevMessage = index > 0 ? conversation.messages[index - 1] : null;
-          const nextMessage = index < conversation.messages.length - 1 ? conversation.messages[index + 1] : null;
-          
-          const showAvatar = !prevMessage || prevMessage.senderId._id !== message.senderId._id;
-          const isLastInGroup = !nextMessage || nextMessage.senderId._id !== message.senderId._id;
+
+          const prevMessage =
+            index > 0 ? conversation.messages[index - 1] : null;
+          const nextMessage =
+            index < conversation.messages.length - 1
+              ? conversation.messages[index + 1]
+              : null;
+
+          const showAvatar =
+            !prevMessage || prevMessage.senderId._id !== message.senderId._id;
+          const isLastInGroup =
+            !nextMessage || nextMessage.senderId._id !== message.senderId._id;
 
           return (
             <React.Fragment key={message._id}>
@@ -182,29 +206,34 @@ const ChatMessages: React.FC<ChatMessagesProps> = ({ recipientId }) => {
 
               <StyledMessageItem isOwn={isOwn}>
                 <StyledMessageContent isOwn={isOwn}>
-                  {!isOwn && showAvatar && (
+                  {/* {!isOwn && showAvatar && (
                     <StyledMessageAvatar>
-                      <Avatar 
+                      <Avatar
                         image={message.senderId.avatar}
                         userName={message.senderId.fullName}
                         size={36}
                       />
                     </StyledMessageAvatar>
-                  )}
-                  
-                  <StyledMessageGroup isOwn={isOwn}>
-                    <StyledMessageBubble 
-                      isOwn={isOwn} 
+                  )} */}
+
+                  <StyledMessageGroup
+                    isNotFirstMessage={!isOwn && !showAvatar}
+                    isOwn={isOwn}
+                  >
+                    <StyledMessageBubble
+                      isOwn={isOwn}
                       hasAvatar={!isOwn && showAvatar}
                       isLastInGroup={isLastInGroup}
                     >
-                      <StyledMessageText>{message.content}</StyledMessageText>
-                      <StyledMessageTime isOwn={isOwn}>
-                        {formatTime(message.createdAt)}
-                        {isOwn && message.readBy.length > 1 && (
+                      <StyledMessageContentWrapper>
+                        <StyledMessageText>{message.content}</StyledMessageText>
+                        <StyledMessageTime isOwn={isOwn}>
+                          {formatTime(message.createdAt)}
+                          {/* {isOwn && message.readBy.length > 1 && (
                           <StyledReadIndicator>✓✓</StyledReadIndicator>
-                        )}
-                      </StyledMessageTime>
+                        )} */}
+                        </StyledMessageTime>
+                      </StyledMessageContentWrapper>
                     </StyledMessageBubble>
                   </StyledMessageGroup>
                 </StyledMessageContent>
@@ -238,7 +267,7 @@ const StyledMessagesList = styled.div`
 
 const StyledMessageItem = styled.div<{ isOwn: boolean }>`
   display: flex;
-  justify-content: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
+  justify-content: ${({ isOwn }) => (isOwn ? "flex-end" : "flex-start")};
   margin-bottom: 0.3rem;
 `;
 
@@ -247,8 +276,8 @@ const StyledMessageContent = styled.div<{ isOwn: boolean }>`
   align-items: flex-end;
   gap: 0.8rem;
   max-width: 70%;
-  flex-direction: ${({ isOwn }) => isOwn ? 'row-reverse' : 'row'};
-  
+  flex-direction: ${({ isOwn }) => (isOwn ? "row-reverse" : "row")};
+
   @media (max-width: 600px) {
     max-width: 85%;
   }
@@ -259,35 +288,65 @@ const StyledMessageAvatar = styled.div`
   align-self: flex-start;
 `;
 
-const StyledMessageGroup = styled.div<{ isOwn: boolean }>`
+const StyledMessageGroup = styled.div<{
+  isOwn: boolean;
+  isNotFirstMessage: boolean;
+}>`
   display: flex;
   flex-direction: column;
-  align-items: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
+  align-items: ${({ isOwn }) => (isOwn ? "flex-end" : "flex-start")};
+  gap: 0.9rem;
+  /* min-width: 0; */
+  /* padding-left: ${({ isNotFirstMessage }) =>
+    isNotFirstMessage ? "4.4rem" : "0"}; */
+  width: 100%;
 `;
 
-const StyledMessageBubble = styled.div<{ 
-  isOwn: boolean; 
-  hasAvatar: boolean; 
+const StyledMessageBubble = styled.div<{
+  isOwn: boolean;
+  hasAvatar: boolean;
   isLastInGroup: boolean;
 }>`
+  ::-moz-selection {
+    color: ${({ isOwn }) => (isOwn ? "var(--blue)" : "var(--light)")};
+    background: ${({ isOwn }) => (isOwn ? "var(--light)" : "var(--blue)")};
+  }
+
+  ::selection {
+    color: ${({ isOwn }) => (isOwn ? "var(--blue)" : "var(--light)")};
+    background: ${({ isOwn }) => (isOwn ? "var(--light)" : "var(--blue)")};
+  }
   background-color: ${({ isOwn, theme }) =>
-    isOwn ? 'var(--blue)' : theme.background.thirdly};
-  color: ${({ isOwn, theme }) =>
-    isOwn ? 'white' : theme.text.primary};
-  padding: 0.8rem 1.2rem;
+    isOwn ? "var(--blue)" : theme.background.thirdly};
+  color: ${({ isOwn, theme }) => (isOwn ? "white" : theme.text.primary)};
+  padding: 0.6rem 0.9rem;
   border-radius: 1.2rem;
   word-wrap: break-word;
   position: relative;
   max-width: 50rem;
-  min-width: 0;
-  
+  max-width: 50rem;
+
+  @media (max-width: 500px) {
+    max-width: 30rem;
+  }
+
   ${({ isOwn, hasAvatar, isLastInGroup }) => {
     if (isOwn) {
-      return isLastInGroup ? 'border-bottom-right-radius: 0.3rem;' : '';
+      return isLastInGroup ? "border-bottom-right-radius: 0.3rem;" : "";
     } else {
-      return hasAvatar && isLastInGroup ? 'border-bottom-left-radius: 0.3rem;' : '';
+      return hasAvatar && isLastInGroup
+        ? "border-bottom-left-radius: 0.3rem;"
+        : "";
     }
   }}
+`;
+
+const StyledMessageContentWrapper = styled.div`
+  display: flex;
+  gap: 0.6rem;
+  /* align-items: end; */
+  justify-content: end;
+  flex-wrap: wrap;
 `;
 
 const StyledMessageText = styled.div`
@@ -303,7 +362,7 @@ const StyledMessageTime = styled.div<{ isOwn: boolean }>`
   display: flex;
   align-items: center;
   gap: 0.3rem;
-  justify-content: ${({ isOwn }) => isOwn ? 'flex-end' : 'flex-start'};
+  justify-content: ${({ isOwn }) => (isOwn ? "flex-end" : "flex-start")};
 `;
 
 const StyledReadIndicator = styled.span`
@@ -340,11 +399,11 @@ const StyledLoadMoreButton = styled.button`
   border-radius: 0.8rem;
   cursor: pointer;
   font-size: var(--text-sm);
-  
+
   &:hover:not(:disabled) {
     background-color: ${({ theme }) => theme.background.primary};
   }
-  
+
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
