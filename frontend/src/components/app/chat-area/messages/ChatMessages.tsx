@@ -350,7 +350,7 @@ const StyledMessageContentWrapper = styled.div`
 `;
 
 const StyledMessageText = styled.div`
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   line-height: 1.4;
   word-break: break-word;
   margin-bottom: 0.3rem;

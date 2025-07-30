@@ -3599,7 +3599,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   justify-content: end;
   flex-wrap: wrap;
 `,gN=h.div`
-  font-size: var(--text-md);
+  font-size: var(--text-base);
   line-height: 1.4;
   word-break: break-word;
   margin-bottom: 0.3rem;
@@ -3747,7 +3747,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   /* width: max-content; */
   font-size: var(--text-base);
   line-height: 1.4;
-  /* word-break: break-word; */
+  word-break: break-word;
   margin-bottom: 0.3rem;
 `,AN=h.div`
   font-size: var(--text-xs);
