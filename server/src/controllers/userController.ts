@@ -44,6 +44,7 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
 
 // Update user profile
 export const updateProfile = async (req: Request, res: Response): Promise<void> => {
+  
   try {
     const userId = (req as any).user.id;
     const { fullName, avatar, jobTitle, biography } = req.body;
