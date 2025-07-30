@@ -15,8 +15,8 @@ export const DarkTheme: Theme = {
     placeholder: "#7d8590",
   },
   border: {
-    primary: "#30363d",
-    secondary: "#484f58",
+    primary: "#21262d",
+    secondary: "#30363d",
   },
   buttons: {
     primary: "#6366f1",
@@ -49,8 +49,8 @@ export const LightTheme: Theme = {
     placeholder: "#9a9ea6",
   },
   border: {
-    primary: "#d1d9e0",
-    secondary: "#afb8c1",
+    primary: "#e7ecf0",
+    secondary: "#d1d9e0",
   },
   buttons: {
     primary: "#6366f1",
@@ -83,8 +83,8 @@ export const CleanLightTheme: Theme = {
     placeholder: "#94a3b8",
   },
   border: {
-    primary: "#cbd5e1",
-    secondary: "#94a3b8",
+    primary: "#e2e8f0",
+    secondary: "#cbd5e1",
   },
   buttons: {
     primary: "#3b82f6",
@@ -117,8 +117,8 @@ export const MinimalWhiteTheme: Theme = {
     placeholder: "#a1a1aa",
   },
   border: {
-    primary: "#e4e4e7",
-    secondary: "#d4d4d8",
+    primary: "#f4f4f5",
+    secondary: "#e4e4e7",
   },
   buttons: {
     primary: "#5b21b6",
@@ -151,8 +151,8 @@ export const ModernSkyTheme: Theme = {
     placeholder: "#0ea5e9",
   },
   border: {
-    primary: "#7dd3fc",
-    secondary: "#38bdf8",
+    primary: "#93c5fd",
+    secondary: "#7dd3fc",
   },
   buttons: {
     primary: "#0284c7",
@@ -185,8 +185,8 @@ export const SoftBlushTheme: Theme = {
     placeholder: "#9ca3af",
   },
   border: {
-    primary: "#fca5a5",
-    secondary: "#f87171",
+    primary: "#fecaca",
+    secondary: "#fca5a5",
   },
   buttons: {
     primary: "#db2777",
@@ -219,8 +219,8 @@ export const CleanDarkTheme: Theme = {
     placeholder: "#64748b",
   },
   border: {
-    primary: "#475569",
-    secondary: "#64748b",
+    primary: "#334155",
+    secondary: "#475569",
   },
   buttons: {
     primary: "#3b82f6",
@@ -253,8 +253,8 @@ export const ModernCharcoalTheme: Theme = {
     placeholder: "#737373",
   },
   border: {
-    primary: "#404040",
-    secondary: "#525252",
+    primary: "#262626",
+    secondary: "#404040",
   },
   buttons: {
     primary: "#7c3aed",
@@ -287,8 +287,8 @@ export const NeoDarkTheme: Theme = {
     placeholder: "#71717a",
   },
   border: {
-    primary: "#3f3f46",
-    secondary: "#52525b",
+    primary: "#27272a",
+    secondary: "#3f3f46",
   },
   buttons: {
     primary: "#8b5cf6",
@@ -321,8 +321,8 @@ export const GlassNightTheme: Theme = {
     placeholder: "#6b7280",
   },
   border: {
-    primary: "#374151",
-    secondary: "#4b5563",
+    primary: "#2a3441",
+    secondary: "#374151",
   },
   buttons: {
     primary: "#06b6d4",
