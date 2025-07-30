@@ -5,10 +5,10 @@ import { useTheme } from "@/contexts/ThemeContext";
 import {
   DarkTheme,
   LightTheme,
-  CleanLightTheme,
-  MinimalWhiteTheme,
-  ModernSkyTheme,
-  SoftBlushTheme,
+  // CleanLightTheme,
+  // MinimalWhiteTheme,
+  // ModernSkyTheme,
+  // SoftBlushTheme,
   CleanDarkTheme,
   ModernCharcoalTheme,
   NeoDarkTheme,
@@ -18,12 +18,12 @@ import Heading from "../heading/Heading";
 import { useSettings } from "@/contexts/OpenSettingsContext";
 
 const themeOptions = {
-  "minimal-white": MinimalWhiteTheme,
-  "glass-night": GlassNightTheme,
+  // "minimal-white": MinimalWhiteTheme,
   "light": LightTheme,
-  "clean-light": CleanLightTheme,
-  "modern-sky": ModernSkyTheme,
-  "soft-blush": SoftBlushTheme,
+  "glass-night": GlassNightTheme,
+  // "clean-light": CleanLightTheme,
+  // "modern-sky": ModernSkyTheme,
+  // "soft-blush": SoftBlushTheme,
   "dark": DarkTheme,
   "clean-dark": CleanDarkTheme,
   "modern-charcoal": ModernCharcoalTheme,
