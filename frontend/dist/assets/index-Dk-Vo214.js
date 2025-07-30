@@ -3640,7 +3640,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 `,xN=h.div`
   font-size: var(--text-md);
   color: ${({theme:e})=>e.text.secondary};
-`,MN=({groupId:e,conversation:a})=>{const{user:i}=gt(),{loadGroupMessages:f}=ja(),c=g.useRef(null),[d,m]=g.useState(!1);g.useEffect(()=>{y()},[a==null?void 0:a.messages]);const y=()=>{var j;(j=c.current)==null||j.scrollIntoView({behavior:"smooth"})},b=async()=>{if(!(!(a!=null&&a.hasMore)||a!=null&&a.loading||d)){m(!0);try{const j=a.messages.length,k=Math.floor(j/50)+1;await f(e,k)}catch(j){console.error("Failed to load more messages:",j)}finally{m(!1)}}},x=j=>new Date(j).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),v=j=>{const k=new Date,N=new Date(j);if(N.toDateString()===k.toDateString())return"Today";const C=new Date(k);return C.setDate(C.getDate()-1),N.toDateString()===C.toDateString()?"Yesterday":N.toLocaleDateString()};if(!a)return s.jsx(ks,{children:s.jsx(Vp,{children:s.jsx(Xp,{children:"Loading messages..."})})});if(a.loading&&a.messages.length===0)return s.jsx(ks,{children:s.jsx(Vp,{children:s.jsx(Xp,{children:"Loading messages..."})})});if(a.messages.length===0)return s.jsx(ks,{children:s.jsxs(BN,{children:[s.jsx(UN,{children:"💬"}),s.jsx(_N,{children:"Welcome to the group!"}),s.jsx(YN,{children:"Be the first to send a message in this group."})]})});let M="";return s.jsxs(ks,{children:[a.hasMore&&s.jsx(RN,{children:s.jsx(ON,{onClick:b,disabled:d||a.loading,children:d||a.loading?"Loading...":"Load older messages"})}),s.jsx(jN,{children:a.messages.map((j,k)=>{const N=j.senderId._id===(i==null?void 0:i.id),C=v(j.createdAt),E=C!==M;M=C;const I=k>0?a.messages[k-1]:null,A=k<a.messages.length-1?a.messages[k+1]:null,G=!I||I.senderId._id!==j.senderId._id,_=!A||A.senderId._id!==j.senderId._id;return s.jsxs(rt.Fragment,{children:[E&&s.jsx(AN,{children:s.jsx(zN,{children:C})}),s.jsx(LN,{isOwn:N,children:s.jsxs(SN,{isOwn:N,children:[!N&&G&&s.jsx(CN,{children:s.jsx(bt,{image:j.senderId.avatar,userName:j.senderId.fullName,size:36})}),s.jsxs(kN,{isOwn:N,children:[!N&&G&&s.jsxs(EN,{children:["@",j.senderId.fullName]}),s.jsxs(TN,{isOwn:N,hasAvatar:!N&&G,isLastInGroup:_,children:[s.jsx(NN,{children:j.content}),s.jsxs(IN,{isOwn:N,children:[x(j.createdAt),N&&j.readBy.length>1&&s.jsx(DN,{children:"✓✓"})]})]})]})]})})]},j._id)})}),s.jsx("div",{ref:c})]})},ks=h.div`
+`,MN=({groupId:e,conversation:a})=>{const{user:i}=gt(),{loadGroupMessages:f}=ja(),c=g.useRef(null),[d,m]=g.useState(!1);g.useEffect(()=>{y()},[a==null?void 0:a.messages]);const y=()=>{var j;(j=c.current)==null||j.scrollIntoView({behavior:"smooth"})},b=async()=>{if(!(!(a!=null&&a.hasMore)||a!=null&&a.loading||d)){m(!0);try{const j=a.messages.length,k=Math.floor(j/50)+1;await f(e,k)}catch(j){console.error("Failed to load more messages:",j)}finally{m(!1)}}},x=j=>new Date(j).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}),v=j=>{const k=new Date,N=new Date(j);if(N.toDateString()===k.toDateString())return"Today";const C=new Date(k);return C.setDate(C.getDate()-1),N.toDateString()===C.toDateString()?"Yesterday":N.toLocaleDateString()};if(!a)return s.jsx(ks,{children:s.jsx(Vp,{children:s.jsx(Xp,{children:"Loading messages..."})})});if(a.loading&&a.messages.length===0)return s.jsx(ks,{children:s.jsx(Vp,{children:s.jsx(Xp,{children:"Loading messages..."})})});if(a.messages.length===0)return s.jsx(ks,{children:s.jsxs(BN,{children:[s.jsx(UN,{children:"💬"}),s.jsx(_N,{children:"Welcome to the group!"}),s.jsx(YN,{children:"Be the first to send a message in this group."})]})});let M="";return s.jsxs(ks,{children:[a.hasMore&&s.jsx(RN,{children:s.jsx(ON,{onClick:b,disabled:d||a.loading,children:d||a.loading?"Loading...":"Load older messages"})}),s.jsx(jN,{children:a.messages.map((j,k)=>{const N=j.senderId._id===(i==null?void 0:i.id),C=v(j.createdAt),E=C!==M;M=C;const I=k>0?a.messages[k-1]:null,A=k<a.messages.length-1?a.messages[k+1]:null,G=!I||I.senderId._id!==j.senderId._id,_=!A||A.senderId._id!==j.senderId._id;return s.jsxs(rt.Fragment,{children:[E&&s.jsx(AN,{children:s.jsx(zN,{children:C})}),s.jsx(LN,{isOwn:N,children:s.jsxs(SN,{isOwn:N,children:[!N&&G&&s.jsx(CN,{children:s.jsx(bt,{image:j.senderId.avatar,userName:j.senderId.fullName,size:36})}),s.jsx(kN,{isOwn:N,children:s.jsxs(TN,{isOwn:N,hasAvatar:!N&&G,isLastInGroup:_,children:[!N&&G&&s.jsxs(EN,{children:["@",j.senderId.fullName]}),s.jsxs(NN,{children:[s.jsx(IN,{children:j.content}),s.jsx(DN,{isOwn:N,children:x(j.createdAt)})]})]})})]})})]},j._id)})}),s.jsx("div",{ref:c})]})},ks=h.div`
   flex: 1;
   overflow-y: auto;
   padding: 1rem;
@@ -3677,13 +3677,13 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 `,EN=h.div`
   font-size: var(--text-sm);
   font-weight: 600;
-  color: ${({theme:e})=>e.text.primary};
+  color: var(--blue);
   margin-bottom: 0.2rem;
   margin-left: 0.2rem;
 `,TN=h.div`
   background-color: ${({isOwn:e,theme:a})=>e?"var(--blue)":a.background.thirdly};
   color: ${({isOwn:e,theme:a})=>e?"white":a.text.primary};
-  padding: 0.8rem 1.2rem;
+  padding: 0.6rem 0.9rem;
   border-radius: 1.2rem;
   word-wrap: break-word;
   position: relative;
@@ -3692,21 +3692,28 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   
   ${({isOwn:e,hasAvatar:a,isLastInGroup:i})=>e?i?"border-bottom-right-radius: 0.3rem;":"":a&&i?"border-bottom-left-radius: 0.3rem;":""}
 `,NN=h.div`
-  font-size: var(--text-md);
+  display: flex;
+  gap: 0.6rem;
+  /* align-items: end; */
+  justify-content: end;
+  flex-wrap: wrap;
+`,IN=h.div`
+width: max-content;
+  font-size: var(--text-base);
   line-height: 1.4;
   word-break: break-word;
   margin-bottom: 0.3rem;
-`,IN=h.div`
+`,DN=h.div`
   font-size: var(--text-xs);
   opacity: 0.7;
   display: flex;
   align-items: center;
   gap: 0.3rem;
   justify-content: ${({isOwn:e})=>e?"flex-start":"flex-end"};
-`,DN=h.span`
+`;h.span`
   color: #4ade80;
   font-size: var(--text-xs);
-`,AN=h.div`
+`;const AN=h.div`
   display: flex;
   justify-content: center;
   margin: 1.5rem 0 1rem;

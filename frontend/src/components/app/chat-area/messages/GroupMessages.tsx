@@ -150,21 +150,25 @@ const GroupMessages: React.FC<GroupMessagesProps> = ({ groupId, conversation }) 
 
                   <StyledMessageGroup isOwn={isOwn}>
 
-                    {!isOwn && showAvatar && (
-                      <StyledSenderName>@{message.senderId.fullName}</StyledSenderName>
-                    )}
+                   
                     <StyledMessageBubble
                       isOwn={isOwn}
                       hasAvatar={!isOwn && showAvatar}
                       isLastInGroup={isLastInGroup}
                       >
+                         {!isOwn && showAvatar && (
+                      <StyledSenderName>@{message.senderId.fullName}</StyledSenderName>
+                    )}
+                    <StyledMessageContentWrapper>
+
                       <StyledMessageText>{message.content}</StyledMessageText>
                       <StyledMessageTime isOwn={isOwn}>
                         {formatTime(message.createdAt)}
-                        {isOwn && message.readBy.length > 1 && (
+                        {/* {isOwn && message.readBy.length > 1 && (
                           <StyledReadIndicator>✓✓</StyledReadIndicator>
-                        )}
+                        )} */}
                       </StyledMessageTime>
+                    </StyledMessageContentWrapper>
                     </StyledMessageBubble>
                   </StyledMessageGroup>
                 </StyledMessageContent>
@@ -230,7 +234,7 @@ const StyledMessageGroup = styled.div<{ isOwn: boolean }>`
 const StyledSenderName = styled.div`
   font-size: var(--text-sm);
   font-weight: 600;
-  color: ${({ theme }) => theme.text.primary};
+  color: var(--blue);
   margin-bottom: 0.2rem;
   margin-left: 0.2rem;
 `;
@@ -244,7 +248,7 @@ const StyledMessageBubble = styled.div<{
     isOwn ? 'var(--blue)' : theme.background.thirdly};
   color: ${({ isOwn, theme }) =>
     isOwn ? 'white' : theme.text.primary};
-  padding: 0.8rem 1.2rem;
+  padding: 0.6rem 0.9rem;
   border-radius: 1.2rem;
   word-wrap: break-word;
   position: relative;
@@ -260,8 +264,17 @@ const StyledMessageBubble = styled.div<{
   }}
 `;
 
+
+const StyledMessageContentWrapper = styled.div`
+  display: flex;
+  gap: 0.6rem;
+  /* align-items: end; */
+  justify-content: end;
+  flex-wrap: wrap;
+`
 const StyledMessageText = styled.div`
-  font-size: var(--text-md);
+width: max-content;
+  font-size: var(--text-base);
   line-height: 1.4;
   word-break: break-word;
   margin-bottom: 0.3rem;
