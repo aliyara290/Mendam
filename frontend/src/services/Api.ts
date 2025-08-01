@@ -18,11 +18,11 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
-    
+
     return config;
   },
   (error) => {
-    console.error("❌ API Request Error:", error);
+    console.error("API Request Error:", error);
     return Promise.reject(error);
   }
 );
@@ -33,7 +33,7 @@ api.interceptors.response.use(
   },
   (error) => {
     console.error(
-      `❌ API Response Error: ${error.response?.status} ${error.config?.url}`,
+      `API Response Error: ${error.response?.status} ${error.config?.url}`,
       error.response?.data
     );
 
@@ -169,7 +169,7 @@ export const authAPI = {
       const response = await api.post("/auth/register", data);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Registration failed:", error.response?.data);
+      console.error("Registration failed:", error.response?.data);
       throw new Error(error.response?.data?.message || "Registration failed");
     }
   },
@@ -179,7 +179,7 @@ export const authAPI = {
       const response = await api.post("/auth/login", data);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Login failed:", error.response?.data);
+      console.error("Login failed:", error.response?.data);
       throw new Error(error.response?.data?.message || "Login failed");
     }
   },
@@ -199,7 +199,7 @@ export const authAPI = {
       const response = await api.get("/auth/profile");
       return response.data;
     } catch (error: any) {
-      console.error("❌ Get profile failed:", error.response?.data);
+      console.error("Get profile failed:", error.response?.data);
       throw new Error(error.response?.data?.message || "Failed to get profile");
     }
   },
@@ -209,9 +209,20 @@ export const authAPI = {
       const response = await api.put("/users/profile", data);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Update profile failed:", error.response?.data);
+      console.error("Update profile failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to update profile"
+      );
+    }
+  },
+  getUserById: async (userId: string | null) => {
+    try {
+      const response = await api.get(`/users/${userId}`);
+      return response.data;
+    } catch (error: any) {
+      console.error("User not found:", error.response?.data);
+      throw new Error(
+        error.response?.data?.message || "Failed to get user"
       );
     }
   },
@@ -223,7 +234,7 @@ export const friendsAPI = {
       const response = await api.get("/friends");
       return response.data;
     } catch (error: any) {
-      console.error("❌ Get friends failed:", error.response?.data);
+      console.error("Get friends failed:", error.response?.data);
       throw new Error(error.response?.data?.message || "Failed to get friends");
     }
   },
@@ -234,7 +245,7 @@ export const friendsAPI = {
       const response = await api.get("/friends/requests");
       return response.data;
     } catch (error: any) {
-      console.error("❌ Get friend requests failed:", error.response?.data);
+      console.error("Get friend requests failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to get friend requests"
       );
@@ -247,7 +258,7 @@ export const friendsAPI = {
       const response = await api.post("/friends/request", { friendId });
       return response.data;
     } catch (error: any) {
-      console.error("❌ Send friend request failed:", error.response?.data);
+      console.error("Send friend request failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to send friend request"
       );
@@ -260,7 +271,7 @@ export const friendsAPI = {
       const response = await api.put(`/friends/request/${requestId}/accept`);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Accept friend request failed:", error.response?.data);
+      console.error("Accept friend request failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to accept friend request"
       );
@@ -273,7 +284,7 @@ export const friendsAPI = {
       const response = await api.put(`/friends/request/${requestId}/decline`);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Decline friend request failed:", error.response?.data);
+      console.error("Decline friend request failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to decline friend request"
       );
@@ -286,7 +297,7 @@ export const friendsAPI = {
       const response = await api.delete(`/friends/${friendId}`);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Remove friend failed:", error.response?.data);
+      console.error("Remove friend failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to remove friend"
       );
@@ -299,7 +310,7 @@ export const friendsAPI = {
       const response = await api.post("/friends/block", { friendId });
       return response.data;
     } catch (error: any) {
-      console.error("❌ Block user failed:", error.response?.data);
+      console.error("Block user failed:", error.response?.data);
       throw new Error(error.response?.data?.message || "Failed to block user");
     }
   },
@@ -312,7 +323,7 @@ export const friendsAPI = {
       );
       return response.data;
     } catch (error: any) {
-      console.error("❌ Search users failed:", error.response?.data);
+      console.error("Search users failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to search users"
       );
@@ -335,7 +346,7 @@ export const messagesAPI = {
       });
       return response.data;
     } catch (error: any) {
-      console.error("❌ Send message failed:", error.response?.data);
+      console.error("Send message failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to send message"
       );
@@ -354,7 +365,7 @@ export const messagesAPI = {
       );
       return response.data;
     } catch (error: any) {
-      console.error("❌ Get messages failed:", error.response?.data);
+      console.error("Get messages failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to get messages"
       );
@@ -367,7 +378,7 @@ export const messagesAPI = {
       const response = await api.delete(`/messages/${messageId}`);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Delete message failed:", error.response?.data);
+      console.error("Delete message failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to delete message"
       );
@@ -382,7 +393,7 @@ export const groupsAPI = {
       const response = await api.get("/chat-groups");
       return response.data;
     } catch (error: any) {
-      console.error("❌ Get groups failed:", error.response?.data);
+      console.error("Get groups failed:", error.response?.data);
       throw new Error(error.response?.data?.message || "Failed to get groups");
     }
   },
@@ -393,7 +404,7 @@ export const groupsAPI = {
       const response = await api.get(`/chat-groups/${groupId}`);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Get group details failed:", error.response?.data);
+      console.error("Get group details failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to get group details"
       );
@@ -415,7 +426,7 @@ export const groupsAPI = {
       });
       return response.data;
     } catch (error: any) {
-      console.error("❌ Create group failed:", error.response?.data);
+      console.error("Create group failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to create group"
       );
@@ -435,7 +446,7 @@ export const groupsAPI = {
       });
       return response.data;
     } catch (error: any) {
-      console.error("❌ Send group message failed:", error.response?.data);
+      console.error("Send group message failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to send group message"
       );
@@ -453,7 +464,7 @@ export const groupsAPI = {
       );
       return response.data;
     } catch (error: any) {
-      console.error("❌ Get group messages failed:", error.response?.data);
+      console.error("Get group messages failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to get group messages"
       );
@@ -465,7 +476,7 @@ export const groupsAPI = {
       const response = await api.post(`/chat-groups/${groupId}/join`);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Join group failed:", error.response?.data);
+      console.error("Join group failed:", error.response?.data);
       throw new Error(error.response?.data?.message || "Failed to join group");
     }
   },
@@ -475,7 +486,7 @@ export const groupsAPI = {
       const response = await api.delete(`/chat-groups/${groupId}/leave`);
       return response.data;
     } catch (error: any) {
-      console.error("❌ Leave group failed:", error.response?.data);
+      console.error("Leave group failed:", error.response?.data);
       throw new Error(error.response?.data?.message || "Failed to leave group");
     }
   },
@@ -487,7 +498,7 @@ export const groupsAPI = {
       });
       return response.data;
     } catch (error: any) {
-      console.error("❌ Add member failed:", error.response?.data);
+      console.error("Add member failed:", error.response?.data);
       throw new Error(error.response?.data?.message || "Failed to add member");
     }
   },
@@ -499,7 +510,7 @@ export const groupsAPI = {
       );
       return response.data;
     } catch (error: any) {
-      console.error("❌ Remove member failed:", error.response?.data);
+      console.error("Remove member failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to remove member"
       );
@@ -518,7 +529,7 @@ export const groupsAPI = {
       );
       return response.data;
     } catch (error: any) {
-      console.error("❌ Update member role failed:", error.response?.data);
+      console.error("Update member role failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to update member role"
       );
@@ -532,7 +543,7 @@ export const groupsAPI = {
       );
       return response.data;
     } catch (error: any) {
-      console.error("❌ Search groups failed:", error.response?.data);
+      console.error("Search groups failed:", error.response?.data);
       throw new Error(
         error.response?.data?.message || "Failed to search groups"
       );

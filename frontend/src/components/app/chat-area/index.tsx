@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useParams } from "react-router-dom";
-import P2PHeader from "@app/chat-area/header/P2PHeader";
+import P2PHeader, { type Recipient } from "@app/chat-area/header/P2PHeader";
 import GroupHeader from "@app/chat-area/header/GroupHeader";
 import MessageInput from "@app/chat-area/message-input/MessageInput";
 import GroupMessageInput from "@app/chat-area/message-input/GroupMessageInput";
@@ -12,26 +12,27 @@ import { useMessages } from "@/contexts/MessagesContext";
 import { useFriends } from "@/contexts/FriendsContext";
 import { useGroups } from "@/contexts/GroupsContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { authAPI } from "@/services/Api";
 
 const ChatArea = () => {
   const { groupId } = useParams<{ groupId: string }>();
   const { currentConversation } = useMessages();
   const { friends } = useFriends();
-  const { 
-    groups, 
-    groupMembers, 
+  const {
+    groups,
+    groupMembers,
     groupConversations,
     loadGroupMembers,
     loadGroupMessages,
     setCurrentGroup,
-    currentGroup
+    currentGroup,
   } = useGroups();
   const { user } = useAuth();
   const [showMembersSidebar, setShowMembersSidebar] = useState(false);
-  
+
   const loadedGroupMembers = useRef<Set<string>>(new Set());
   const loadedGroupMessages = useRef<Set<string>>(new Set());
-
+  const [recipient, setRecipient] = useState<Recipient>();
   const isGroupChat = !!groupId;
 
   useEffect(() => {
@@ -59,10 +60,30 @@ const ChatArea = () => {
     }
   }, [groupId, groupConversations, loadGroupMessages]);
 
+  // FIXED: Added currentConversation to dependency array and added null check
+  useEffect(() => {
+    const getUserProfile = async () => {
+      // Only fetch if we have a currentConversation ID and it's not a group chat
+      if (!currentConversation || isGroupChat) {
+        return;
+      }
+
+      try {
+        const response = await authAPI.getUserById(currentConversation);
+        setRecipient(response?.data?.user);
+      } catch (error: any) {
+        console.error("User not found:", error.response?.data?.message);
+        setRecipient(undefined); // Clear recipient on error
+      }
+    };
+
+    getUserProfile();
+  }, [currentConversation, isGroupChat]); // Added dependencies
+
   if (isGroupChat) {
-    const currentGroupData = groups.find(g => g._id === groupId);
-    const members = groupMembers[groupId || ''] || [];
-    const conversation = groupConversations[groupId || ''];
+    const currentGroupData = groups.find((g) => g._id === groupId);
+    const members = groupMembers[groupId || ""] || [];
+    const conversation = groupConversations[groupId || ""];
 
     if (!currentGroupData) {
       return (
@@ -72,7 +93,8 @@ const ChatArea = () => {
               <StyledWelcomeIcon>🔍</StyledWelcomeIcon>
               <StyledWelcomeTitle>Group not found</StyledWelcomeTitle>
               <StyledWelcomeText>
-                The group you're looking for doesn't exist or you don't have access to it.
+                The group you're looking for doesn't exist or you don't have
+                access to it.
               </StyledWelcomeText>
             </StyledWelcomeContent>
           </StyledWelcomeScreen>
@@ -81,7 +103,7 @@ const ChatArea = () => {
     }
 
     // Check if user is member of the group
-    const userMember = members.find(m => m.userId._id === user?.id);
+    const userMember = members.find((m) => m.userId._id === user?.id);
     if (members.length > 0 && !userMember) {
       return (
         <StyledChatArea>
@@ -101,35 +123,37 @@ const ChatArea = () => {
     return (
       <StyledChatArea>
         <StyledMainChatArea showSidebar={showMembersSidebar}>
-          <GroupHeader 
+          <GroupHeader
             group={currentGroupData}
             memberCount={members.length}
-            userRole={userMember?.role || 'member'}
-            onToggleMembersSidebar={() => setShowMembersSidebar(!showMembersSidebar)}
+            userRole={userMember?.role || "member"}
+            onToggleMembersSidebar={() =>
+              setShowMembersSidebar(!showMembersSidebar)
+            }
           />
-          <GroupMessages 
-            groupId={groupId!}
-            conversation={conversation}
-          />
+          <GroupMessages groupId={groupId!} conversation={conversation} />
           <GroupMessageInput groupId={groupId!} />
         </StyledMainChatArea>
-        
+
         {showMembersSidebar && (
           <GroupMembersSidebar
             group={currentGroupData}
             members={members}
-            userRole={userMember?.role || 'member'}
+            userRole={userMember?.role || "member"}
             onClose={() => setShowMembersSidebar(false)}
           />
         )}
       </StyledChatArea>
     );
   } else {
-    const recipient = currentConversation
-      ? friends.find(f => f.friendId._id === currentConversation)?.friendId
-      : null;
+    // IMPROVED: Use the recipient from state (fetched via API) instead of finding from friends
+    // Fall back to friends list if API fetch hasn't completed yet
+    const recipientUser = recipient || 
+      (currentConversation 
+        ? friends.find((f) => f.friendId._id === currentConversation)?.friendId
+        : null);
 
-    if (!currentConversation || !recipient) {
+    if (!currentConversation || !recipientUser) {
       return (
         <StyledChatArea>
           <StyledWelcomeScreen>
@@ -149,7 +173,8 @@ const ChatArea = () => {
               </svg>
               <StyledWelcomeTitle>Welcome to Mendam</StyledWelcomeTitle>
               <StyledWelcomeText>
-                Select a conversation from the sidebar to start chatting with your friends.
+                Select a conversation from the sidebar to start chatting with
+                your friends.
               </StyledWelcomeText>
             </StyledWelcomeContent>
           </StyledWelcomeScreen>
@@ -159,13 +184,12 @@ const ChatArea = () => {
 
     return (
       <StyledChatAreaPToP>
-        <P2PHeader recipient={recipient} />
+        <P2PHeader recipient={recipientUser} />
         <ChatMessages recipientId={currentConversation} />
         <MessageInput recipientId={currentConversation} />
       </StyledChatAreaPToP>
     );
   }
-  
 };
 
 export default ChatArea;
@@ -189,8 +213,10 @@ const StyledMainChatArea = styled.div<{ showSidebar: boolean }>`
   display: flex;
   flex-direction: column;
   transition: all 0.3s ease;
-  
-  ${({ showSidebar }) => showSidebar && `
+
+  ${({ showSidebar }) =>
+    showSidebar &&
+    `
     @media (max-width: 1200px) {
       display: none;
     }

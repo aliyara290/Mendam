@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import {
+  AtSymbolIcon,
   BriefcaseIcon,
   CalendarIcon,
   EnvelopeIcon,
@@ -69,7 +70,7 @@ const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
               </StyledAvatarPic>
               <StyledAvatarName>
                 <h4>{user.fullName.substring(0, 10)}</h4>
-                <span>@{user.username}</span>
+                {/* <span>@{user.username}</span> */}
                 <StyledStatusIndicator>
                   <StyledStatusDot color={getStatusColor()} />
                   <StyledStatusText>{getStatusText()}</StyledStatusText>
@@ -79,19 +80,23 @@ const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
           </StyledProfileCover>
 
           <StyledUserInfo>
+            {user.biography && (
+              <StyledBio>
+                <p>{user.biography}</p>
+              </StyledBio>
+            )}
             <StyledNavigation>
               <StyledButtonList>
                 <StyledButtonListItem>Personal Info</StyledButtonListItem>
-                <StyledButtonListItem>Mutual Friends</StyledButtonListItem>
+                {/* <StyledButtonListItem>Mutual Friends</StyledButtonListItem> */}
               </StyledButtonList>
             </StyledNavigation>
-
             <StyledPersonalInfo>
               <StyledInfoItem>
                 <StyledInfoIcon>
-                  <EnvelopeIcon />
+                  <AtSymbolIcon />
                 </StyledInfoIcon>
-                <StyledInfoData>@{user.username}</StyledInfoData>
+                <StyledInfoData>{user.username}</StyledInfoData>
               </StyledInfoItem>
 
               {user.jobTitle && (
@@ -111,11 +116,7 @@ const Profile: React.FC<ProfileProps> = ({ onClick, isOpen, user }) => {
               </StyledInfoItem>
             </StyledPersonalInfo>
 
-            {user.biography && (
-              <StyledBio>
-                <p>{user.biography}</p>
-              </StyledBio>
-            )}
+            
           </StyledUserInfo>
 
           <StyledCloseModal onClick={onClick}>
@@ -145,7 +146,7 @@ const StyledProfile = styled.div`
 
 const StyledProfileContent = styled.div`
   width: 100%;
-  height: 50rem;
+  /* height: 50rem; */
   max-width: 70rem;
   background-color: ${({ theme }) => theme.background.secondary};
   border-radius: 2rem;
@@ -188,7 +189,7 @@ const StyledProfileCover = styled.div`
 
 const StyledAvatar = styled.div`
   position: absolute;
-  bottom: -16rem;
+  bottom: -14rem;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -334,8 +335,12 @@ const StyledButtonListItem = styled.li`
 `;
 
 const StyledPersonalInfo = styled.div`
+  /* display: grid;
+  grid-template-columns: repeat(3, 1fr); */
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
   gap: 1.5rem;
   padding: 2rem;
 `;
@@ -361,10 +366,13 @@ const StyledInfoData = styled.div`
 
 const StyledBio = styled.div`
   padding: 0 2rem 2rem;
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
   p {
     font-size: var(--text-md);
     color: ${({ theme }) => theme.text.thirdly};
     line-height: 1.6;
+    text-align: center;
   }
 `;

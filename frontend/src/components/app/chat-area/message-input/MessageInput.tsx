@@ -237,7 +237,9 @@ const StyledMessageInput = styled.div`
   position: relative;
   user-select: none;
   border-top: 1px solid ${({ theme }) => theme.border.secondary};
-  
+  /* position: sticky;
+  left: 0;
+  bottom: 0; */
   @media (max-width: 1000px) {
     height: 5.5rem;
   }

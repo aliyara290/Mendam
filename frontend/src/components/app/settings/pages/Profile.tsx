@@ -1,4 +1,3 @@
-// frontend/src/components/app/settings/pages/Profile.tsx - Fixed version
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "@app/ui/button/Button";

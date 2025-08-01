@@ -39,9 +39,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         
         if (token) {
           
-          // Verify token with backend and get user info
           const response = await authAPI.getProfile();
-          
           if (response.success) {
             setUser(response.data.user);
           } else {
@@ -113,6 +111,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const updateUser = (userData: Partial<User>) => {
+    console.log('updaaaaaaaatinng')
+    console.log(userData)
     setUser(prev => prev ? { ...prev, ...userData } : null);
   };
 

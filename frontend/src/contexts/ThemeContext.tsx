@@ -56,8 +56,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
 
     return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "glass-night"
-      : "minimal-white";
+      ? "clean-dark"
+      : "light";
   });
 
   const theme = themes[themeMode] || DarkTheme;

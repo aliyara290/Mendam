@@ -15,11 +15,13 @@ import { useFriends } from "@/contexts/FriendsContext";
 import { useMessages } from "@/contexts/MessagesContext";
 import { useMobileChat } from "@/contexts/MobileChatContext";
 
-interface Recipient {
+export interface Recipient {
   _id: string;
   username: string;
   fullName: string;
   avatar?: string;
+  jobTitle?: string;
+  biography?: string;
   status: string;
   isOnline: boolean;
   lastSeen: Date;

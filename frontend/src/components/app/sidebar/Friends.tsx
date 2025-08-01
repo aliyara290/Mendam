@@ -164,6 +164,7 @@ const Friends: React.FC<FriendsProps> = ({ }) => {
             <StyledChatItem key={friend._id}>
               <StyledChatItemContainer>
                 <StyledLeftPart>
+                  {/* <span>{friend._id}</span> */}
                   <Avatar
                     image={friend.friendId.avatar}
                     status={friend.friendId.isOnline ? "online" : "offline"}
