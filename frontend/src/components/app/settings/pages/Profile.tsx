@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import Button from "@app/ui/button/Button";
-import { CameraIcon } from "@heroicons/react/24/outline";
+import { CameraIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useSettings } from "@/contexts/OpenSettingsContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { authAPI } from "@/services/Api";
@@ -11,8 +11,10 @@ const Profile: React.FC = () => {
   const { setOpenSettings } = useSettings();
   const { user, updateUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState({
     fullName: user?.fullName || '',
@@ -22,6 +24,7 @@ const Profile: React.FC = () => {
 
   const [hasChanges, setHasChanges] = useState(false);
 
+  // Update form data when user changes
   useEffect(() => {
     if (user) {
       const newFormData = {
@@ -33,6 +36,7 @@ const Profile: React.FC = () => {
     }
   }, [user]);
 
+  // Check for changes
   useEffect(() => {
     if (user) {
       const hasFormChanges = 
@@ -65,12 +69,26 @@ const Profile: React.FC = () => {
     try {
       const response = await authAPI.updateProfile(formData);
       
-      updateUser(response.data.user);
+      // Merge the updated data with the existing user data
+      const updatedUserData = {
+        ...user,
+        ...response.data.user,
+        fullName: formData.fullName,
+        jobTitle: formData.jobTitle,
+        biography: formData.biography,
+      };
+      
+      updateUser(updatedUserData);
       
       setSuccess('Profile updated successfully!');
       setHasChanges(false);
+      
+      setTimeout(() => {
+        setSuccess('');
+      }, 3000);
+      
     } catch (error: any) {
-      setError(error.response?.data?.message || 'Failed to update profile');
+      setError(error.message || 'Failed to update profile');
     } finally {
       setIsLoading(false);
     }
@@ -89,6 +107,91 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      setError('Invalid file type. Please upload a JPEG, PNG, WebP, or GIF image.');
+      return;
+    }
+
+    // Validate file size (5MB)
+    const maxSize = 5 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setError('File too large. Please upload an image smaller than 5MB.');
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    setError('');
+
+    try {
+      const response = await authAPI.uploadAvatar(file);
+      
+      // Update user context with new avatar
+      const updatedUserData = {
+        ...user,
+        avatar: response.data.user.avatar,
+      };
+      
+      updateUser(updatedUserData);
+      setSuccess('Avatar updated successfully!');
+      
+      setTimeout(() => {
+        setSuccess('');
+      }, 3000);
+      
+    } catch (error: any) {
+      setError(error.message || 'Failed to upload avatar');
+    } finally {
+      setIsUploadingAvatar(false);
+      // Reset file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleDeleteAvatar = async () => {
+    if (!user?.avatar) return;
+
+    if (!window.confirm('Are you sure you want to delete your avatar?')) {
+      return;
+    }
+
+    setIsUploadingAvatar(true);
+    setError('');
+
+    try {
+      const response = await authAPI.deleteAvatar();
+      
+      // Update user context to remove avatar
+      const updatedUserData = {
+        ...user,
+        avatar: '',
+      };
+      
+      updateUser(updatedUserData);
+      setSuccess('Avatar deleted successfully!');
+      
+      setTimeout(() => {
+        setSuccess('');
+      }, 3000);
+      
+    } catch (error: any) {
+      setError(error.message || 'Failed to delete avatar');
+    } finally {
+      setIsUploadingAvatar(false);
+    }
+  };
+
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -99,13 +202,49 @@ const Profile: React.FC = () => {
 
       <StyledProfileContent>
         <StyledLeftPart>
-          <StyledUpdateAvatar>
-            <StyledUpdateAvatarContent htmlFor="upload-image">
-              <CameraIcon />
-              <span>Update Avatar</span>
-              <input type="file" name="upload-image" id="upload-image" />
-            </StyledUpdateAvatarContent>
-          </StyledUpdateAvatar>
+          <StyledAvatarSection>
+            <StyledAvatarUpload>
+              <StyledAvatarPreview onClick={handleAvatarClick}>
+                {user.avatar ? (
+                  <img src={user.avatar} alt={user.fullName} />
+                ) : (
+                  <StyledAvatarPlaceholder>
+                    {user.fullName.charAt(0).toUpperCase()}
+                  </StyledAvatarPlaceholder>
+                )}
+                <StyledAvatarOverlay>
+                  <CameraIcon />
+                  <span>{isUploadingAvatar ? 'Uploading...' : 'Change Avatar'}</span>
+                </StyledAvatarOverlay>
+              </StyledAvatarPreview>
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{ display: 'none' }}
+                disabled={isUploadingAvatar}
+              />
+              
+              <StyledAvatarActions>
+                <Button
+                  onClick={handleAvatarClick}
+                  variant="primary"
+                  title={isUploadingAvatar ? "Uploading..." : "Upload New"}
+                  disabled={isUploadingAvatar}
+                />
+                {user.avatar && (
+                  <StyledDeleteButton
+                    onClick={handleDeleteAvatar}
+                    disabled={isUploadingAvatar}
+                  >
+                    <TrashIcon />
+                  </StyledDeleteButton>
+                )}
+              </StyledAvatarActions>
+            </StyledAvatarUpload>
+          </StyledAvatarSection>
 
           <form onSubmit={handleSubmit}>
             <StyledItemsList>
@@ -189,9 +328,9 @@ const Profile: React.FC = () => {
                   {user.avatar ? (
                     <img src={user.avatar} alt={user.fullName} />
                   ) : (
-                    <StyledAvatarPlaceholder>
-                      {user.fullName.charAt(0).toUpperCase()}
-                    </StyledAvatarPlaceholder>
+                    <StyledRightAvatarPlaceholder>
+                      {(formData.fullName || user.fullName).charAt(0).toUpperCase()}
+                    </StyledRightAvatarPlaceholder>
                   )}
                 </StyledAvatarPicContent>
                 <StyledBar />
@@ -210,7 +349,7 @@ const Profile: React.FC = () => {
 
 export default Profile;
 
-// Keep all your existing styled components here...
+// Styled components
 const StyledProfile = styled.div`
   width: 100%;
 `;
@@ -249,47 +388,124 @@ const StyledMessage = styled.div<{ type: 'error' | 'success' }>`
   `}
 `;
 
-const StyledUpdateAvatar = styled.div`
+const StyledLeftPart = styled.div`
   width: 100%;
-  padding-bottom: 2rem;
 `;
 
-const StyledUpdateAvatarContent = styled.label`
+const StyledAvatarSection = styled.div`
   width: 100%;
-  height: 20rem;
-  background-color: ${({ theme }) => theme.background.primary};
-  border-radius: 0.8rem;
+  margin-bottom: 3rem;
+`;
+
+const StyledAvatarUpload = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+`;
+
+const StyledAvatarPreview = styled.div`
+  width: 12rem;
+  height: 12rem;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  border: 3px solid ${({ theme }) => theme.border.secondary};
+  transition: all 0.3s ease;
+  
+  &:hover {
+    border-color: var(--blue);
+    
+    img {
+      transform: scale(1.05);
+    }
+  }
+  
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+`;
+
+const StyledAvatarPlaceholder = styled.div`
+  width: 100%;
+  height: 100%;
+  background-color: var(--blue);
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: var(--text-xxxl);
+  font-weight: 600;
+  color: white;
+`;
+
+const StyledAvatarOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  font-size: var(--text-md);
-  color: ${({ theme }) => theme.text.placeholder};
-  font-weight: 500;
-  border: 1px solid ${({ theme }) => theme.border.secondary};
-  cursor: pointer;
-  transition: all 0.2s ease;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  color: white;
+  
+  ${StyledAvatarPreview}:hover & {
+    opacity: 1;
+  }
   
   svg {
-    width: 5rem;
-    color: ${({ theme }) => theme.text.placeholder};
+    width: 2.4rem;
+    height: 2.4rem;
   }
   
-  input {
-    display: none;
-  }
-  
-  &:hover {
-    background-color: ${({ theme }) => theme.background.thirdly};
-    svg {
-      color: ${({ theme }) => theme.text.thirdly};
-    }
+  span {
+    font-size: var(--text-sm);
+    font-weight: 500;
   }
 `;
 
-const StyledLeftPart = styled.div`
-  width: 100%;
+const StyledAvatarActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const StyledDeleteButton = styled.button`
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  border: 1px solid ${({ theme }) => theme.border.secondary};
+  background-color: ${({ theme }) => theme.background.secondary};
+  color: #dc2626;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background-color: #fee2e2;
+    border-color: #fecaca;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  svg {
+    width: 1.8rem;
+    height: 1.8rem;
+  }
 `;
 
 const StyledItemsList = styled.div`
@@ -440,7 +656,7 @@ const StyledAvatarPicContent = styled.div`
   }
 `;
 
-const StyledAvatarPlaceholder = styled.div`
+const StyledRightAvatarPlaceholder = styled.div`
   width: 100%;
   height: 100%;
   display: flex;

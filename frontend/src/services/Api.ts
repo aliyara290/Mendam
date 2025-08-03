@@ -215,6 +215,38 @@ export const authAPI = {
       );
     }
   },
+  
+  uploadAvatar: async (file: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+
+      const response = await api.post("/users/avatar", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error: any) {
+      console.error("Avatar upload failed:", error.response?.data);
+      throw new Error(
+        error.response?.data?.message || "Failed to upload avatar"
+      );
+    }
+  },
+
+  // New avatar delete method
+  deleteAvatar: async () => {
+    try {
+      const response = await api.delete("/users/avatar");
+      return response.data;
+    } catch (error: any) {
+      console.error("Avatar delete failed:", error.response?.data);
+      throw new Error(
+        error.response?.data?.message || "Failed to delete avatar"
+      );
+    }
+  },
   getUserById: async (userId: string | null) => {
     try {
       const response = await api.get(`/users/${userId}`);
