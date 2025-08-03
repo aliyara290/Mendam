@@ -2,6 +2,7 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
 import Logo from "@components/logo/Logo";
+import { Link } from "react-router-dom";
 
 const fadeInUp = keyframes`
   from {
@@ -29,34 +30,22 @@ const Footer: React.FC = () => {
       title: "Product",
       links: [
         { label: "Features", href: "#features" },
-        { label: "Security", href: "#security" },
-      ]
+        { label: "Stories", href: "#testimonials" },
+      ],
     },
     {
       title: "Company",
-      links: [
-        { label: "About Us", href: "#about" },
-        { label: "Blog", href: "#blog" },
-        { label: "Contact", href: "#contact" },
-      ]
+      links: [{ label: "Contact", href: "" }],
     },
-    {
-      title: "Resources",
-      links: [
-        { label: "Help Center", href: "#help" },
-        { label: "Documentation", href: "#docs" },
-        { label: "Community", href: "#community" },
-        { label: "Status", href: "#status" },
-      ]
-    },
+
     {
       title: "Legal",
       links: [
-        { label: "Privacy Policy", href: "#privacy" },
-        { label: "Terms of Service", href: "#terms" },
-        { label: "Cookie Policy", href: "#cookies" },
-      ]
-    }
+        { label: "Privacy Policy", href: "" },
+        { label: "Terms of Service", href: "" },
+        { label: "Cookie Policy", href: "" },
+      ],
+    },
   ];
 
   const socialLinks = [
@@ -82,13 +71,13 @@ const Footer: React.FC = () => {
                 <StyledBrandName>Mendam</StyledBrandName>
               </StyledBrandInfo>
             </StyledLogoSection>
-            
+
             <StyledCompanyDescription>
-              Empowering teams worldwide with intelligent, secure, and seamless 
-              communication tools. Join thousands of organizations who trust Mendam 
-              for their daily collaboration needs.
+              Empowering teams worldwide with intelligent, secure, and seamless
+              communication tools. Join thousands of organizations who trust
+              Mendam for their daily collaboration needs.
             </StyledCompanyDescription>
-            
+
             {/* <StyledSocialLinks>
               {socialLinks.map((social, index) => (
                 <StyledSocialLink key={index} href={social.href}>
@@ -107,7 +96,7 @@ const Footer: React.FC = () => {
                 <StyledLinksList>
                   {section.links.map((link, linkIndex) => (
                     <StyledLink key={linkIndex}>
-                      <a href={link.href}>{link.label}</a>
+                      <Link to={link.href}>{link.label}</Link>
                     </StyledLink>
                   ))}
                 </StyledLinksList>
@@ -117,19 +106,20 @@ const Footer: React.FC = () => {
         </StyledFooterMain>
 
         {/* Newsletter Section */}
-        <StyledNewsletterSection>
+        {/* <StyledNewsletterSection>
           <StyledNewsletterContent>
             <StyledNewsletterText>
               <StyledNewsletterTitle>Stay in the loop</StyledNewsletterTitle>
               <StyledNewsletterDescription>
-                Get the latest updates, tips, and insights delivered to your inbox.
+                Get the latest updates, tips, and insights delivered to your
+                inbox.
               </StyledNewsletterDescription>
             </StyledNewsletterText>
-            
+
             <StyledNewsletterForm>
-              <StyledEmailInput 
-                type="email" 
-                placeholder="Enter your email address" 
+              <StyledEmailInput
+                type="email"
+                placeholder="Enter your email address"
               />
               <StyledSubscribeButton>
                 <span>Subscribe</span>
@@ -137,29 +127,57 @@ const Footer: React.FC = () => {
               </StyledSubscribeButton>
             </StyledNewsletterForm>
           </StyledNewsletterContent>
-        </StyledNewsletterSection>
+        </StyledNewsletterSection> */}
 
         {/* Footer Bottom */}
         <StyledFooterBottom>
           <StyledCopyright>
             © 2024 Mendam Technologies Inc. All rights reserved.
           </StyledCopyright>
-          
-          <StyledBottomLinks>
+
+          {/* <StyledBottomLinks>
             <StyledBottomLink href="#privacy">Privacy</StyledBottomLink>
             <StyledDivider>•</StyledDivider>
             <StyledBottomLink href="#terms">Terms</StyledBottomLink>
             <StyledDivider>•</StyledDivider>
             <StyledBottomLink href="#cookies">Cookies</StyledBottomLink>
-          </StyledBottomLinks>
-          
-          <StyledStatusIndicator>
-            <StyledStatusDot />
-            <span>All systems operational</span>
-          </StyledStatusIndicator>
+          </StyledBottomLinks> */}
+
+          <StyledMyLogo>
+            <a
+              href="http://www.aliyara.com"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <svg
+                id="Logo__23lg"
+                data-name="Layer 1"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 242.64 243.07"
+                fill="#3CA7D5"
+                width={40}
+                height={40}
+              >
+                <g className="logo_inner">
+                  <circle cx="121.26" cy="121.49" r="75.3"></circle>
+                  <path
+                    className="cls-1"
+                    d="M149.36,170.29h-7a25.49,25.49,0,0,1-25.5-25.5V106.48h7a25.49,25.49,0,0,1,25.5,25.5Z"
+                    transform="translate(-28.74 -25.51)"
+                  ></path>
+                  <path
+                    className="cls-1"
+                    d="M156,195.18h6.08a21.06,21.06,0,0,0,21.06-21.07V125.92a.93.93,0,0,0-.93-.94h-6.08a21.07,21.07,0,0,0-21.06,21.07v48.2A.93.93,0,0,0,156,195.18Z"
+                    transform="translate(-28.74 -25.51)"
+                  ></path>
+                </g>
+              </svg>
+              <span>Built By Ali Yara</span>
+            </a>
+          </StyledMyLogo>
         </StyledFooterBottom>
       </StyledContainer>
-      
+
       {/* Background Elements */}
       <StyledBackgroundPattern />
     </StyledFooter>
@@ -180,9 +198,16 @@ const StyledFooter = styled.footer`
 const StyledBackgroundPattern = styled.div`
   position: absolute;
   inset: 0;
-  background-image: 
-    radial-gradient(circle at 25% 25%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 75% 75%, rgba(118, 75, 162, 0.1) 0%, transparent 50%);
+  background-image: radial-gradient(
+      circle at 25% 25%,
+      rgba(102, 126, 234, 0.1) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(118, 75, 162, 0.1) 0%,
+      transparent 50%
+    );
   pointer-events: none;
 `;
 
@@ -192,7 +217,7 @@ const StyledContainer = styled.div`
   padding: 0 3rem;
   position: relative;
   z-index: 2;
-  
+
   @media (max-width: 768px) {
     padding: 0 2rem;
   }
@@ -204,13 +229,13 @@ const StyledFooterMain = styled.div`
   gap: 6rem;
   padding: 8rem 0 6rem;
   animation: ${fadeInUp} 0.8s ease-out;
-  
+
   @media (max-width: 1024px) {
     grid-template-columns: 1fr;
     gap: 4rem;
     text-align: center;
   }
-  
+
   @media (max-width: 768px) {
     padding: 6rem 0 4rem;
   }
@@ -226,7 +251,7 @@ const StyledLogoSection = styled.div`
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  
+
   @media (max-width: 1024px) {
     justify-content: center;
   }
@@ -241,7 +266,7 @@ const StyledLogo = styled.div`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 1.2rem;
   padding: 1rem;
-  
+
   svg {
     filter: brightness(0) invert(1);
   }
@@ -270,7 +295,7 @@ const StyledCompanyDescription = styled.p`
   line-height: 1.6;
   opacity: 0.9;
   max-width: 40rem;
-  
+
   @media (max-width: 1024px) {
     margin: 0 auto;
   }
@@ -279,12 +304,11 @@ const StyledCompanyDescription = styled.p`
 const StyledSocialLinks = styled.div`
   display: flex;
   gap: 1.5rem;
-  
+
   @media (max-width: 1024px) {
     justify-content: center;
   }
 `;
-
 
 const StyledSocialTooltip = styled.div`
   position: absolute;
@@ -301,9 +325,9 @@ const StyledSocialTooltip = styled.div`
   visibility: hidden;
   transition: all 0.3s ease;
   pointer-events: none;
-  
+
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 100%;
     left: 50%;
@@ -327,11 +351,11 @@ const StyledSocialLink = styled.a`
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  
+
   &:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
-    
+
     ${StyledSocialTooltip} {
       opacity: 1;
       visibility: visible;
@@ -340,17 +364,16 @@ const StyledSocialLink = styled.a`
   }
 `;
 
-
 const StyledLinksGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   gap: 4rem;
-  
+
   @media (max-width: 640px) {
     grid-template-columns: repeat(2, 1fr);
     gap: 3rem;
   }
-  
+
   @media (max-width: 480px) {
     grid-template-columns: 1fr;
     gap: 2rem;
@@ -385,7 +408,7 @@ const StyledLink = styled.li`
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
     transition: all 0.3s ease;
-    
+
     &:hover {
       color: #667eea;
       transform: translateX(5px);
@@ -400,7 +423,7 @@ const StyledNewsletterSection = styled.div`
   margin-bottom: 4rem;
   backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  
+
   @media (max-width: 768px) {
     padding: 3rem 2rem;
     margin-bottom: 3rem;
@@ -412,7 +435,7 @@ const StyledNewsletterContent = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 4rem;
-  
+
   @media (max-width: 1024px) {
     flex-direction: column;
     text-align: center;
@@ -442,7 +465,7 @@ const StyledNewsletterForm = styled.form`
   gap: 1.5rem;
   flex: 1;
   max-width: 40rem;
-  
+
   @media (max-width: 640px) {
     flex-direction: column;
     gap: 1rem;
@@ -458,11 +481,11 @@ const StyledEmailInput = styled.input`
   color: white;
   font-size: var(--text-md);
   backdrop-filter: blur(10px);
-  
+
   &::placeholder {
     color: rgba(255, 255, 255, 0.6);
   }
-  
+
   &:focus {
     outline: none;
     border-color: #667eea;
@@ -484,7 +507,7 @@ const StyledSubscribeButton = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
-  
+
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
@@ -501,13 +524,13 @@ const StyledFooterBottom = styled.div`
   justify-content: space-between;
   padding: 3rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  
+
   @media (max-width: 1024px) {
     flex-direction: column;
     gap: 2rem;
     text-align: center;
   }
-  
+
   @media (max-width: 640px) {
     gap: 1.5rem;
   }
@@ -522,7 +545,7 @@ const StyledBottomLinks = styled.div`
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  
+
   @media (max-width: 640px) {
     flex-wrap: wrap;
     justify-content: center;
@@ -534,7 +557,7 @@ const StyledBottomLink = styled.a`
   color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
   transition: color 0.3s ease;
-  
+
   &:hover {
     color: #667eea;
   }
@@ -542,18 +565,46 @@ const StyledBottomLink = styled.a`
 
 const StyledDivider = styled.span`
   opacity: 0.5;
-  
+
   @media (max-width: 640px) {
     display: none;
   }
 `;
 
-const StyledStatusIndicator = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  font-size: var(--text-sm);
-  opacity: 0.8;
+const StyledMyLogo = styled.div`
+  padding-right: 10px;
+  border-radius: 3rem;
+
+  a {
+    display: flex;
+    align-items: center;
+    span {
+      color: #fff;
+      font-size: var(--text-sm);
+    }
+  }
+  .cls-1 {
+    fill: #fff;
+  }
+
+  svg {
+    animation: logo-spinnner 4s infinite;
+    /* transition: ani; */
+  }
+  transition: all 0.2s;
+  &:hover {
+    background-color: #fff;
+    a {
+      span {
+        color: #2E3348;
+      }
+    }
+  }
+  @keyframes logo-spinnner {
+    100% {
+      rotate: 365deg;
+    }
+  }
 `;
 
 const StyledStatusDot = styled.div`
