@@ -1,9 +1,7 @@
-// src/middleware/authMiddleware.ts
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/UserModel';
 
-// Extend the Request interface
 declare global {
   namespace Express {
     interface Request {
@@ -23,7 +21,6 @@ export const authMiddleware = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    // Get token from header
     const authHeader = req.header('Authorization');
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -34,13 +31,10 @@ export const authMiddleware = async (
       return;
     }
 
-    // Extract token
     const token = authHeader.substring(7); // Remove 'Bearer ' prefix
 
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as { userId: string };
     
-    // Find user
     const user = await User.findById(decoded.userId);
     
     if (!user) {
@@ -51,7 +45,6 @@ export const authMiddleware = async (
       return;
     }
 
-    // Add user to request
     req.user = {
       id: user._id.toString(),
       username: user.username,
