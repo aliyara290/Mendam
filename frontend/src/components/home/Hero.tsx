@@ -1,4 +1,3 @@
-// frontend/src/components/home/Hero.tsx - Professional redesign
 import React from "react";
 import styled, { keyframes } from "styled-components";
 import Button from "@components/button/Button";
@@ -141,10 +140,10 @@ const Hero: React.FC = () => {
             </StyledMockupFrame>
 
             <StyledFloatingCard delay="0s">
-              <StyledCardIcon>📊</StyledCardIcon>
+              <StyledCardIcon>🎨</StyledCardIcon>
               <StyledCardText>
-                <strong>Team Analytics</strong>
-                <span>Real-time insights</span>
+                <strong>Multiple Themes</strong>
+                <span>6+ themes available</span>
               </StyledCardText>
             </StyledFloatingCard>
 
@@ -157,10 +156,10 @@ const Hero: React.FC = () => {
             </StyledFloatingCard>
 
             <StyledFloatingCard delay="2s">
-              <StyledCardIcon>🚀</StyledCardIcon>
+              <StyledCardIcon>🔒</StyledCardIcon>
               <StyledCardText>
-                <strong>AI Assistant</strong>
-                <span>Boost productivity by 40%</span>
+                <strong>Privacy & Security</strong>
+                <span>Secure by design</span>
               </StyledCardText>
             </StyledFloatingCard>
           </StyledMockupContainer>
@@ -180,7 +179,7 @@ export default Hero;
 
 const StyledHero = styled.section`
   min-height: 100svh;
-  padding: 8rem 3rem 4rem;
+  padding: 8rem 5rem 4rem;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
   overflow: hidden;
@@ -188,22 +187,23 @@ const StyledHero = styled.section`
   align-items: center;
   
   @media (max-width: 768px) {
-    padding: 3rem 2rem 2rem;
+    padding: 3rem 4rem 2rem;
   }
 `;
 
 const StyledHeroContent = styled.div`
+width: 100%;
   max-width: 140rem;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  /* margin: 0 auto; */
+  display: flex;
+  justify-content: space-between;
   gap: 6rem;
   align-items: center;
   z-index: 2;
   position: relative;
   
   @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
+    flex-direction: column;
     gap: 4rem;
     text-align: center;
   }
@@ -217,6 +217,11 @@ const StyledHeroContent = styled.div`
 `;
 
 const StyledHeroLeft = styled.div`
+@media (max-width: 1024px) {
+  display: flex;
+flex-direction: column;
+align-items: center;
+}
   animation: ${fadeInUp} 0.8s ease-out;
 `;
 
@@ -265,16 +270,19 @@ const StyledSubheading = styled.p`
   color: rgba(255, 255, 255, 0.9);
   margin-bottom: 3rem;
   max-width: 50rem;
+
 `;
 
 const StyledCTAContainer = styled.div`
   display: flex;
   gap: 1.5rem;
   margin-bottom: 4rem;
-  
+  @media (max-width: 1024px) {
+    justify-content: center;
+  }
   @media (max-width: 640px) {
-    flex-direction: column;
     align-items: center;
+    flex-direction: column;
   }
 `;
 
@@ -519,18 +527,18 @@ const StyledFloatingCard = styled.div<{ delay: string }>`
   animation-delay: ${props => props.delay};
   
   &:nth-child(2) {
-    top: 10%;
-    right: -5rem;
+    bottom: 40%;
+    right: -2rem;
   }
   
   &:nth-child(3) {
-    bottom: 40%;
-    right: -8rem;
+    bottom: 17%;
+    right: -2rem;
   }
   
   &:nth-child(4) {
-    bottom: 10%;
-    right: -3rem;
+    bottom: -3%;
+    right: 20rem;
   }
   
   @media (max-width: 1024px) {
