@@ -94,6 +94,8 @@ const login = async (req, res) => {
                     username: user.username,
                     email: user.email,
                     fullName: user.fullName,
+                    jobTitle: user.jobTitle,
+                    biography: user.biography,
                     avatar: user.avatar,
                     status: "online",
                 },
@@ -168,6 +170,8 @@ const getProfile = async (req, res) => {
                     avatar: user.avatar,
                     status: user.status,
                     lastSeen: user.lastSeen,
+                    jobTitle: user.jobTitle,
+                    biography: user.biography,
                 },
             },
         });

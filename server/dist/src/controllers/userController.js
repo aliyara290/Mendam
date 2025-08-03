@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateStatus = exports.getUserById = exports.searchUsers = exports.updateProfile = exports.getCurrentUser = void 0;
+exports.updateStatus = exports.getUserById = exports.searchUsers = exports.deleteAvatar = exports.uploadAvatar = exports.updateProfile = exports.getCurrentUser = void 0;
 const UserModel_1 = require("../models/UserModel");
+const fileUploadService_1 = require("../services/fileUploadService");
 const getCurrentUser = async (req, res) => {
     try {
         const userId = req.user.id;
@@ -43,7 +44,7 @@ exports.getCurrentUser = getCurrentUser;
 const updateProfile = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { fullName, avatar, jobTitle, biography } = req.body;
+        const { fullName, jobTitle, biography } = req.body;
         if (fullName && fullName.length > 50) {
             res.status(400).json({
                 success: false,
@@ -68,8 +69,6 @@ const updateProfile = async (req, res) => {
         const updateData = {};
         if (fullName !== undefined)
             updateData.fullName = fullName;
-        if (avatar !== undefined)
-            updateData.avatar = avatar;
         if (jobTitle !== undefined)
             updateData.jobTitle = jobTitle;
         if (biography !== undefined)
@@ -108,6 +107,127 @@ const updateProfile = async (req, res) => {
     }
 };
 exports.updateProfile = updateProfile;
+const uploadAvatar = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        if (!req.file) {
+            res.status(400).json({
+                success: false,
+                message: 'No image file provided'
+            });
+            return;
+        }
+        const fileData = {
+            buffer: req.file.buffer,
+            mimetype: req.file.mimetype,
+            size: req.file.size,
+            originalname: req.file.originalname
+        };
+        const validation = fileUploadService_1.FileUploadService.validateImageFile(fileData);
+        if (!validation.isValid) {
+            res.status(400).json({
+                success: false,
+                message: validation.error
+            });
+            return;
+        }
+        const currentUser = await UserModel_1.User.findById(userId);
+        if (!currentUser) {
+            res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+            return;
+        }
+        const uploadResult = await fileUploadService_1.FileUploadService.uploadAvatar(req.file.buffer, userId, req.file.originalname);
+        const updatedUser = await UserModel_1.User.findByIdAndUpdate(userId, { avatar: uploadResult.url }, { new: true });
+        if (currentUser.avatar && currentUser.avatar !== uploadResult.url) {
+            const oldPublicId = fileUploadService_1.FileUploadService.extractPublicIdFromUrl(currentUser.avatar);
+            if (oldPublicId) {
+                fileUploadService_1.FileUploadService.deleteAvatar(oldPublicId).catch(console.error);
+            }
+        }
+        res.json({
+            success: true,
+            message: 'Avatar uploaded successfully',
+            data: {
+                user: {
+                    id: updatedUser._id,
+                    username: updatedUser.username,
+                    email: updatedUser.email,
+                    fullName: updatedUser.fullName,
+                    avatar: updatedUser.avatar,
+                    status: updatedUser.status,
+                    jobTitle: updatedUser.jobTitle,
+                    biography: updatedUser.biography
+                },
+                upload: {
+                    url: uploadResult.url,
+                    size: uploadResult.bytes,
+                    format: uploadResult.format
+                }
+            }
+        });
+    }
+    catch (error) {
+        console.error('Avatar upload error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Failed to upload avatar',
+            error: error.message
+        });
+    }
+};
+exports.uploadAvatar = uploadAvatar;
+const deleteAvatar = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const user = await UserModel_1.User.findById(userId);
+        if (!user) {
+            res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+            return;
+        }
+        if (!user.avatar) {
+            res.status(400).json({
+                success: false,
+                message: 'No avatar to delete'
+            });
+            return;
+        }
+        const publicId = fileUploadService_1.FileUploadService.extractPublicIdFromUrl(user.avatar);
+        if (publicId) {
+            await fileUploadService_1.FileUploadService.deleteAvatar(publicId);
+        }
+        const updatedUser = await UserModel_1.User.findByIdAndUpdate(userId, { avatar: '' }, { new: true });
+        res.json({
+            success: true,
+            message: 'Avatar deleted successfully',
+            data: {
+                user: {
+                    id: updatedUser._id,
+                    username: updatedUser.username,
+                    email: updatedUser.email,
+                    fullName: updatedUser.fullName,
+                    avatar: updatedUser.avatar,
+                    status: updatedUser.status,
+                    jobTitle: updatedUser.jobTitle,
+                    biography: updatedUser.biography
+                }
+            }
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Failed to delete avatar',
+            error: error.message
+        });
+    }
+};
+exports.deleteAvatar = deleteAvatar;
 const searchUsers = async (req, res) => {
     try {
         const { query } = req.query;

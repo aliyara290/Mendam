@@ -1,6 +1,4 @@
-// server/src/services/fileUploadService.ts
 import { v2 as cloudinary } from 'cloudinary';
-import { Request } from 'express';
 
 // Configure Cloudinary
 cloudinary.config({
@@ -16,6 +14,13 @@ export interface UploadResult {
   height: number;
   format: string;
   bytes: number;
+}
+
+export interface FileData {
+  buffer: Buffer;
+  mimetype: string;
+  size: number;
+  originalname?: string;
 }
 
 export class FileUploadService {
@@ -83,7 +88,7 @@ export class FileUploadService {
   /**
    * Validate image file
    */
-  static validateImageFile(file: Express.Multer.File): { isValid: boolean; error?: string } {
+  static validateImageFile(file: FileData): { isValid: boolean; error?: string } {
     const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
     const maxSize = parseInt(process.env.MAX_FILE_SIZE || '5242880'); // 5MB default
 

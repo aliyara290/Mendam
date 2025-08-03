@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { User } from '../models/UserModel';
-import { FileUploadService } from '../services/fileUploadService';
+import { FileUploadService, type FileData } from '../services/fileUploadService';
 
 // Get current user profile
 export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
@@ -134,7 +134,14 @@ export const uploadAvatar = async (req: Request, res: Response): Promise<void> =
     }
 
     // Validate the uploaded file
-    const validation = FileUploadService.validateImageFile(req.file);
+    const fileData: FileData = {
+      buffer: req.file.buffer,
+      mimetype: req.file.mimetype,
+      size: req.file.size,
+      originalname: req.file.originalname
+    };
+    
+    const validation = FileUploadService.validateImageFile(fileData);
     if (!validation.isValid) {
       res.status(400).json({
         success: false,
