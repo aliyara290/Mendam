@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { User } from '../models/UserModel';
+import { FileUploadService } from '../services/fileUploadService';
 
 // Get current user profile
 export const getCurrentUser = async (req: Request, res: Response): Promise<void> => {
@@ -44,10 +45,9 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
 
 // Update user profile
 export const updateProfile = async (req: Request, res: Response): Promise<void> => {
-  
   try {
     const userId = (req as any).user.id;
-    const { fullName, avatar, jobTitle, biography } = req.body;
+    const { fullName, jobTitle, biography } = req.body;
 
     // Validation
     if (fullName && fullName.length > 50) {
@@ -77,7 +77,6 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
     // Build update object with only provided fields
     const updateData: any = {};
     if (fullName !== undefined) updateData.fullName = fullName;
-    if (avatar !== undefined) updateData.avatar = avatar;
     if (jobTitle !== undefined) updateData.jobTitle = jobTitle;
     if (biography !== undefined) updateData.biography = biography;
 
@@ -116,6 +115,152 @@ export const updateProfile = async (req: Request, res: Response): Promise<void> 
     res.status(500).json({
       success: false,
       message: 'Failed to update profile',
+      error: error.message
+    });
+  }
+};
+
+// Upload avatar
+export const uploadAvatar = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req as any).user.id;
+    
+    if (!req.file) {
+      res.status(400).json({
+        success: false,
+        message: 'No image file provided'
+      });
+      return;
+    }
+
+    // Validate the uploaded file
+    const validation = FileUploadService.validateImageFile(req.file);
+    if (!validation.isValid) {
+      res.status(400).json({
+        success: false,
+        message: validation.error
+      });
+      return;
+    }
+
+    // Get current user to check if they have an existing avatar
+    const currentUser = await User.findById(userId);
+    if (!currentUser) {
+      res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+      return;
+    }
+
+    // Upload new avatar to Cloudinary
+    const uploadResult = await FileUploadService.uploadAvatar(
+      req.file.buffer,
+      userId,
+      req.file.originalname
+    );
+
+    // Update user with new avatar URL
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { avatar: uploadResult.url },
+      { new: true }
+    );
+
+    // Delete old avatar from Cloudinary (if exists and different from new one)
+    if (currentUser.avatar && currentUser.avatar !== uploadResult.url) {
+      const oldPublicId = FileUploadService.extractPublicIdFromUrl(currentUser.avatar);
+      if (oldPublicId) {
+        FileUploadService.deleteAvatar(oldPublicId).catch(console.error);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: 'Avatar uploaded successfully',
+      data: {
+        user: {
+          id: updatedUser!._id,
+          username: updatedUser!.username,
+          email: updatedUser!.email,
+          fullName: updatedUser!.fullName,
+          avatar: updatedUser!.avatar,
+          status: updatedUser!.status,
+          jobTitle: updatedUser!.jobTitle,
+          biography: updatedUser!.biography
+        },
+        upload: {
+          url: uploadResult.url,
+          size: uploadResult.bytes,
+          format: uploadResult.format
+        }
+      }
+    });
+  } catch (error: any) {
+    console.error('Avatar upload error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to upload avatar',
+      error: error.message
+    });
+  }
+};
+
+// Delete avatar
+export const deleteAvatar = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const userId = (req as any).user.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+      return;
+    }
+
+    if (!user.avatar) {
+      res.status(400).json({
+        success: false,
+        message: 'No avatar to delete'
+      });
+      return;
+    }
+
+    // Extract public ID and delete from Cloudinary
+    const publicId = FileUploadService.extractPublicIdFromUrl(user.avatar);
+    if (publicId) {
+      await FileUploadService.deleteAvatar(publicId);
+    }
+
+    // Remove avatar from user profile
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { avatar: '' },
+      { new: true }
+    );
+
+    res.json({
+      success: true,
+      message: 'Avatar deleted successfully',
+      data: {
+        user: {
+          id: updatedUser!._id,
+          username: updatedUser!.username,
+          email: updatedUser!.email,
+          fullName: updatedUser!.fullName,
+          avatar: updatedUser!.avatar,
+          status: updatedUser!.status,
+          jobTitle: updatedUser!.jobTitle,
+          biography: updatedUser!.biography
+        }
+      }
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete avatar',
       error: error.message
     });
   }

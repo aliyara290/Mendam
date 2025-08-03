@@ -201,6 +201,8 @@ export const getProfile = async (
           avatar: user.avatar,
           status: user.status,
           lastSeen: user.lastSeen,
+          jobTitle: user.jobTitle,
+          biography: user.biography,
         },
       },
     });
