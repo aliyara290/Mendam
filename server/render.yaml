@@ -12,7 +12,7 @@ services:
       - key: PORT
         value: 10000
       - key: MONGODB_URI
-        value: mongodb+srv://aliyarafr:u8VkSJPE5Bt30Gn0@yara-cluster.imvrw4p.mongodb.net/?retryWrites=true&w=majority&appName=yara-cluster
+        value:
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRES_IN
