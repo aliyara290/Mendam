@@ -8,6 +8,7 @@ import { FriendsProvider } from "@/contexts/FriendsContext";
 import { MessagesProvider } from "@/contexts/MessagesContext";
 import { SocketProvider } from "@/contexts/SocketContext";
 import { GroupsProvider } from "@/contexts/GroupsContext"; 
+import { Analytics } from "@vercel/analytics/next"
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
                   <ThemeProvider>
                     <GlobalStyle />
                     <AppRoutes />
+                    <Analytics/>
                   </ThemeProvider>
                 </MobileChatProvider>
               </OpenSettingProvider>
