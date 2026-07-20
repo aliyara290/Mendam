@@ -3,7 +3,7 @@ import { css } from "styled-components";
 const Variables = css`
   :root {
     --light: #fbfbfb;
-    --pup-white: #e3d5f6;
+    --pup-white: ##2F55A1;
     --blue: #2492c2;
     --dark-blue: rgb(13, 104, 143);
     --primary: #121214;
